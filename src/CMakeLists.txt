@@ -10,7 +10,7 @@ add_compile_options(
 )
 
 set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.72.0)
+find_package(Boost 1.72.0 COMPONENTS filesystem REQUIRED)
 
 include_directories(
     ${Boost_INCLUDE_DIRS}
