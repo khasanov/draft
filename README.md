@@ -2,6 +2,6 @@
 
 My experiments in cRAFTing a toy programming language.
 
-# Readings
+## Readings
 
 [Crafting Interpreters](craftinginterpreters.com)

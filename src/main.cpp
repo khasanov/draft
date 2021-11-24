@@ -1,20 +1,29 @@
 #include <iostream>
-#include <iomanip>
 #include <vector>
 
 #include <boost/filesystem.hpp>
+#include <boost/locale.hpp>
+
+#include "Scanner.h"
+#include "Token.h"
 
 namespace raft {
 
 namespace exit {
-constexpr auto failure = 1;  // Failing exit status.
-constexpr auto success = 0;  // Successful exit status.
-constexpr auto usage = 64;   // Command line usage error.
+constexpr auto failure = 1;  // Failing exit status
+constexpr auto success = 0;  // Successful exit status
+constexpr auto usage = 64;   // Command line usage error
 }  // namespace exit
 
-void run(std::string_view line)
+void run(std::string_view source)
 {
-    std::cout << std::quoted(line) << "\n";
+    Scanner scanner{source};
+    std::vector<Token> tokens = scanner.scanTokens();
+
+    // For now, just print the tokens
+    for (auto &token : tokens) {
+        std::cout << token.toString() << std::endl;
+    }
 }
 
 int runFile(const std::string &path)
@@ -27,6 +36,16 @@ int runFile(const std::string &path)
 
     std::string source;
     fs::load_string_file(path, source);
+
+    // TODO consider using https://github.com/lemire/fastvalidate-utf-8
+    namespace blc = boost::locale::conv;
+    try {
+        blc::utf_to_utf<char>(source.data(), source.data() + source.size(), blc::stop);
+    } catch(blc::conversion_error &ex) {
+        std::cerr << "Validation failed - non UTF-8 character" << std::endl;
+        return exit::failure;
+    }
+
     run(source);
 
     return exit::success;
@@ -38,7 +57,7 @@ int runPrompt()
 
     std::string line;
     while (true) {
-        std::cout << ">";
+        std::cout << "> ";
         std::getline(std::cin, line);
 
         if (std::cin.eof()) {
@@ -69,6 +88,6 @@ int processCommandLine(const std::vector<std::string> &args)
 
 int main(int argc, char *argv[])
 {
-    std::vector<std::string> args(argv + 1, argv + argc);
+    std::vector<std::string> args{argv + 1, argv + argc};
     return raft::processCommandLine(args);
 }

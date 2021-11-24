@@ -17,6 +17,10 @@ include_directories(
 )
 
 add_executable(raft
+    Scanner.cpp
+    Scanner.h
+    Token.cpp
+    Token.h
     main.cpp
 )
 
