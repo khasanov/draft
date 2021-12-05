@@ -1,26 +1,18 @@
 #include "raft.h"
 
 #include <fstream>
-#include <iostream>
 
-int raft::Raft::usage()
+namespace raft {
+
+bool Raft::hadError = false;
+
+int Raft::usage()
 {
-    std::cerr << "Usage: raft [filename]" << std::endl;
+    out("Usage: raft [filename]", std::cerr);
     return exit::usage;
 }
 
-void raft::Raft::run(std::string_view source)
-{
-    Scanner scanner{source};
-    std::vector<Token> tokens = scanner.scanTokens();
-
-    // For now, just print the tokens
-    for (auto &token : tokens) {
-        std::cout << token.toString() << std::endl;
-    }
-}
-
-int raft::Raft::runFile(const std::string &path)
+int Raft::runFile(const std::string &path)
 {
     std::string source;
     try {
@@ -33,21 +25,26 @@ int raft::Raft::runFile(const std::string &path)
         file.seekg(0, std::ios::beg);
         file.read(&source[0], size);
     } catch (...) {
-        std::cerr << "Can't read file: " << path << std::endl;
+        out("Can't read file: " + path, std::cerr);
         return exit::failure;
     }
 
     run(source);
 
+    if (hadError) {
+        return exit::dataerr;
+    }
+
     return exit::success;
 }
 
-int raft::Raft::runPrompt()
+int Raft::runPrompt()
 {
-    std::cout << "Raft version 0.0.1\nPress Ctrl+d to exit\n";
+    out("Raft version 0.0.1\nPress Ctrl+d to exit");
 
     std::string line;
     while (true) {
+        hadError = false;  // reset error status
         std::cout << "> ";
         std::getline(std::cin, line);
 
@@ -57,6 +54,33 @@ int raft::Raft::runPrompt()
         }
         run(line);
     }
-
     return exit::success;
 }
+
+void Raft::run(std::string_view source)
+{
+    Scanner scanner{source};
+    std::vector<Token> tokens = scanner.scanTokens();
+
+    // For now, just print the tokens
+    for (auto &token : tokens) {
+        out(token.toString());
+    }
+}
+
+void Raft::error(std::size_t line, const std::string &message)
+{
+    report(line, "", message);
+}
+
+void Raft::report(std::size_t line, const std::string &where, const std::string &message)
+{
+    out("[line " + std::to_string(line) + "] Error " + where + ": " + message, std::cerr);
+    hadError = true;
+}
+
+void Raft::out(std::string_view what, std::ostream &where)
+{
+    where << what << std::endl;
+}
+}  // namespace raft
