@@ -2,9 +2,6 @@
 
 #include <iostream>
 
-#include "scanner.h"
-#include "token.h"
-
 namespace raft {
 
 namespace exit {

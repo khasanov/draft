@@ -2,6 +2,12 @@
 
 #include <fstream>
 
+#include "ast.h"
+#include "ast_printer.h"
+#include "parser.h"
+#include "scanner.h"
+#include "token.h"
+
 namespace raft {
 
 bool Raft::hadError = false;
@@ -66,6 +72,14 @@ void Raft::run(std::string_view source)
     for (auto &token : tokens) {
         out(token.toString());
     }
+
+    object::NodePool pool;
+    Literal *b = new(&pool) Literal{std::string{"42"}};
+    Literal *a = new(&pool) Literal{42};
+    Token t {Token::Type::Plus, "+", object::Null{}, 1};
+    Binary *c = new(&pool) Binary{b, t, a};
+    AstPrinter p;
+    out(p.print(c));
 }
 
 void Raft::error(std::size_t line, const std::string &message)

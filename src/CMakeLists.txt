@@ -12,6 +12,8 @@ add_compile_options(
 add_executable(raft
     ast.cpp
     ast.h
+    ast_printer.cpp
+    ast_printer.h
     main.cpp
     object.cpp
     object.h
