@@ -4,7 +4,7 @@
 
 namespace raft {
 
-Token::Token(TokenType type, std::string lexeme, Object literal, std::size_t line)
+Token::Token(Type type, std::string lexeme, object::Object literal, std::size_t line)
     : type{type}
     , lexeme{lexeme}
     , literal{literal}
@@ -14,89 +14,54 @@ Token::Token(TokenType type, std::string lexeme, Object literal, std::size_t lin
 
 std::string Token::toString()
 {
-    return type2str(type) + " " + lexeme + " " + obj2str(literal);
+    return type2str(type) + " " + lexeme + " " + object::obj2str(literal);
 }
 
-std::string Token::type2str(TokenType tt)
+std::string Token::type2str(Token::Type type)
 {
-    // TODO consider using https://github.com/Neargye/magic_enum
-    using Map = std::map<TokenType, std::string>;
-    static Map map = {{TokenType::Unrecognized, "Unrecognized"},
-                      {TokenType::Space, "Space"},
-                      {TokenType::ExclamationMark, "ExclamationMark"},
-                      {TokenType::QuotationMark, "QuotationMark"},
-                      {TokenType::NumberSign, "NumberSign"},
-                      {TokenType::DollarSign, "DollarSign"},
-                      {TokenType::PercentSign, "PercentSign"},
-                      {TokenType::Ampersand, "Ampersand"},
-                      {TokenType::Apostrophe, "Apostrophe"},
-                      {TokenType::LeftParenthesis, "LeftParenthesis"},
-                      {TokenType::RightParenthesis, "RightParenthesis"},
-                      {TokenType::Asterisk, "Asterisk"},
-                      {TokenType::PlusSign, "PlusSign"},
-                      {TokenType::Comma, "Comma"},
-                      {TokenType::HyphenMinus, "HyphenMinus"},
-                      {TokenType::FullStop, "FullStop"},
-                      {TokenType::Solidus, "Solidus"},
-                      {TokenType::Colon, "Colon"},
-                      {TokenType::Semicolon, "Semicolon"},
-                      {TokenType::LessThanSign, "LessThanSign"},
-                      {TokenType::EqualsSign, "EqualsSign"},
-                      {TokenType::GreaterThanSign, "GreaterThanSign"},
-                      {TokenType::QuestionMark, "QuestionMark"},
-                      {TokenType::CommercialAt, "CommercialAt"},
-                      {TokenType::LeftSquareBracket, "LeftSquareBracket"},
-                      {TokenType::ReverseSolidus, "ReverseSolidus"},
-                      {TokenType::RightSquareBracket, "RightSquareBracket"},
-                      {TokenType::CircumflexAccent, "CircumflexAccent"},
-                      {TokenType::LowLine, "LowLine"},
-                      {TokenType::GraveAccent, "GraveAccent"},
-                      {TokenType::LeftCurlyBracket, "LeftCurlyBracket"},
-                      {TokenType::VerticalLine, "VerticalLine"},
-                      {TokenType::RightCurlyBracket, "RightCurlyBracket"},
-                      {TokenType::Tilde, "Tilde"},
-                      {TokenType::BangEqual, "BangEqual"},
-                      {TokenType::EqualEqual, "EqualEqual"},
-                      {TokenType::LessEqual, "LessEqual"},
-                      {TokenType::GreaterEqual, "GreaterEqual"},
-                      {TokenType::Identifier, "Identifier"},
-                      {TokenType::StringLiteral, "StringLiteral"},
-                      {TokenType::NumberLiteral, "NumberLiteral"},
-                      {TokenType::And, "And"},
-                      {TokenType::Class, "Class"},
-                      {TokenType::Else, "Else"},
-                      {TokenType::False, "False"},
-                      {TokenType::Fun, "Fun"},
-                      {TokenType::For, "For"},
-                      {TokenType::If, "If"},
-                      {TokenType::Nil, "Nil"},
-                      {TokenType::Or, "Or"},
-                      {TokenType::Print, "Print"},
-                      {TokenType::Return, "Return"},
-                      {TokenType::Super, "Super"},
-                      {TokenType::This, "This"},
-                      {TokenType::True, "True"},
-                      {TokenType::Var, "Var"},
-                      {TokenType::While, "While"},
-                      {TokenType::EndOfFile, "EndOfFile"}};
+    using M = std::map<Token::Type, std::string>;
+    M m = {{Token::Type::Unrecognized, "Unrecognized"},
+           {Token::Type::And, "And"},
+           {Token::Type::Bang, "Bang"},
+           {Token::Type::BangEqual, "BangEqual"},
+           {Token::Type::Class, "Class"},
+           {Token::Type::Comma, "Comma"},
+           {Token::Type::Dot, "Dot"},
+           {Token::Type::Else, "Else"},
+           {Token::Type::Equal, "Equal"},
+           {Token::Type::EqualEqual, "EqualEqual"},
+           {Token::Type::False, "False"},
+           {Token::Type::For, "For"},
+           {Token::Type::Fun, "Fun"},
+           {Token::Type::GreaterEqual, "GreaterEqual"},
+           {Token::Type::GreaterThanSign, "GreaterThanSign"},
+           {Token::Type::Identifier, "Identifier"},
+           {Token::Type::If, "If"},
+           {Token::Type::LeftCurlyBracket, "LeftCurlyBracket"},
+           {Token::Type::LeftParenthesis, "LeftParenthesis"},
+           {Token::Type::LessEqual, "LessEqual"},
+           {Token::Type::LessThanSign, "LessThanSign"},
+           {Token::Type::Minus, "Minus"},
+           {Token::Type::Nil, "Nil"},
+           {Token::Type::NumberLiteral, "NumberLiteral"},
+           {Token::Type::Or, "Or"},
+           {Token::Type::Plus, "Plus"},
+           {Token::Type::Print, "Print"},
+           {Token::Type::Return, "Return"},
+           {Token::Type::RightCurlyBracket, "RightCurlyBracket"},
+           {Token::Type::RightParenthesis, "RightParenthesis"},
+           {Token::Type::Semicolon, "Semicolon"},
+           {Token::Type::Slash, "Slash"},
+           {Token::Type::Star, "Star"},
+           {Token::Type::StringLiteral, "StringLiteral"},
+           {Token::Type::Super, "Super"},
+           {Token::Type::This, "This"},
+           {Token::Type::True, "True"},
+           {Token::Type::Var, "Var"},
+           {Token::Type::While, "While"},
+           {Token::Type::EndOfFile, "EndOfFile"}};
 
-    return map.at(tt);
+    return m.at(type);
 }
 
-std::string Token::obj2str(const Object &obj)
-{
-    auto visitor = [](const auto &arg) -> std::string {
-        using T = std::decay_t<decltype(obj)>;
-        std::string ret;
-        if constexpr (std::is_same_v<T, String>) {
-            ret = arg;
-        } else if constexpr (std::is_same_v<T, Number>) {
-            ret = std::to_string(arg);
-        } else if constexpr (std::is_same_v<T, Null>) {
-            ret = "nil";
-        }
-        return ret;
-    };
-    return std::visit(visitor, obj);
-}
 }  // namespace raft

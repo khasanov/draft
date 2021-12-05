@@ -11,6 +11,7 @@ add_compile_options(
 
 add_executable(raft
     main.cpp
+    object.h
     raft.cpp
     raft.h
     scanner.cpp

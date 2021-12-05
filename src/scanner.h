@@ -26,14 +26,14 @@ private:
     void number();
     void identifier();
 
-    void addToken(TokenType type);
-    void addToken(TokenType type, Object literal);
+    void addToken(Token::Type type);
+    void addToken(Token::Type type, object::Object literal);
 
     bool isDigit(char c);
     bool isAlpha(char c);
     bool isAlphaNumeric(char c);
 
-    std::string source;
+    std::string_view source;
     std::vector<Token> tokens;
 
     std::size_t start = 0;

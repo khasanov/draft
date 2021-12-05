@@ -3,6 +3,7 @@
 #include <map>
 
 #include "scanner.h"
+#include "raft.h"
 
 namespace raft {
 
@@ -14,11 +15,12 @@ Scanner::Scanner(std::string_view source)
 std::vector<Token> Scanner::scanTokens()
 {
     while (!isAtEnd()) {
+        // We are at the beginning of the next lexeme
         start = current;
         scanToken();
     }
 
-    Token eof{TokenType::EndOfFile, "", Null{}, line};
+    Token eof{Token::Type::EndOfFile, "", object::Null{}, line};
     tokens.emplace_back(std::move(eof));
     return tokens;
 }
@@ -33,57 +35,55 @@ void Scanner::scanToken()
     char c = advance();
     switch (c) {
     case '(':
-        addToken(TokenType::LeftParenthesis);
+        addToken(Token::Type::LeftParenthesis);
         break;
     case ')':
-        addToken(TokenType::RightParenthesis);
+        addToken(Token::Type::RightParenthesis);
         break;
     case '{':
-        addToken(TokenType::LeftCurlyBracket);
+        addToken(Token::Type::LeftCurlyBracket);
         break;
     case '}':
-        addToken(TokenType::RightCurlyBracket);
+        addToken(Token::Type::RightCurlyBracket);
         break;
     case ',':
-        addToken(TokenType::Comma);
+        addToken(Token::Type::Comma);
         break;
     case '.':
-        addToken(TokenType::FullStop);
+        addToken(Token::Type::Dot);
         break;
     case '-':
-        addToken(TokenType::HyphenMinus);
+        addToken(Token::Type::Minus);
         break;
     case '+':
-        addToken(TokenType::PlusSign);
+        addToken(Token::Type::Plus);
         break;
     case ';':
-        addToken(TokenType::Semicolon);
+        addToken(Token::Type::Semicolon);
         break;
     case '*':
-        addToken(TokenType::Asterisk);
+        addToken(Token::Type::Star);
         break;
-
     case '!':
-        addToken(match('=') ? TokenType::BangEqual : TokenType::ExclamationMark);
+        addToken(match('=') ? Token::Type::BangEqual : Token::Type::Bang);
         break;
     case '=':
-        addToken(match('=') ? TokenType::EqualEqual : TokenType::EqualsSign);
+        addToken(match('=') ? Token::Type::EqualEqual : Token::Type::Equal);
         break;
     case '<':
-        addToken(match('=') ? TokenType::LessEqual : TokenType::LessThanSign);
+        addToken(match('=') ? Token::Type::LessEqual : Token::Type::LessThanSign);
         break;
     case '>':
-        addToken(match('=') ? TokenType::GreaterEqual : TokenType::GreaterThanSign);
+        addToken(match('=') ? Token::Type::GreaterEqual : Token::Type::GreaterThanSign);
         break;
-
     case '/':
         if (match('/')) {
-            // A comment goes until the end of the line.
+            // A comment goes until the end of the line
             while (peek() != '\n' and !isAtEnd()) {
                 advance();
             }
         } else {
-            addToken(TokenType::Solidus);
+            addToken(Token::Type::Slash);
         }
         break;
     case ' ':
@@ -91,6 +91,7 @@ void Scanner::scanToken()
     case '\r':
         [[fallthrough]];
     case '\t':
+        // Ignore whitespace
         break;
     case '\n':
         line++;
@@ -105,8 +106,9 @@ void Scanner::scanToken()
         } else if (isAlpha(c)) {
             identifier();
         } else {
-            // TODO raft::error()
-            std::cout << "Unexpected character: '" << c << "', " << line << ":" << current << std::endl;
+            std::string symbol = "'" + std::string{1, c} + "' (" + std::to_string(c) + ")";
+            std::string msg = "Unexpected character " + symbol + " at column " + std::to_string(current);
+            Raft::error(line, msg);
         }
         break;
     }
@@ -114,7 +116,6 @@ void Scanner::scanToken()
 
 char Scanner::advance()
 {
-    // TODO consider using https://github.com/nemtrif/utfcpp
     return source.at(current++);
 }
 
@@ -157,8 +158,7 @@ void Scanner::string()
     }
 
     if (isAtEnd()) {
-        // TODO raft::error()
-        std::cerr << "Unterminated string" << std::endl;
+        Raft::error(line, "Unterminated string");
         return;
     }
 
@@ -166,8 +166,8 @@ void Scanner::string()
     advance();
 
     // Trim the surrounding quotes
-    const std::string value = source.substr(start + 1, current - 1);
-    addToken(TokenType::StringLiteral, value);
+    auto value = source.substr(start + 1, current - 1);
+    addToken(Token::Type::StringLiteral, std::string{value});
 }
 
 void Scanner::number()
@@ -186,40 +186,40 @@ void Scanner::number()
         }
     }
 
-    double value = std::stod(source.substr(start, current));
-    addToken(TokenType::NumberLiteral, value);
+    double value = std::stod(std::string{source.substr(start, current)});
+    addToken(Token::Type::NumberLiteral, value);
 }
 
 void Scanner::identifier()
 {
-    static std::map<std::string, TokenType> keywords = {
-        {"and", TokenType::And},     {"class", TokenType::Class},   {"else", TokenType::Else},
-        {"false", TokenType::False}, {"fun", TokenType::Fun},       {"for", TokenType::For},
-        {"if", TokenType::If},       {"nil", TokenType::Nil},       {"or", TokenType::Or},
-        {"print", TokenType::Print}, {"return", TokenType::Return}, {"super", TokenType::Super},
-        {"this", TokenType::This},   {"true", TokenType::True},     {"var", TokenType::Var},
-        {"while", TokenType::While}};
+    static std::map<std::string, Token::Type> keywords = {
+        {"and", Token::Type::And},     {"class", Token::Type::Class},   {"else", Token::Type::Else},
+        {"false", Token::Type::False}, {"fun", Token::Type::Fun},       {"for", Token::Type::For},
+        {"if", Token::Type::If},       {"nil", Token::Type::Nil},       {"or", Token::Type::Or},
+        {"print", Token::Type::Print}, {"return", Token::Type::Return}, {"super", Token::Type::Super},
+        {"this", Token::Type::This},   {"true", Token::Type::True},     {"var", Token::Type::Var},
+        {"while", Token::Type::While}};
 
     while (isAlphaNumeric(peek())) {
         advance();
     }
-    const std::string text = source.substr(start, current);
-    if (auto it = keywords.find(text); it != keywords.end()) {
+    auto text = source.substr(start, current);
+    if (auto it = keywords.find(std::string{text}); it != keywords.end()) {
         addToken(it->second);
     } else {
-        addToken(TokenType::Identifier);
+        addToken(Token::Type::Identifier);
     }
 }
 
-void Scanner::addToken(TokenType type)
+void Scanner::addToken(Token::Type type)
 {
-    addToken(type, Null{});
+    addToken(type, object::Null{});
 }
 
-void Scanner::addToken(TokenType type, Object literal)
+void Scanner::addToken(Token::Type type, object::Object literal)
 {
-    const std::string text = source.substr(start, current - start);
-    Token t{type, text, literal, line};
+    auto text = source.substr(start, current - start);
+    Token t{type, std::string{text}, literal, line};
     tokens.emplace_back(std::move(t));
 }
 
