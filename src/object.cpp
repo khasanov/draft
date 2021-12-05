@@ -1,11 +1,13 @@
 #include "object.h"
 
+#include <stdexcept>
+
 namespace raft::object {
 
 std::string obj2str(const Object &obj)
 {
-    auto visitor = [](const auto &arg) -> std::string {
-        using T = std::decay_t<decltype(obj)>;
+    auto visitor = [](auto &&arg) -> std::string {
+        using T = std::decay_t<decltype(arg)>;
         std::string ret;
         if constexpr (std::is_same_v<T, String>) {
             ret = arg;
@@ -13,6 +15,8 @@ std::string obj2str(const Object &obj)
             ret = std::to_string(arg);
         } else if constexpr (std::is_same_v<T, Null>) {
             ret = "nil";
+        } else {
+            throw std::runtime_error{"Unknown Object type"};
         }
         return ret;
     };
