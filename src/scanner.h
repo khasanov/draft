@@ -3,7 +3,7 @@
 #include <string_view>
 #include <vector>
 
-#include "Token.h"
+#include "token.h"
 
 namespace raft {
 
