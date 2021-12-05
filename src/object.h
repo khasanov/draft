@@ -6,9 +6,10 @@
 namespace raft::object {
 
 using Null = std::monostate;
+using Boolean = bool;
 using String = std::string;
 using Number = double;
-using Object = std::variant<Null, String, Number>;
+using Object = std::variant<Null, Boolean, String, Number>;
 
 std::string obj2str(const Object &obj);
 

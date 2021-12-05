@@ -13,6 +13,8 @@ std::string obj2str(const Object &obj)
             ret = arg;
         } else if constexpr (std::is_same_v<T, Number>) {
             ret = std::to_string(arg);
+        } else if constexpr (std::is_same_v<T, Boolean>) {
+            ret = arg ? "true" : "false";
         } else if constexpr (std::is_same_v<T, Null>) {
             ret = "nil";
         } else {

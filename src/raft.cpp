@@ -74,8 +74,8 @@ void Raft::run(std::string_view source)
     }
 
     object::NodePool pool;
-    Literal *b = new(&pool) Literal{std::string{"42"}};
-    Literal *a = new(&pool) Literal{42};
+    Literal *b = new(&pool) Literal{object::String{"42"}};
+    Literal *a = new(&pool) Literal{object::Number{42}};
     Token t {Token::Type::Plus, "+", object::Null{}, 1};
     Binary *c = new(&pool) Binary{b, t, a};
     AstPrinter p;

@@ -16,3 +16,14 @@ unary      :: ( "-" | "!" ) expression
 binary     :: expression operator expression
 operator   :: "==" | "!=" | "<" | "<=" | ">" | ">=" | "+" | "-" | "*" | "/"
 ```
+
+Precedence
+```
+expression :: equality
+equality   :: comparison ( ("!=" | "==" ) comparision)*
+comparison :: term ( ( ">" | ">=" | "<" | "<=" ) term )*
+term       :: factor ( ("-" | "+" ) factor )*
+factor     :: unary ( ( "/" | "*" ) unary )*
+unary      :: ( "!" "-" ) unary | primary
+primary    :: NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")"
+```
