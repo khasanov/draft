@@ -10,8 +10,13 @@ add_compile_options(
 )
 
 add_executable(raft
+    ast.cpp
+    ast.h
     main.cpp
+    object.cpp
     object.h
+    parser.cpp
+    parser.h
     raft.cpp
     raft.h
     scanner.cpp
