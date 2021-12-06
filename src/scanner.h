@@ -33,11 +33,15 @@ private:
     bool isAlpha(char c);
     bool isAlphaNumeric(char c);
 
+    std::string_view substr();
+
     std::string_view source;
     std::vector<Token> tokens;
 
     std::size_t start = 0;
     std::size_t current = 0;
     std::size_t line = 1;
+
+    static std::map<std::string, Token::Type> keywords;
 };
 }  // namespace raft

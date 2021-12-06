@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <string>
 
 #include "object.h"
@@ -128,17 +129,19 @@ public:
         Star = Asterisk,
     };
 
-    Token(Token::Type type, std::string lexeme, object::Object literal, std::size_t line);
+    Token(Type type, std::string lexeme, object::Object literal, std::size_t line);
 
     std::string toString();
 
-    Token::Type type = Token::Type::Unrecognized;
+    Type type = Type::Unrecognized;
     std::string lexeme;
     object::Object literal;
-    std::size_t line = std::numeric_limits<std::size_t>::max();
+    std::size_t line = 0;
 
 private:
-    static std::string type2str(Token::Type type);
+    static std::string type2str(Type type);
+
+    static std::map<Type, std::string> typeNames;
 };
 
 }  // namespace raft

@@ -7,6 +7,14 @@
 
 namespace raft {
 
+std::map<std::string, Token::Type> Scanner::keywords = {
+    {"and", Token::Type::And},     {"class", Token::Type::Class},   {"else", Token::Type::Else},
+    {"false", Token::Type::False}, {"fun", Token::Type::Fun},       {"for", Token::Type::For},
+    {"if", Token::Type::If},       {"nil", Token::Type::Nil},       {"or", Token::Type::Or},
+    {"print", Token::Type::Print}, {"return", Token::Type::Return}, {"super", Token::Type::Super},
+    {"this", Token::Type::This},   {"true", Token::Type::True},     {"var", Token::Type::Var},
+    {"while", Token::Type::While}};
+
 Scanner::Scanner(std::string_view source)
     : source{source}
 {
@@ -165,9 +173,11 @@ void Scanner::string()
     // The closing "
     advance();
 
+    std::string_view value = substr();
     // Trim the surrounding quotes
-    auto value = source.substr(start + 1, current - 1);
-    addToken(Token::Type::StringLiteral, std::string{value});
+    value.remove_prefix(1);
+    value.remove_suffix(1);
+    addToken(Token::Type::StringLiteral, object::String{value});
 }
 
 void Scanner::number()
@@ -186,25 +196,16 @@ void Scanner::number()
         }
     }
 
-    double value = std::stod(std::string{source.substr(start, current)});
-    addToken(Token::Type::NumberLiteral, value);
+    double value = std::stod(std::string{substr()});
+    addToken(Token::Type::NumberLiteral, object::Number{value});
 }
 
 void Scanner::identifier()
 {
-    static std::map<std::string, Token::Type> keywords = {
-        {"and", Token::Type::And},     {"class", Token::Type::Class},   {"else", Token::Type::Else},
-        {"false", Token::Type::False}, {"fun", Token::Type::Fun},       {"for", Token::Type::For},
-        {"if", Token::Type::If},       {"nil", Token::Type::Nil},       {"or", Token::Type::Or},
-        {"print", Token::Type::Print}, {"return", Token::Type::Return}, {"super", Token::Type::Super},
-        {"this", Token::Type::This},   {"true", Token::Type::True},     {"var", Token::Type::Var},
-        {"while", Token::Type::While}};
-
     while (isAlphaNumeric(peek())) {
         advance();
     }
-    auto text = source.substr(start, current);
-    if (auto it = keywords.find(std::string{text}); it != keywords.end()) {
+    if (auto it = keywords.find(std::string{substr()}); it != keywords.end()) {
         addToken(it->second);
     } else {
         addToken(Token::Type::Identifier);
@@ -218,8 +219,7 @@ void Scanner::addToken(Token::Type type)
 
 void Scanner::addToken(Token::Type type, object::Object literal)
 {
-    auto text = source.substr(start, current - start);
-    Token t{type, std::string{text}, literal, line};
+    Token t{type, std::string{substr()}, literal, line};
     tokens.emplace_back(std::move(t));
 }
 
@@ -236,6 +236,13 @@ bool Scanner::isAlpha(char c)
 bool Scanner::isAlphaNumeric(char c)
 {
     return isAlpha(c) or isDigit(c);
+}
+
+std::string_view Scanner::substr()
+{
+    std::size_t pos = start;
+    std::size_t count = current - pos;
+    return source.substr(pos, count);
 }
 
 }  // namespace raft
