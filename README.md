@@ -9,16 +9,11 @@ My experiments in cRAFTing a toy programming language.
 ## Grammar
 
 ```
-expression :: literal | unary | binary | grouping
-literal    :: NUMBER | STRING | "true" | "false" | "nil"
-grouping   :: "(" expression ")"
-unary      :: ( "-" | "!" ) expression
-binary     :: expression operator expression
-operator   :: "==" | "!=" | "<" | "<=" | ">" | ">=" | "+" | "-" | "*" | "/"
-```
+program    :: statement* EOF
+statement  :: exprStmt | printStmt
+exprStmt   :: expresson ";"
+printStmt  :: "print" expression ";"
 
-Precedence
-```
 expression :: equality
 equality   :: comparison ( ("!=" | "==" ) comparision)*
 comparison :: term ( ( ">" | ">=" | "<" | "<=" ) term )*
@@ -26,4 +21,17 @@ term       :: factor ( ("-" | "+" ) factor )*
 factor     :: unary ( ( "/" | "*" ) unary )*
 unary      :: ( "!" "-" ) unary | primary
 primary    :: NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")"
+```
+
+## Ast representation
+
+```
+Expr{}                      for expression
+Lit{value}                  for literals: NUMBER, STRING, "true", "false", "nil"
+UnOp{op, Expr{}}            for unary
+BinOp{op, Expr{}, Expr{}}   for binary
+{Expr{}}                    for grouping: "(" expression ")"
+
+ExprStmt{Expr{}}            for expression statement
+PrintStmt{Expr{}}           for print statement
 ```

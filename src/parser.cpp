@@ -26,15 +26,19 @@ Parser::Parser(const std::vector<Token> &tokens)
 {
 }
 
-Expr *Parser::parse()
+// program :: statement* EOF
+std::vector<Stmt *> Parser::parse()
 {
+    std::vector<Stmt *> statements;
     try {
-        return expression();
+        while (!isAtEnd()) {
+            statements.emplace_back(statement());
+        }
     } catch (const RuntimeError &ex) {
         Raft::error(ex.token.line, ex.what());
         synchronize();
-        return nullptr;
     }
+    return statements;
 }
 
 // expression :: equality
@@ -126,6 +130,31 @@ Expr *Parser::primary()
     }
 
     throw RuntimeError{peek(), "Expect expression"};
+}
+
+// statement :: exprStmt | printStmt
+Stmt *Parser::statement()
+{
+    if (match(Token::Type::Print)) {
+        return printStatement();
+    }
+    return expressionStatement();
+}
+
+// printStmt :: "print" expression ";"
+Stmt *Parser::printStatement()
+{
+    Expr *value = expression();
+    consume(Token::Type::Semicolon, "Expect ';' after value");
+    return makeAstNode<Print>(value);
+}
+
+// exprStmt :: expresson ";"
+Stmt *Parser::expressionStatement()
+{
+    Expr *expr = expression();
+    consume(Token::Type::Semicolon, "Exprect ';' after expession");
+    return makeAstNode<ExprStmt>(expr);
 }
 
 bool Parser::isAtEnd()

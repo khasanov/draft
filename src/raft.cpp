@@ -69,16 +69,18 @@ void Raft::run(std::string_view source)
     std::vector<Token> tokens = scanner.scanTokens();
 
     Parser parser{tokens};
-    Expr *expr = parser.parse();
+    std::vector<Stmt *> statements = parser.parse();
     if (hadError) {
         return;
     }
 
     AstPrinter p;
-    out(p.print(expr));
+    for (auto stmt : statements) {
+        out(p.print(stmt));
+    }
 
     static Interpreter interpreter;
-    interpreter.interpret(expr);
+    interpreter.interpret(statements);
 }
 
 void Raft::error(std::size_t line, const std::string &message)

@@ -5,12 +5,13 @@
 
 namespace raft {
 
-void Interpreter::interpret(Expr *expression)
+void Interpreter::interpret(const std::vector<Stmt *> &statements)
 {
     try {
-        object::Object value = evaluate(expression);
-        Raft::out(object::obj2str(value));
-    }  catch (const RuntimeError &err) {
+        for (Stmt *statement : statements) {
+            execute(statement);
+        }
+    } catch (const RuntimeError &err) {
         Raft::error(err.token.line, err.what());
         std::exit(raft::exit::software);
     }
@@ -91,9 +92,25 @@ object::Object Interpreter::visit(Grouping *expr)
     return evaluate(expr->expression);
 }
 
+void Interpreter::visit(ExprStmt *stmt)
+{
+    evaluate(stmt->expression);
+}
+
+void Interpreter::visit(Print *stmt)
+{
+    object::Object value = evaluate(stmt->expression);
+    Raft::out(object::obj2str(value));
+}
+
 object::Object Interpreter::evaluate(Expr *expr)
 {
     return expr->accept(this);
+}
+
+void Interpreter::execute(Stmt *stmt)
+{
+    stmt->accept(this);
 }
 
 void Interpreter::checkNumberOperand(const Token &op, const object::Object &operand)

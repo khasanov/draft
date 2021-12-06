@@ -18,7 +18,7 @@ class Parser {
 public:
     explicit Parser(const std::vector<Token> &tokens);
 
-    Expr *parse();
+    std::vector<Stmt *> parse();
 
 private:
     Expr *expression();
@@ -28,6 +28,10 @@ private:
     Expr *factor();
     Expr *unary();
     Expr *primary();
+
+    Stmt *statement();
+    Stmt *printStatement();
+    Stmt *expressionStatement();
 
     // Checks if we've run out of tokens to parse
     bool isAtEnd();

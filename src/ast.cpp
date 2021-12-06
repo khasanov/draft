@@ -26,4 +26,14 @@ Grouping::Grouping(Expr *expr)
 {
 }
 
+ExprStmt::ExprStmt(Expr *expr)
+    : expression{expr}
+{
+}
+
+Print::Print(Expr *expr)
+    : expression{expr}
+{
+}
+
 }  // namespace raft

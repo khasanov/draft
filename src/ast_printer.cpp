@@ -7,6 +7,11 @@ std::string AstPrinter::print(Expr *expr)
     return expr->accept(this);
 }
 
+std::string AstPrinter::print(Stmt *stmt)
+{
+    return stmt->accept(this);
+}
+
 std::string AstPrinter::visit(Literal *expr)
 {
     return "Lit{" + object::obj2str(expr->value) + "}";
@@ -25,6 +30,16 @@ std::string AstPrinter::visit(Binary *expr)
 std::string AstPrinter::visit(Grouping *expr)
 {
     return "{" + expr->expression->accept(this) + "}";
+}
+
+std::string AstPrinter::visit(ExprStmt *stmt)
+{
+    return "ExprStmt{" + stmt->expression->accept(this) + "}";
+}
+
+std::string AstPrinter::visit(Print *stmt)
+{
+    return "PrintStmt{" + stmt->expression->accept(this) + "}";
 }
 
 }  // namespace raft
