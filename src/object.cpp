@@ -25,6 +25,38 @@ std::string obj2str(const Object &obj)
     return std::visit(visitor, obj);
 }
 
+// false and nil are falsey, and everything else is truthy
+bool isTruthy(const Object &obj)
+{
+    auto visitor = [](auto &&arg) -> bool {
+        using T = std::decay_t<decltype(arg)>;
+        if constexpr (std::is_same_v<T, String>) {
+            return true;
+        } else if constexpr (std::is_same_v<T, Number>) {
+            return true;
+        } else if constexpr (std::is_same_v<T, Boolean>) {
+            return arg;
+        } else if constexpr (std::is_same_v<T, Null>) {
+            return false;
+        } else {
+            throw std::runtime_error{"Unknown Object type"};
+        }
+        return true;
+    };
+    return std::visit(visitor, obj);
+}
+
+bool isEqual(const Object &a, const Object &b)
+{
+    if (std::holds_alternative<Null>(a) and std::holds_alternative<Null>(b)) {
+        return true;
+    }
+    if (std::holds_alternative<Null>(a)) {
+        return false;
+    }
+    return a == b;
+}
+
 NodePool::~NodePool()
 {
     if (_blocks) {

@@ -76,6 +76,9 @@ void Raft::run(std::string_view source)
 
     AstPrinter p;
     out(p.print(expr));
+
+    static Interpreter interpreter;
+    interpreter.interpret(expr);
 }
 
 void Raft::error(std::size_t line, const std::string &message)

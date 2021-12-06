@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "interpreter.h"
+
 namespace raft {
 
 namespace exit {
@@ -22,11 +24,10 @@ public:
 
     static void error(std::size_t line, const std::string &message);
     static void report(std::size_t line, const std::string &where, const std::string &message);
+    static void out(std::string_view what, std::ostream &where = std::cout);
 
 private:
     static void run(std::string_view source);
-
-    static void out(std::string_view what, std::ostream &where = std::cout);
 
     static bool hadError;
 };

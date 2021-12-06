@@ -14,6 +14,8 @@ add_executable(raft
     ast.h
     ast_printer.cpp
     ast_printer.h
+    interpreter.cpp
+    interpreter.h
     main.cpp
     object.cpp
     object.h

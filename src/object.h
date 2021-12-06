@@ -12,6 +12,8 @@ using Number = double;
 using Object = std::variant<Null, Boolean, String, Number>;
 
 std::string obj2str(const Object &obj);
+bool isTruthy(const Object &obj);
+bool isEqual(const Object &a, const Object &b);
 
 class NodePool {
 public:

@@ -23,18 +23,18 @@ public:
 
 class Expr : public object::NodeBase {
 public:
-    virtual void accept(IVisitor<void> *visitor) = 0;
     virtual std::string accept(IVisitor<std::string> *visitor) = 0;
+    virtual object::Object accept(IVisitor<object::Object> *visitor) = 0;
 };
 
 template <typename T>
 class Node : public Expr {
 public:
-    void accept(IVisitor<void> *visitor) override
-    {
-        visitor->visit(static_cast<T *>(this));
-    }
     std::string accept(IVisitor<std::string> *visitor) override
+    {
+        return visitor->visit(static_cast<T *>(this));
+    };
+    object::Object accept(IVisitor<object::Object> *visitor) override
     {
         return visitor->visit(static_cast<T *>(this));
     };
