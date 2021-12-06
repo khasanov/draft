@@ -7,9 +7,18 @@
 
 namespace raft {
 
+class RuntimeError : public std::runtime_error {
+public:
+    RuntimeError(const Token &token, const std::string &message);
+
+    Token token;
+};
+
 class Parser {
 public:
     explicit Parser(const std::vector<Token> &tokens);
+
+    Expr *parse();
 
 private:
     Expr *expression();
@@ -32,6 +41,8 @@ private:
     bool check(Token::Type type);
     // Checks to see if the next token is of the exprected type
     Token consume(Token::Type type, const std::string &msg);
+    // Discard tokens until it thinks it has found a statement boundary
+    void synchronize();
 
     // This checks to see if the curret token has any of the given types. If so, it consumes the
     // token and returns true. Otherwise it returns false and leaves the current token alone

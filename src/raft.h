@@ -22,6 +22,7 @@ public:
 
     static void error(std::size_t line, const std::string &message);
     static void report(std::size_t line, const std::string &where, const std::string &message);
+
 private:
     static void run(std::string_view source);
 

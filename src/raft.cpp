@@ -68,29 +68,25 @@ void Raft::run(std::string_view source)
     Scanner scanner{source};
     std::vector<Token> tokens = scanner.scanTokens();
 
-    // For now, just print the tokens
-    for (auto &token : tokens) {
-        out(token.toString());
+    Parser parser{tokens};
+    Expr *expr = parser.parse();
+    if (hadError) {
+        return;
     }
 
-    object::NodePool pool;
-    Literal *b = new(&pool) Literal{object::String{"42"}};
-    Literal *a = new(&pool) Literal{object::Number{42}};
-    Token t {Token::Type::Plus, "+", object::Null{}, 1};
-    Binary *c = new(&pool) Binary{b, t, a};
     AstPrinter p;
-    out(p.print(c));
+    out(p.print(expr));
 }
 
 void Raft::error(std::size_t line, const std::string &message)
 {
     report(line, "", message);
+    hadError = true;
 }
 
 void Raft::report(std::size_t line, const std::string &where, const std::string &message)
 {
     out("[line " + std::to_string(line) + "] Error " + where + ": " + message, std::cerr);
-    hadError = true;
 }
 
 void Raft::out(std::string_view what, std::ostream &where)

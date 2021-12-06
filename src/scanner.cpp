@@ -2,8 +2,8 @@
 #include <iostream>
 #include <map>
 
-#include "scanner.h"
 #include "raft.h"
+#include "scanner.h"
 
 namespace raft {
 

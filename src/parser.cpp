@@ -3,6 +3,13 @@
 #include "raft.h"
 
 namespace raft {
+
+RuntimeError::RuntimeError(const Token &token, const std::string &message)
+    : std::runtime_error{message}
+    , token{token}
+{
+}
+
 /*
 A recursive descent parser is a literal translation of the grammar's rules straight into imperative
 code. Each rule becomes a function. The body of the rule translates to code roughtly like:
@@ -17,6 +24,17 @@ Nonterminal       Call to that rule's function
 Parser::Parser(const std::vector<Token> &tokens)
     : tokens{tokens}
 {
+}
+
+Expr *Parser::parse()
+{
+    try {
+        return expression();
+    } catch (const RuntimeError &ex) {
+        Raft::error(ex.token.line, ex.what());
+        synchronize();
+        return nullptr;
+    }
 }
 
 // expression :: equality
@@ -107,7 +125,7 @@ Expr *Parser::primary()
         return makeAstNode<Grouping>(expr);
     }
 
-    return nullptr;
+    throw RuntimeError{peek(), "Expect expression"};
 }
 
 bool Parser::isAtEnd()
@@ -146,8 +164,41 @@ Token Parser::consume(Token::Type type, const std::string &message)
     if (check(type)) {
         return advance();
     }
-    // TODO
-    throw std::runtime_error{message};
+    throw RuntimeError{peek(), message};
+}
+
+void Parser::synchronize()
+{
+    advance();
+
+    while (!isAtEnd()) {
+        if (previous().type == Token::Type::Semicolon) {
+            return;
+        }
+
+        switch (peek().type) {
+        case Token::Type::Class:
+            [[fallthrough]];
+        case Token::Type::Fun:
+            [[fallthrough]];
+        case Token::Type::Var:
+            [[fallthrough]];
+        case Token::Type::For:
+            [[fallthrough]];
+        case Token::Type::If:
+            [[fallthrough]];
+        case Token::Type::While:
+            [[fallthrough]];
+        case Token::Type::Print:
+            [[fallthrough]];
+        case Token::Type::Return:
+            return;
+        default:
+            break;
+        }
+
+        advance();
+    }
 }
 
 }  // namespace raft
