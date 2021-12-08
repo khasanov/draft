@@ -4,6 +4,12 @@
 
 namespace raft {
 
+template <typename Base, typename T>
+inline bool instanceof (const T *ptr)
+{
+    return dynamic_cast<const Base *>(ptr) != nullptr;
+}
+
 RuntimeError::RuntimeError(const Token &token, const std::string &message)
     : std::runtime_error{message}
     , token{token}
@@ -41,10 +47,27 @@ std::vector<Stmt *> Parser::parse()
     return statements;
 }
 
-// expression :: equality
+// expression :: assignment
 Expr *Parser::expression()
 {
-    return equality();
+    return assignment();
+}
+
+// assignment :: IDENTIFIER "=" assignment | equality
+Expr *Parser::assignment()
+{
+    Expr *expr = equality();
+    if (match(Token::Type::Equal)) {
+        Token equals = previous();
+        Expr *value = assignment();
+
+        if (instanceof <Variable>(expr)) {
+            Token name = static_cast<Variable *>(expr)->name;
+            return makeAstNode<Assign>(name, value);
+        }
+        Raft::error(equals.line, "Invalid assignment target");
+    }
+    return expr;
 }
 
 // equality :: comparison ( ( "!=" | "==" ) comparision )*
@@ -143,7 +166,8 @@ Stmt *Parser::declaration()
             return varDeclaration();
         }
         return statement();
-    } catch (const RuntimeError &err) {
+    } catch (const RuntimeError &ex) {
+        Raft::error(ex.token.line, ex.what());
         synchronize();
         return nullptr;
     }

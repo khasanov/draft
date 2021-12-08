@@ -31,6 +31,12 @@ Variable::Variable(Token name)
 {
 }
 
+Assign::Assign(Token name, Expr *value)
+    : name{name}
+    , value{value}
+{
+}
+
 ExprStmt::ExprStmt(Expr *expr)
     : expression{expr}
 {

@@ -9,7 +9,10 @@ std::string AstPrinter::print(Expr *expr)
 
 std::string AstPrinter::print(Stmt *stmt)
 {
-    return stmt->accept(this);
+    if (stmt) {
+        return stmt->accept(this);
+    }
+    return "???";
 }
 
 std::string AstPrinter::visit(Literal *expr)
@@ -19,12 +22,12 @@ std::string AstPrinter::visit(Literal *expr)
 
 std::string AstPrinter::visit(Unary *expr)
 {
-    return "UnOp{\"" + expr->op.lexeme + "\", " + expr->right->accept(this) + "}";
+    return "UnOp{'" + expr->op.lexeme + "', " + expr->right->accept(this) + "}";
 }
 
 std::string AstPrinter::visit(Binary *expr)
 {
-    return "BinOp{\"" + expr->op.lexeme + "\", " + expr->left->accept(this) + ", " + expr->right->accept(this) + "}";
+    return "BinOp{'" + expr->op.lexeme + "', " + expr->left->accept(this) + ", " + expr->right->accept(this) + "}";
 }
 
 std::string AstPrinter::visit(Grouping *expr)
@@ -35,6 +38,11 @@ std::string AstPrinter::visit(Grouping *expr)
 std::string AstPrinter::visit(Variable *expr)
 {
     return "Var{" + expr->name.lexeme + "}";
+}
+
+std::string AstPrinter::visit(Assign *expr)
+{
+    return "AssignStmt{" + expr->name.lexeme + ", " + expr->value->accept(this) + "}";
 }
 
 std::string AstPrinter::visit(ExprStmt *stmt)

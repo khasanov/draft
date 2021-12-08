@@ -16,6 +16,7 @@ public:
     object::Object visit(Binary *expr) override;
     object::Object visit(Grouping *expr) override;
     object::Object visit(Variable *expr) override;
+    object::Object visit(Assign *expr) override;
 
     void visit(ExprStmt *stmt) override;
     void visit(Print *stmt) override;

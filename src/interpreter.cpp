@@ -97,6 +97,13 @@ object::Object Interpreter::visit(Variable *expr)
     return environment.get(expr->name);
 }
 
+object::Object Interpreter::visit(Assign *expr)
+{
+    object::Object value = evaluate(expr->value);
+    environment.assign(expr->name, value);
+    return value;
+}
+
 void Interpreter::visit(ExprStmt *stmt)
 {
     evaluate(stmt->expression);
@@ -124,7 +131,9 @@ object::Object Interpreter::evaluate(Expr *expr)
 
 void Interpreter::execute(Stmt *stmt)
 {
-    stmt->accept(this);
+    if (stmt) {
+        stmt->accept(this);
+    }
 }
 
 void Interpreter::checkNumberOperand(const Token &op, const object::Object &operand)

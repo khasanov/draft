@@ -22,6 +22,7 @@ public:
 
 private:
     Expr *expression();
+    Expr *assignment();
     Expr *equality();
     Expr *comparison();
     Expr *term();

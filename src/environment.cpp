@@ -14,8 +14,16 @@ object::Object Environment::get(Token name)
     if (values.count(name.lexeme) != 0) {
         return values.at(name.lexeme);
     }
-
     throw RuntimeError{name, "Undefined variable '" + name.lexeme + ";"};
+}
+
+void Environment::assign(const Token &name, const object::Object &value)
+{
+    if (values.count(name.lexeme) != 0) {
+        values[name.lexeme] = value;
+        return;
+    }
+    throw RuntimeError{name, "Undefined variable '" + name.lexeme + "'"};
 }
 
 }  // namespace raft

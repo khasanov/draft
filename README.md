@@ -16,7 +16,8 @@ exprStmt    :: expresson ";"
 printStmt   :: "print" expression ";"
 varDecl     :: "var" IDENTIFIER ( "=" expression )? ";"
 
-expression  :: equality
+expression  :: assignment
+assignment  :: IDENTIFIER "=" assignment | equality
 equality    :: comparison ( ("!=" | "==" ) comparision)*
 comparison  :: term ( ( ">" | ">=" | "<" | "<=" ) term )*
 term        :: factor ( ("-" | "+" ) factor )*

@@ -12,6 +12,7 @@ class Unary;
 class Binary;
 class Grouping;
 class Variable;
+class Assign;
 
 class Stmt;
 class ExprStmt;
@@ -27,6 +28,7 @@ public:
     virtual T visit(Binary *) = 0;
     virtual T visit(Grouping *) = 0;
     virtual T visit(Variable *) = 0;
+    virtual T visit(Assign *) = 0;
 };
 
 class Expr : public memory::Object {
@@ -84,6 +86,14 @@ public:
     explicit Variable(Token name);
 
     Token name;
+};
+
+class Assign : public ExprNode<Assign> {
+public:
+    Assign(Token name, Expr *value);
+
+    Token name;
+    Expr *value;
 };
 
 template <typename T>
