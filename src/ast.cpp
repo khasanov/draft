@@ -26,6 +26,11 @@ Grouping::Grouping(Expr *expr)
 {
 }
 
+Variable::Variable(Token name)
+    : name{name}
+{
+}
+
 ExprStmt::ExprStmt(Expr *expr)
     : expression{expr}
 {
@@ -33,6 +38,12 @@ ExprStmt::ExprStmt(Expr *expr)
 
 Print::Print(Expr *expr)
     : expression{expr}
+{
+}
+
+VarDecl::VarDecl(Token name, Expr *initializer)
+    : name{name}
+    , initializer{initializer}
 {
 }
 

@@ -29,6 +29,8 @@ private:
     Expr *unary();
     Expr *primary();
 
+    Stmt *declaration();
+    Stmt *varDeclaration();
     Stmt *statement();
     Stmt *printStatement();
     Stmt *expressionStatement();

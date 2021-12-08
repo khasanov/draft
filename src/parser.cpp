@@ -26,13 +26,13 @@ Parser::Parser(const std::vector<Token> &tokens)
 {
 }
 
-// program :: statement* EOF
+// program :: declaration* EOF
 std::vector<Stmt *> Parser::parse()
 {
     std::vector<Stmt *> statements;
     try {
         while (!isAtEnd()) {
-            statements.emplace_back(statement());
+            statements.emplace_back(declaration());
         }
     } catch (const RuntimeError &ex) {
         Raft::error(ex.token.line, ex.what());
@@ -107,7 +107,7 @@ Expr *Parser::unary()
     return primary();
 }
 
-// primary :: NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")"
+// primary :: NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" | IDENTIFIER
 Expr *Parser::primary()
 {
     if (match(Token::Type::False)) {
@@ -122,6 +122,9 @@ Expr *Parser::primary()
     if (match(Token::Type::NumberLiteral, Token::Type::StringLiteral)) {
         return makeAstNode<Literal>(previous().literal);
     }
+    if (match(Token::Type::Identifier)) {
+        return makeAstNode<Variable>(previous());
+    }
 
     if (match(Token::Type::LeftParenthesis)) {
         Expr *expr = expression();
@@ -130,6 +133,32 @@ Expr *Parser::primary()
     }
 
     throw RuntimeError{peek(), "Expect expression"};
+}
+
+// declaration :: varDecl | statement
+Stmt *Parser::declaration()
+{
+    try {
+        if (match(Token::Type::Var)) {
+            return varDeclaration();
+        }
+        return statement();
+    }  catch (const RuntimeError &err) {
+        synchronize();
+        return nullptr;
+    }
+}
+
+// "var" IDENTIFIER ( "=" expression )? ";"
+Stmt *Parser::varDeclaration()
+{
+    Token name = consume(Token::Type::Identifier, "Expect variable name");
+    Expr *initializer = nullptr;
+    if (match(Token::Type::Equal)) {
+        initializer = expression();
+    }
+    consume(Token::Type::Semicolon, "Expect ';' after variable declaration");
+    return makeAstNode<VarDecl>(name, initializer);
 }
 
 // statement :: exprStmt | printStmt

@@ -9,18 +9,20 @@ My experiments in cRAFTing a toy programming language.
 ## Grammar
 
 ```
-program    :: statement* EOF
-statement  :: exprStmt | printStmt
-exprStmt   :: expresson ";"
-printStmt  :: "print" expression ";"
+program     :: declaration* EOF
+declaration :: varDecl | statement
+statement   :: exprStmt | printStmt
+exprStmt    :: expresson ";"
+printStmt   :: "print" expression ";"
+varDecl     :: "var" IDENTIFIER ( "=" expression )? ";"
 
-expression :: equality
-equality   :: comparison ( ("!=" | "==" ) comparision)*
-comparison :: term ( ( ">" | ">=" | "<" | "<=" ) term )*
-term       :: factor ( ("-" | "+" ) factor )*
-factor     :: unary ( ( "/" | "*" ) unary )*
-unary      :: ( "!" "-" ) unary | primary
-primary    :: NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")"
+expression  :: equality
+equality    :: comparison ( ("!=" | "==" ) comparision)*
+comparison  :: term ( ( ">" | ">=" | "<" | "<=" ) term )*
+term        :: factor ( ("-" | "+" ) factor )*
+factor      :: unary ( ( "/" | "*" ) unary )*
+unary       :: ( "!" "-" ) unary | primary
+primary     :: NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" | IDENTIFIER
 ```
 
 ## Ast representation

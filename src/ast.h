@@ -10,10 +10,12 @@ class Literal;
 class Unary;
 class Binary;
 class Grouping;
+class Variable;
 
 class Stmt;
 class ExprStmt;
 class Print;
+class VarDecl;
 
 template <typename T>
 class IExprVisitor {
@@ -23,6 +25,7 @@ public:
     virtual T visit(Unary *) = 0;
     virtual T visit(Binary *) = 0;
     virtual T visit(Grouping *) = 0;
+    virtual T visit(Variable *) = 0;
 };
 
 class Expr : public object::NodeBase {
@@ -75,12 +78,20 @@ public:
     Expr *expression = nullptr;
 };
 
+class Variable : public ExprNode<Variable> {
+public:
+    explicit Variable(Token name);
+
+    Token name;
+};
+
 template <typename T>
 class IStmtVisitor {
 public:
     virtual ~IStmtVisitor() = default;
     virtual T visit(ExprStmt *) = 0;
     virtual T visit(Print *) = 0;
+    virtual T visit(VarDecl *) = 0;
 };
 
 class Stmt : public object::NodeBase {
@@ -111,9 +122,17 @@ public:
 
 class Print : public StmtNode<Print> {
 public:
-    Print(Expr *expr);
+    explicit Print(Expr *expr);
 
     Expr *expression = nullptr;
+};
+
+class VarDecl : public StmtNode<VarDecl> {
+public:
+    VarDecl(Token name, Expr *initializer);
+
+    Token name;
+    Expr *initializer;
 };
 
 }  // namespace raft

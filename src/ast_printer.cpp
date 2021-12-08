@@ -32,6 +32,11 @@ std::string AstPrinter::visit(Grouping *expr)
     return "{" + expr->expression->accept(this) + "}";
 }
 
+std::string AstPrinter::visit(Variable *expr)
+{
+    return "Var{" + expr->name.lexeme + "}";
+}
+
 std::string AstPrinter::visit(ExprStmt *stmt)
 {
     return "ExprStmt{" + stmt->expression->accept(this) + "}";
@@ -40,6 +45,11 @@ std::string AstPrinter::visit(ExprStmt *stmt)
 std::string AstPrinter::visit(Print *stmt)
 {
     return "PrintStmt{" + stmt->expression->accept(this) + "}";
+}
+
+std::string AstPrinter::visit(VarDecl *stmt)
+{
+    return "VarDecl{" + stmt->name.lexeme + ", " + stmt->initializer->accept(this) + "}";
 }
 
 }  // namespace raft

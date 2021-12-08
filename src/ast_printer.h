@@ -13,9 +13,11 @@ public:
     std::string visit(Unary *expr) override;
     std::string visit(Binary *expr) override;
     std::string visit(Grouping *expr) override;
+    std::string visit(Variable *expr) override;
 
     std::string visit(ExprStmt *stmt) override;
     std::string visit(Print *stmt) override;
+    std::string visit(VarDecl *stmt) override;
 };
 
 }  // namespace raft

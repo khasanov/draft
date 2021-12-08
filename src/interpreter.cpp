@@ -92,6 +92,11 @@ object::Object Interpreter::visit(Grouping *expr)
     return evaluate(expr->expression);
 }
 
+object::Object Interpreter::visit(Variable *expr)
+{
+    return environment.get(expr->name);
+}
+
 void Interpreter::visit(ExprStmt *stmt)
 {
     evaluate(stmt->expression);
@@ -101,6 +106,15 @@ void Interpreter::visit(Print *stmt)
 {
     object::Object value = evaluate(stmt->expression);
     Raft::out(object::obj2str(value));
+}
+
+void Interpreter::visit(VarDecl *stmt)
+{
+    object::Object value = object::Null{};
+    if (stmt->initializer) {
+        value = evaluate(stmt->initializer);
+    }
+    environment.define(stmt->name.lexeme, value);
 }
 
 object::Object Interpreter::evaluate(Expr *expr)
