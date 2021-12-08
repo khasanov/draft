@@ -1,5 +1,6 @@
 #pragma once
 
+#include "arena.h"
 #include "object.h"
 #include "token.h"
 
@@ -28,7 +29,7 @@ public:
     virtual T visit(Variable *) = 0;
 };
 
-class Expr : public object::NodeBase {
+class Expr : public memory::Object {
 public:
     virtual std::string accept(IExprVisitor<std::string> *visitor) = 0;
     virtual object::Object accept(IExprVisitor<object::Object> *visitor) = 0;
@@ -94,7 +95,7 @@ public:
     virtual T visit(VarDecl *) = 0;
 };
 
-class Stmt : public object::NodeBase {
+class Stmt : public memory::Object {
 public:
     virtual std::string accept(IStmtVisitor<std::string> *visitor) = 0;
     virtual void accept(IStmtVisitor<void> *visitor) = 0;

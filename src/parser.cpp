@@ -143,7 +143,7 @@ Stmt *Parser::declaration()
             return varDeclaration();
         }
         return statement();
-    }  catch (const RuntimeError &err) {
+    } catch (const RuntimeError &err) {
         synchronize();
         return nullptr;
     }

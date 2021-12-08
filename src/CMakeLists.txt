@@ -10,6 +10,8 @@ add_compile_options(
 )
 
 add_executable(raft
+    arena.cpp
+    arena.h
     ast.cpp
     ast.h
     ast_printer.cpp

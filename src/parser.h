@@ -68,18 +68,18 @@ private:
     template <typename T>
     T *makeAstNode()
     {
-        T *node = new (&pool) T{};
+        T *node = new (&arena) T{};
         return node;
     }
 
     template <typename T, typename... Args>
     T *makeAstNode(Args... args)
     {
-        T *node = new (&pool) T{std::forward<Args>(args)...};
+        T *node = new (&arena) T{std::forward<Args>(args)...};
         return node;
     }
 
-    object::NodePool pool;
+    memory::Arena arena;
 
     const std::vector<Token> &tokens;
     std::size_t current = 0;
