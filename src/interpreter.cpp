@@ -5,6 +5,11 @@
 
 namespace raft {
 
+Interpreter::Interpreter()
+{
+    environment = std::make_shared<Environment>();
+}
+
 void Interpreter::interpret(const std::vector<Stmt *> &statements)
 {
     try {
@@ -94,13 +99,13 @@ object::Object Interpreter::visit(Grouping *expr)
 
 object::Object Interpreter::visit(Variable *expr)
 {
-    return environment.get(expr->name);
+    return environment->get(expr->name);
 }
 
 object::Object Interpreter::visit(Assign *expr)
 {
     object::Object value = evaluate(expr->value);
-    environment.assign(expr->name, value);
+    environment->assign(expr->name, value);
     return value;
 }
 
@@ -115,18 +120,27 @@ void Interpreter::visit(Print *stmt)
     Raft::out(object::obj2str(value));
 }
 
+void Interpreter::visit(Block *stmt)
+{
+    EnvironmentPtr env = std::make_shared<Environment>(environment);
+    executeBlock(stmt->statements, env);
+}
+
 void Interpreter::visit(VarDecl *stmt)
 {
     object::Object value = object::Null{};
     if (stmt->initializer) {
         value = evaluate(stmt->initializer);
     }
-    environment.define(stmt->name.lexeme, value);
+    environment->define(stmt->name.lexeme, value);
 }
 
 object::Object Interpreter::evaluate(Expr *expr)
 {
-    return expr->accept(this);
+    if (expr) {
+        return expr->accept(this);
+    }
+    return object::Null{};
 }
 
 void Interpreter::execute(Stmt *stmt)
@@ -134,6 +148,17 @@ void Interpreter::execute(Stmt *stmt)
     if (stmt) {
         stmt->accept(this);
     }
+}
+
+void Interpreter::executeBlock(const std::vector<Stmt *> &stmts, EnvironmentPtr env)
+{
+    EnvironmentPtr previous = this->environment;
+
+    this->environment = env;
+    for (auto &stmt : stmts) {
+        execute(stmt);
+    }
+    this->environment = previous;
 }
 
 void Interpreter::checkNumberOperand(const Token &op, const object::Object &operand)

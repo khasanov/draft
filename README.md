@@ -11,9 +11,10 @@ My experiments in cRAFTing a toy programming language.
 ```
 program     :: declaration* EOF
 declaration :: varDecl | statement
-statement   :: exprStmt | printStmt
+statement   :: exprStmt | printStmt | block
 exprStmt    :: expresson ";"
 printStmt   :: "print" expression ";"
+block       :: "{" declaration* "}"
 varDecl     :: "var" IDENTIFIER ( "=" expression )? ";"
 
 expression  :: assignment

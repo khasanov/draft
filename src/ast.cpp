@@ -53,4 +53,9 @@ VarDecl::VarDecl(Token name, Expr *initializer)
 {
 }
 
+Block::Block(const std::vector<Stmt *> &statements)
+    : statements{statements}
+{
+}
+
 }  // namespace raft

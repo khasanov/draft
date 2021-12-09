@@ -4,7 +4,10 @@ namespace raft {
 
 std::string AstPrinter::print(Expr *expr)
 {
-    return expr->accept(this);
+    if (expr) {
+        return expr->accept(this);
+    }
+    return "???";
 }
 
 std::string AstPrinter::print(Stmt *stmt)
@@ -53,6 +56,21 @@ std::string AstPrinter::visit(ExprStmt *stmt)
 std::string AstPrinter::visit(Print *stmt)
 {
     return "PrintStmt{" + stmt->expression->accept(this) + "}";
+}
+
+std::string AstPrinter::visit(Block *stmt)
+{
+    std::string str = "{";
+    const std::size_t size = stmt->statements.size();
+    for (std::size_t i = 0; i < size; ++i) {
+        auto s = stmt->statements.at(i);
+        str += s->accept(this);
+        if (i < size - 1) {
+            str += ", ";
+        }
+    }
+    str.append("}");
+    return str;
 }
 
 std::string AstPrinter::visit(VarDecl *stmt)

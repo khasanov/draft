@@ -34,6 +34,7 @@ private:
     Stmt *varDeclaration();
     Stmt *statement();
     Stmt *printStatement();
+    std::vector<Stmt *> block();
     Stmt *expressionStatement();
 
     // Checks if we've run out of tokens to parse

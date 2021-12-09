@@ -17,6 +17,7 @@ class Assign;
 class Stmt;
 class ExprStmt;
 class Print;
+class Block;
 class VarDecl;
 
 template <typename T>
@@ -102,6 +103,7 @@ public:
     virtual ~IStmtVisitor() = default;
     virtual T visit(ExprStmt *) = 0;
     virtual T visit(Print *) = 0;
+    virtual T visit(Block *) = 0;
     virtual T visit(VarDecl *) = 0;
 };
 
@@ -136,6 +138,13 @@ public:
     explicit Print(Expr *expr);
 
     Expr *expression = nullptr;
+};
+
+class Block : public StmtNode<Block> {
+public:
+    explicit Block(const std::vector<Stmt *> &statements);
+
+    std::vector<Stmt *> statements;
 };
 
 class VarDecl : public StmtNode<VarDecl> {

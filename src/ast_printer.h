@@ -18,6 +18,7 @@ public:
 
     std::string visit(ExprStmt *stmt) override;
     std::string visit(Print *stmt) override;
+    std::string visit(Block *stmt) override;
     std::string visit(VarDecl *stmt) override;
 };
 

@@ -9,6 +9,7 @@ namespace raft {
 
 class Interpreter : public IExprVisitor<object::Object>, IStmtVisitor<void> {
 public:
+    Interpreter();
     void interpret(const std::vector<Stmt *> &statements);
 
     object::Object visit(Literal *expr) override;
@@ -20,16 +21,18 @@ public:
 
     void visit(ExprStmt *stmt) override;
     void visit(Print *stmt) override;
+    void visit(Block *stmt) override;
     void visit(VarDecl *stmt) override;
 
 private:
     object::Object evaluate(Expr *expr);
     void execute(Stmt *stmt);
+    void executeBlock(const std::vector<Stmt *> &stmts, EnvironmentPtr env);
 
     void checkNumberOperand(const Token &op, const object::Object &operand);
     void checkNumberOperands(const Token &op, const object::Object &left, const object::Object &right);
 
-    Environment environment;
+    EnvironmentPtr environment;
 };
 
 }  // namespace raft

@@ -185,11 +185,14 @@ Stmt *Parser::varDeclaration()
     return makeAstNode<VarDecl>(name, initializer);
 }
 
-// statement :: exprStmt | printStmt
+// statement :: exprStmt | printStmt | block
 Stmt *Parser::statement()
 {
     if (match(Token::Type::Print)) {
         return printStatement();
+    }
+    if (match(Token::Type::LeftCurlyBracket)) {
+        return makeAstNode<Block>(block());
     }
     return expressionStatement();
 }
@@ -200,6 +203,17 @@ Stmt *Parser::printStatement()
     Expr *value = expression();
     consume(Token::Type::Semicolon, "Expect ';' after value");
     return makeAstNode<Print>(value);
+}
+
+// block :: "{" declaration* "}"
+std::vector<Stmt *> Parser::block()
+{
+    std::vector<Stmt *> statements;
+    while (!check(Token::Type::RightCurlyBracket) and !isAtEnd()) {
+        statements.emplace_back(declaration());
+    }
+    consume(Token::Type::RightCurlyBracket, "Exprect '}' after block");
+    return statements;
 }
 
 // exprStmt :: expresson ";"
