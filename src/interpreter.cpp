@@ -27,6 +27,22 @@ object::Object Interpreter::visit(Literal *expr)
     return expr->value;
 }
 
+object::Object Interpreter::visit(Logical *expr)
+{
+    object::Object left = evaluate(expr->left);
+
+    if (expr->op.type == Token::Type::Or) {
+        if (object::isTruthy(left)) {
+            return left;
+        }
+    } else {
+        if (!object::isTruthy(left)) {
+            return left;
+        }
+    }
+    return evaluate(expr->right);
+}
+
 object::Object Interpreter::visit(Unary *expr)
 {
     object::Object right = evaluate(expr->right);

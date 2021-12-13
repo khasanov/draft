@@ -27,6 +27,8 @@ private:
     Expr *comparison();
     Expr *term();
     Expr *factor();
+    Expr *logicOr();
+    Expr *logicAnd();
     Expr *unary();
     Expr *primary();
 

@@ -10,6 +10,7 @@ public:
     std::string print(Stmt *stmt);
 
     std::string visit(Literal *expr) override;
+    std::string visit(Logical *expr) override;
     std::string visit(Unary *expr) override;
     std::string visit(Binary *expr) override;
     std::string visit(Grouping *expr) override;

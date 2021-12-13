@@ -53,10 +53,10 @@ Expr *Parser::expression()
     return assignment();
 }
 
-// assignment :: IDENTIFIER "=" assignment | equality
+// assignment :: IDENTIFIER "=" assignment | logic_or
 Expr *Parser::assignment()
 {
-    Expr *expr = equality();
+    Expr *expr = logicOr();
     if (match(Token::Type::Equal)) {
         Token equals = previous();
         Expr *value = assignment();
@@ -115,6 +115,30 @@ Expr *Parser::factor()
         Token op = previous();
         Expr *right = unary();
         expr = makeAstNode<Binary>(expr, op, right);
+    }
+    return expr;
+}
+
+// logic_or :: logic_and ( "or" logic_and )*
+Expr *Parser::logicOr()
+{
+    Expr *expr = logicAnd();
+    while (match(Token::Type::Or)) {
+        Token op = previous();
+        Expr *right = logicAnd();
+        expr = makeAstNode<Logical>(expr, op, right);
+    }
+    return expr;
+}
+
+// logic_and :: equality ( "and" equality )*
+Expr *Parser::logicAnd()
+{
+    Expr *expr = equality();
+    while (match(Token::Type::And)) {
+        Token op = previous();
+        Expr *right = equality();
+        expr = makeAstNode<Logical>(expr, op, right);
     }
     return expr;
 }

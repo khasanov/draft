@@ -8,6 +8,7 @@ namespace raft {
 
 class Expr;
 class Literal;
+class Logical;
 class Unary;
 class Binary;
 class Grouping;
@@ -26,6 +27,7 @@ class IExprVisitor {
 public:
     virtual ~IExprVisitor() = default;
     virtual T visit(Literal *) = 0;
+    virtual T visit(Logical *) = 0;
     virtual T visit(Unary *) = 0;
     virtual T visit(Binary *) = 0;
     virtual T visit(Grouping *) = 0;
@@ -57,6 +59,15 @@ public:
     explicit Literal(object::Object value);
 
     object::Object value;
+};
+
+class Logical : public ExprNode<Logical> {
+public:
+    Logical(Expr *left, Token op, Expr *right);
+
+    Expr *left = nullptr;
+    Token op;
+    Expr *right = nullptr;
 };
 
 class Unary : public ExprNode<Unary> {
@@ -137,7 +148,7 @@ public:
 
 class If : public StmtNode<If> {
 public:
-    explicit If(Expr *condition, Stmt *thenBranch, Stmt *elseBranch);
+    If(Expr *condition, Stmt *thenBranch, Stmt *elseBranch);
 
     Expr *condition = nullptr;
     Stmt *thenBranch = nullptr;

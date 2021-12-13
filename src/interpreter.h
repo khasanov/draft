@@ -13,6 +13,7 @@ public:
     void interpret(const std::vector<Stmt *> &statements);
 
     object::Object visit(Literal *expr) override;
+    object::Object visit(Logical *expr) override;
     object::Object visit(Unary *expr) override;
     object::Object visit(Binary *expr) override;
     object::Object visit(Grouping *expr) override;

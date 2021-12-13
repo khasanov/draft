@@ -7,6 +7,13 @@ Literal::Literal(object::Object value)
 {
 }
 
+Logical::Logical(Expr *left, Token op, Expr *right)
+    : left{left}
+    , op{op}
+    , right{right}
+{
+}
+
 Unary::Unary(Token op, Expr *right)
     : op{std::move(op)}
     , right{right}

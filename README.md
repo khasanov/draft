@@ -19,7 +19,9 @@ block       :: "{" declaration* "}"
 varDecl     :: "var" IDENTIFIER ( "=" expression )? ";"
 
 expression  :: assignment
-assignment  :: IDENTIFIER "=" assignment | equality
+assignment  :: IDENTIFIER "=" assignment | logic_or
+logic_or    :: logic_and ( "or" logic_and )*
+logic_and   :: equality ( "and" equality )*
 equality    :: comparison ( ("!=" | "==" ) comparision)*
 comparison  :: term ( ( ">" | ">=" | "<" | "<=" ) term )*
 term        :: factor ( ("-" | "+" ) factor )*
