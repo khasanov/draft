@@ -16,6 +16,7 @@ class Assign;
 
 class Stmt;
 class ExprStmt;
+class If;
 class Print;
 class Block;
 class VarDecl;
@@ -102,6 +103,7 @@ class IStmtVisitor {
 public:
     virtual ~IStmtVisitor() = default;
     virtual T visit(ExprStmt *) = 0;
+    virtual T visit(If *) = 0;
     virtual T visit(Print *) = 0;
     virtual T visit(Block *) = 0;
     virtual T visit(VarDecl *) = 0;
@@ -131,6 +133,15 @@ public:
     explicit ExprStmt(Expr *expr);
 
     Expr *expression = nullptr;
+};
+
+class If : public StmtNode<If> {
+public:
+    explicit If(Expr *condition, Stmt *thenBranch, Stmt *elseBranch);
+
+    Expr *condition = nullptr;
+    Stmt *thenBranch = nullptr;
+    Stmt *elseBranch = nullptr;
 };
 
 class Print : public StmtNode<Print> {

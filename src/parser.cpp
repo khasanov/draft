@@ -185,9 +185,12 @@ Stmt *Parser::varDeclaration()
     return makeAstNode<VarDecl>(name, initializer);
 }
 
-// statement :: exprStmt | printStmt | block
+// statement :: exprStmt | ifStmt | printStmt | block
 Stmt *Parser::statement()
 {
+    if (match(Token::Type::If)) {
+        return ifStatement();
+    }
     if (match(Token::Type::Print)) {
         return printStatement();
     }
@@ -195,6 +198,21 @@ Stmt *Parser::statement()
         return makeAstNode<Block>(block());
     }
     return expressionStatement();
+}
+
+// ifStmt :: "if" "(" expression ")" statement ( "else" statement )?
+Stmt *Parser::ifStatement()
+{
+    consume(Token::Type::LeftParenthesis, "Exprect '(' after 'if'");
+    Expr *condition = expression();
+    consume(Token::Type::RightParenthesis, "Exprect ')' after if condition");
+
+    Stmt *thenBranch = statement();
+    Stmt *elseBranch = nullptr;
+    if (match(Token::Type::Else)) {
+        elseBranch = statement();
+    }
+    return makeAstNode<If>(condition, thenBranch, elseBranch);
 }
 
 // printStmt :: "print" expression ";"

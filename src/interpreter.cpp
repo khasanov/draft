@@ -114,6 +114,15 @@ void Interpreter::visit(ExprStmt *stmt)
     evaluate(stmt->expression);
 }
 
+void Interpreter::visit(If *stmt)
+{
+    if (object::isTruthy(evaluate(stmt->condition))) {
+        execute(stmt->thenBranch);
+    } else if (stmt->elseBranch) {
+        execute(stmt->elseBranch);
+    }
+}
+
 void Interpreter::visit(Print *stmt)
 {
     object::Object value = evaluate(stmt->expression);

@@ -11,8 +11,9 @@ My experiments in cRAFTing a toy programming language.
 ```
 program     :: declaration* EOF
 declaration :: varDecl | statement
-statement   :: exprStmt | printStmt | block
+statement   :: exprStmt | ifStmt | printStmt | block
 exprStmt    :: expresson ";"
+ifStmt      :: "if" "(" expression ")" statement ( "else" statement )?
 printStmt   :: "print" expression ";"
 block       :: "{" declaration* "}"
 varDecl     :: "var" IDENTIFIER ( "=" expression )? ";"

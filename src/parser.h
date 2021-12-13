@@ -33,6 +33,7 @@ private:
     Stmt *declaration();
     Stmt *varDeclaration();
     Stmt *statement();
+    Stmt *ifStatement();
     Stmt *printStatement();
     std::vector<Stmt *> block();
     Stmt *expressionStatement();

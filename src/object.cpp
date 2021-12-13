@@ -1,7 +1,7 @@
 #include "object.h"
 
 #include <stdexcept>
-
+#include <iostream>
 namespace raft::object {
 
 std::string obj2str(const Object &obj)

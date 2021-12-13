@@ -20,6 +20,7 @@ public:
     object::Object visit(Assign *expr) override;
 
     void visit(ExprStmt *stmt) override;
+    void visit(If *stmt) override;
     void visit(Print *stmt) override;
     void visit(Block *stmt) override;
     void visit(VarDecl *stmt) override;

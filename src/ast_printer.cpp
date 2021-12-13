@@ -53,6 +53,14 @@ std::string AstPrinter::visit(ExprStmt *stmt)
     return "ExprStmt{" + stmt->expression->accept(this) + "}";
 }
 
+std::string AstPrinter::visit(If *stmt)
+{
+    std::string cond = stmt->condition->accept(this);
+    std::string thenBranch = stmt->thenBranch->accept(this);
+    std::string elseBranch = stmt->elseBranch ? (", " + stmt->elseBranch->accept(this)) : "";
+    return "If{" + cond + ", " + thenBranch + elseBranch + "}";
+}
+
 std::string AstPrinter::visit(Print *stmt)
 {
     return "PrintStmt{" + stmt->expression->accept(this) + "}";

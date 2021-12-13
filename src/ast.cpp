@@ -42,6 +42,13 @@ ExprStmt::ExprStmt(Expr *expr)
 {
 }
 
+If::If(Expr *condition, Stmt *thenBranch, Stmt *elseBranch)
+    : condition{condition}
+    , thenBranch{thenBranch}
+    , elseBranch{elseBranch}
+{
+}
+
 Print::Print(Expr *expr)
     : expression{expr}
 {
