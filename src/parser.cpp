@@ -209,9 +209,12 @@ Stmt *Parser::varDeclaration()
     return makeAstNode<VarDecl>(name, initializer);
 }
 
-// statement   :: exprStmt | ifStmt | printStmt | whileStmt | block
+// statement :: exprStmt | forStmt | ifStmt | printStmt | whileStmt | block
 Stmt *Parser::statement()
 {
+    if (match(Token::Type::For)) {
+        return forStatement();
+    }
     if (match(Token::Type::If)) {
         return ifStatement();
     }
@@ -225,6 +228,64 @@ Stmt *Parser::statement()
         return makeAstNode<Block>(block());
     }
     return expressionStatement();
+}
+
+// forStmt :: "for" "(" (varDecl | exprStmt | ";" ) expression? ";" expression? ")" statement
+Stmt *Parser::forStatement()
+{
+    consume(Token::Type::LeftParenthesis, "Expect '(' after 'for'");
+
+    Stmt *initializer = nullptr;
+    if (match(Token::Type::Semicolon)) {
+        initializer = nullptr;
+    } else if (match(Token::Type::Var)) {
+        initializer = varDeclaration();
+    } else {
+        initializer = expressionStatement();
+    }
+
+    Expr *condition = nullptr;
+    if (!check(Token::Type::Semicolon)) {
+        condition = expression();
+    }
+    consume(Token::Type::Semicolon, "Expect ';' after loop condition");
+
+    Expr *increment = nullptr;
+    if (!check(Token::Type::RightParenthesis)) {
+        increment = expression();
+    }
+    consume(Token::Type::RightParenthesis, "Expect ')' after for clauses");
+
+    Stmt *body = statement();
+
+    /* desugaring for statement to while statement
+    for(<init>; <cond>; <iter>) <body> is equvivalent to
+
+    <init>
+    while(<cond>) {
+      <body>
+      <iter>
+    }
+    */
+
+    if (increment != nullptr) {
+        std::vector<Stmt *> stmts;
+        stmts.emplace_back(body);
+        stmts.emplace_back(makeAstNode<ExprStmt>(increment));
+        body = makeAstNode<Block>(stmts);
+    }
+    if (condition == nullptr) {
+        condition = makeAstNode<Literal>(object::Boolean{true});
+    }
+    body = makeAstNode<While>(condition, body);
+
+    if (initializer) {
+        std::vector<Stmt *> stmts;
+        stmts.emplace_back(initializer);
+        stmts.emplace_back(body);
+        body = makeAstNode<Block>(std::move(stmts));
+    }
+    return body;
 }
 
 // ifStmt :: "if" "(" expression ")" statement ( "else" statement )?

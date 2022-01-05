@@ -93,7 +93,11 @@ std::string AstPrinter::visit(Block *stmt)
 
 std::string AstPrinter::visit(VarDecl *stmt)
 {
-    return "VarDecl{" + stmt->name.lexeme + ", " + stmt->initializer->accept(this) + "}";
+    std::string initializer;
+    if (stmt->initializer) {
+        initializer = stmt->initializer->accept(this);
+    }
+    return "VarDecl{" + stmt->name.lexeme + ", " + initializer + "}";
 }
 
 }  // namespace raft

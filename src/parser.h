@@ -35,6 +35,7 @@ private:
     Stmt *declaration();
     Stmt *varDeclaration();
     Stmt *statement();
+    Stmt *forStatement();
     Stmt *ifStatement();
     Stmt *printStatement();
     Stmt *whileStatement();
