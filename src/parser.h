@@ -37,6 +37,7 @@ private:
     Stmt *statement();
     Stmt *ifStatement();
     Stmt *printStatement();
+    Stmt *whileStatement();
     std::vector<Stmt *> block();
     Stmt *expressionStatement();
 

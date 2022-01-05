@@ -71,6 +71,11 @@ std::string AstPrinter::visit(Print *stmt)
     return "PrintStmt{" + stmt->expression->accept(this) + "}";
 }
 
+std::string AstPrinter::visit(While *stmt)
+{
+    return "While{" + stmt->condition->accept(this) + ", " + stmt->body->accept(this) + "}";
+}
+
 std::string AstPrinter::visit(Block *stmt)
 {
     std::string str = "{";

@@ -19,6 +19,7 @@ class Stmt;
 class ExprStmt;
 class If;
 class Print;
+class While;
 class Block;
 class VarDecl;
 
@@ -116,6 +117,7 @@ public:
     virtual T visit(ExprStmt *) = 0;
     virtual T visit(If *) = 0;
     virtual T visit(Print *) = 0;
+    virtual T visit(While *) = 0;
     virtual T visit(Block *) = 0;
     virtual T visit(VarDecl *) = 0;
 };
@@ -160,6 +162,14 @@ public:
     explicit Print(Expr *expr);
 
     Expr *expression = nullptr;
+};
+
+class While : public StmtNode<While> {
+public:
+    While(Expr *condition, Stmt *body);
+
+    Expr *condition = nullptr;
+    Stmt *body = nullptr;
 };
 
 class Block : public StmtNode<Block> {

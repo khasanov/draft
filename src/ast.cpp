@@ -61,6 +61,12 @@ Print::Print(Expr *expr)
 {
 }
 
+While::While(Expr *condition, Stmt *body)
+    : condition{condition}
+    , body{body}
+{
+}
+
 VarDecl::VarDecl(Token name, Expr *initializer)
     : name{name}
     , initializer{initializer}

@@ -209,7 +209,7 @@ Stmt *Parser::varDeclaration()
     return makeAstNode<VarDecl>(name, initializer);
 }
 
-// statement :: exprStmt | ifStmt | printStmt | block
+// statement   :: exprStmt | ifStmt | printStmt | whileStmt | block
 Stmt *Parser::statement()
 {
     if (match(Token::Type::If)) {
@@ -217,6 +217,9 @@ Stmt *Parser::statement()
     }
     if (match(Token::Type::Print)) {
         return printStatement();
+    }
+    if (match(Token::Type::While)) {
+        return whileStatement();
     }
     if (match(Token::Type::LeftCurlyBracket)) {
         return makeAstNode<Block>(block());
@@ -245,6 +248,17 @@ Stmt *Parser::printStatement()
     Expr *value = expression();
     consume(Token::Type::Semicolon, "Expect ';' after value");
     return makeAstNode<Print>(value);
+}
+
+// whileStmt   :: "while" "(" expression ")" statement;
+Stmt *Parser::whileStatement()
+{
+    consume(Token::Type::LeftParenthesis, "Expect '(' after 'while'");
+    Expr *condition = expression();
+    consume(Token::Type::RightParenthesis, "Exprect ')' after condition");
+    Stmt *body = statement();
+
+    return makeAstNode<While>(condition, body);
 }
 
 // block :: "{" declaration* "}"

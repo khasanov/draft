@@ -145,6 +145,13 @@ void Interpreter::visit(Print *stmt)
     Raft::out(object::obj2str(value));
 }
 
+void Interpreter::visit(While *stmt)
+{
+    while (object::isTruthy(evaluate(stmt->condition))) {
+        execute(stmt->body);
+    }
+}
+
 void Interpreter::visit(Block *stmt)
 {
     EnvironmentPtr env = std::make_shared<Environment>(environment);
