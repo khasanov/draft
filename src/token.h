@@ -1,6 +1,5 @@
 #pragma once
 
-#include <map>
 #include <string>
 
 #include "object.h"
@@ -9,7 +8,7 @@ namespace raft {
 
 class Token {
 public:
-    enum class Type {
+    enum class Kind {
         Unrecognized,
 #define TOKEN(kind) kind,
 #include "token.def"
@@ -24,17 +23,14 @@ public:
         Star = Asterisk,
     };
 
-    Token(Type type, std::string lexeme, object::Object literal, std::size_t line);
+    Token(Kind kind, std::string lexeme, object::Object literal, std::size_t line);
 
     std::string toString();
 
-    Type type = Type::Unrecognized;
+    const Kind kind = Kind::Unrecognized;
     std::string lexeme;
     object::Object literal;
     std::size_t line = 0;
-
-private:
-    static std::string type2str(Type type);
 };
 
 }  // namespace raft

@@ -57,7 +57,7 @@ Expr *Parser::expression()
 Expr *Parser::assignment()
 {
     Expr *expr = logicOr();
-    if (match(Token::Type::Equal)) {
+    if (match(Token::Kind::Equal)) {
         Token equals = previous();
         Expr *value = assignment();
 
@@ -74,7 +74,7 @@ Expr *Parser::assignment()
 Expr *Parser::equality()
 {
     Expr *expr = comparison();
-    while (match(Token::Type::BangEqual, Token::Type::EqualEqual)) {
+    while (match(Token::Kind::BangEqual, Token::Kind::EqualEqual)) {
         Token op = previous();
         Expr *right = comparison();
         expr = makeAstNode<Binary>(expr, op, right);
@@ -86,8 +86,8 @@ Expr *Parser::equality()
 Expr *Parser::comparison()
 {
     Expr *expr = term();
-    while (match(Token::Type::GreaterThanSign, Token::Type::GreaterEqual, Token::Type::LessThanSign,
-                 Token::Type::LessEqual)) {
+    while (match(Token::Kind::GreaterThanSign, Token::Kind::GreaterEqual, Token::Kind::LessThanSign,
+                 Token::Kind::LessEqual)) {
         Token op = previous();
         Expr *right = term();
         expr = makeAstNode<Binary>(expr, op, right);
@@ -99,7 +99,7 @@ Expr *Parser::comparison()
 Expr *Parser::term()
 {
     Expr *expr = factor();
-    while (match(Token::Type::Minus, Token::Type::Plus)) {
+    while (match(Token::Kind::Minus, Token::Kind::Plus)) {
         Token op = previous();
         Expr *right = factor();
         expr = makeAstNode<Binary>(expr, op, right);
@@ -111,7 +111,7 @@ Expr *Parser::term()
 Expr *Parser::factor()
 {
     Expr *expr = unary();
-    while (match(Token::Type::Slash, Token::Type::Star)) {
+    while (match(Token::Kind::Slash, Token::Kind::Star)) {
         Token op = previous();
         Expr *right = unary();
         expr = makeAstNode<Binary>(expr, op, right);
@@ -123,7 +123,7 @@ Expr *Parser::factor()
 Expr *Parser::logicOr()
 {
     Expr *expr = logicAnd();
-    while (match(Token::Type::Or)) {
+    while (match(Token::Kind::Or)) {
         Token op = previous();
         Expr *right = logicAnd();
         expr = makeAstNode<Logical>(expr, op, right);
@@ -135,7 +135,7 @@ Expr *Parser::logicOr()
 Expr *Parser::logicAnd()
 {
     Expr *expr = equality();
-    while (match(Token::Type::And)) {
+    while (match(Token::Kind::And)) {
         Token op = previous();
         Expr *right = equality();
         expr = makeAstNode<Logical>(expr, op, right);
@@ -146,7 +146,7 @@ Expr *Parser::logicAnd()
 // unary :: ( "!" "-" ) unary | call
 Expr *Parser::unary()
 {
-    if (match(Token::Type::Bang, Token::Type::Minus)) {
+    if (match(Token::Kind::Bang, Token::Kind::Minus)) {
         Token op = previous();
         Expr *right = unary();
         return makeAstNode<Unary>(op, right);
@@ -160,7 +160,7 @@ Expr *Parser::call()
     Expr * expr = primary();
 
     while (true) {
-        if (match(Token::Type::LeftParenthesis)) {
+        if (match(Token::Kind::LeftParenthesis)) {
             expr = finishCall(expr);
         } else {
             break;
@@ -175,16 +175,16 @@ Expr *Parser::call()
 Expr *Parser::finishCall(Expr *callee)
 {
     std::vector<Expr *> arguments;
-    if (!check(Token::Type::RightParenthesis)) {
+    if (!check(Token::Kind::RightParenthesis)) {
         do {
             if (arguments.size() >= 255) {
                 Raft::error(peek().line, "Can't have more than 255 arguments");
             }
             arguments.emplace_back(expression());
-        } while (match(Token::Type::Comma));
+        } while (match(Token::Kind::Comma));
     }
 
-    Token paren = consume(Token::Type::RightParenthesis, "Expect ')' after arguments");
+    Token paren = consume(Token::Kind::RightParenthesis, "Expect ')' after arguments");
 
     return makeAstNode<Call>(callee, paren, arguments);
 }
@@ -192,25 +192,25 @@ Expr *Parser::finishCall(Expr *callee)
 // primary :: NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" | IDENTIFIER
 Expr *Parser::primary()
 {
-    if (match(Token::Type::False)) {
+    if (match(Token::Kind::False)) {
         return makeAstNode<Literal>(object::Boolean{false});
     }
-    if (match(Token::Type::True)) {
+    if (match(Token::Kind::True)) {
         return makeAstNode<Literal>(object::Boolean{true});
     }
-    if (match(Token::Type::Nil)) {
+    if (match(Token::Kind::Nil)) {
         return makeAstNode<Literal>(object::Null{});
     }
-    if (match(Token::Type::NumberLiteral, Token::Type::StringLiteral)) {
+    if (match(Token::Kind::NumberLiteral, Token::Kind::StringLiteral)) {
         return makeAstNode<Literal>(previous().literal);
     }
-    if (match(Token::Type::Identifier)) {
+    if (match(Token::Kind::Identifier)) {
         return makeAstNode<Variable>(previous());
     }
 
-    if (match(Token::Type::LeftParenthesis)) {
+    if (match(Token::Kind::LeftParenthesis)) {
         Expr *expr = expression();
-        consume(Token::Type::RightParenthesis, "Exprect ')' after expression");
+        consume(Token::Kind::RightParenthesis, "Exprect ')' after expression");
         return makeAstNode<Grouping>(expr);
     }
 
@@ -221,7 +221,7 @@ Expr *Parser::primary()
 Stmt *Parser::declaration()
 {
     try {
-        if (match(Token::Type::Var)) {
+        if (match(Token::Kind::Var)) {
             return varDeclaration();
         }
         return statement();
@@ -235,31 +235,31 @@ Stmt *Parser::declaration()
 // "var" IDENTIFIER ( "=" expression )? ";"
 Stmt *Parser::varDeclaration()
 {
-    Token name = consume(Token::Type::Identifier, "Expect variable name");
+    Token name = consume(Token::Kind::Identifier, "Expect variable name");
     Expr *initializer = nullptr;
-    if (match(Token::Type::Equal)) {
+    if (match(Token::Kind::Equal)) {
         initializer = expression();
     }
-    consume(Token::Type::Semicolon, "Expect ';' after variable declaration");
+    consume(Token::Kind::Semicolon, "Expect ';' after variable declaration");
     return makeAstNode<VarDecl>(name, initializer);
 }
 
 // statement :: exprStmt | forStmt | ifStmt | printStmt | whileStmt | block
 Stmt *Parser::statement()
 {
-    if (match(Token::Type::For)) {
+    if (match(Token::Kind::For)) {
         return forStatement();
     }
-    if (match(Token::Type::If)) {
+    if (match(Token::Kind::If)) {
         return ifStatement();
     }
-    if (match(Token::Type::Print)) {
+    if (match(Token::Kind::Print)) {
         return printStatement();
     }
-    if (match(Token::Type::While)) {
+    if (match(Token::Kind::While)) {
         return whileStatement();
     }
-    if (match(Token::Type::LeftCurlyBracket)) {
+    if (match(Token::Kind::LeftCurlyBracket)) {
         return makeAstNode<Block>(block());
     }
     return expressionStatement();
@@ -268,28 +268,28 @@ Stmt *Parser::statement()
 // forStmt :: "for" "(" (varDecl | exprStmt | ";" ) expression? ";" expression? ")" statement
 Stmt *Parser::forStatement()
 {
-    consume(Token::Type::LeftParenthesis, "Expect '(' after 'for'");
+    consume(Token::Kind::LeftParenthesis, "Expect '(' after 'for'");
 
     Stmt *initializer = nullptr;
-    if (match(Token::Type::Semicolon)) {
+    if (match(Token::Kind::Semicolon)) {
         initializer = nullptr;
-    } else if (match(Token::Type::Var)) {
+    } else if (match(Token::Kind::Var)) {
         initializer = varDeclaration();
     } else {
         initializer = expressionStatement();
     }
 
     Expr *condition = nullptr;
-    if (!check(Token::Type::Semicolon)) {
+    if (!check(Token::Kind::Semicolon)) {
         condition = expression();
     }
-    consume(Token::Type::Semicolon, "Expect ';' after loop condition");
+    consume(Token::Kind::Semicolon, "Expect ';' after loop condition");
 
     Expr *increment = nullptr;
-    if (!check(Token::Type::RightParenthesis)) {
+    if (!check(Token::Kind::RightParenthesis)) {
         increment = expression();
     }
-    consume(Token::Type::RightParenthesis, "Expect ')' after for clauses");
+    consume(Token::Kind::RightParenthesis, "Expect ')' after for clauses");
 
     Stmt *body = statement();
 
@@ -326,13 +326,13 @@ Stmt *Parser::forStatement()
 // ifStmt :: "if" "(" expression ")" statement ( "else" statement )?
 Stmt *Parser::ifStatement()
 {
-    consume(Token::Type::LeftParenthesis, "Exprect '(' after 'if'");
+    consume(Token::Kind::LeftParenthesis, "Exprect '(' after 'if'");
     Expr *condition = expression();
-    consume(Token::Type::RightParenthesis, "Exprect ')' after if condition");
+    consume(Token::Kind::RightParenthesis, "Exprect ')' after if condition");
 
     Stmt *thenBranch = statement();
     Stmt *elseBranch = nullptr;
-    if (match(Token::Type::Else)) {
+    if (match(Token::Kind::Else)) {
         elseBranch = statement();
     }
     return makeAstNode<If>(condition, thenBranch, elseBranch);
@@ -342,16 +342,16 @@ Stmt *Parser::ifStatement()
 Stmt *Parser::printStatement()
 {
     Expr *value = expression();
-    consume(Token::Type::Semicolon, "Expect ';' after value");
+    consume(Token::Kind::Semicolon, "Expect ';' after value");
     return makeAstNode<Print>(value);
 }
 
 // whileStmt   :: "while" "(" expression ")" statement;
 Stmt *Parser::whileStatement()
 {
-    consume(Token::Type::LeftParenthesis, "Expect '(' after 'while'");
+    consume(Token::Kind::LeftParenthesis, "Expect '(' after 'while'");
     Expr *condition = expression();
-    consume(Token::Type::RightParenthesis, "Exprect ')' after condition");
+    consume(Token::Kind::RightParenthesis, "Exprect ')' after condition");
     Stmt *body = statement();
 
     return makeAstNode<While>(condition, body);
@@ -361,10 +361,10 @@ Stmt *Parser::whileStatement()
 std::vector<Stmt *> Parser::block()
 {
     std::vector<Stmt *> statements;
-    while (!check(Token::Type::RightCurlyBracket) and !isAtEnd()) {
+    while (!check(Token::Kind::RightCurlyBracket) and !isAtEnd()) {
         statements.emplace_back(declaration());
     }
-    consume(Token::Type::RightCurlyBracket, "Exprect '}' after block");
+    consume(Token::Kind::RightCurlyBracket, "Exprect '}' after block");
     return statements;
 }
 
@@ -372,13 +372,13 @@ std::vector<Stmt *> Parser::block()
 Stmt *Parser::expressionStatement()
 {
     Expr *expr = expression();
-    consume(Token::Type::Semicolon, "Exprect ';' after expession");
+    consume(Token::Kind::Semicolon, "Exprect ';' after expession");
     return makeAstNode<ExprStmt>(expr);
 }
 
 bool Parser::isAtEnd()
 {
-    return peek().type == Token::Type::EndOfFile;
+    return peek().kind == Token::Kind::EndOfFile;
 }
 
 Token Parser::peek()
@@ -399,17 +399,17 @@ Token Parser::advance()
     return previous();
 }
 
-bool Parser::check(Token::Type type)
+bool Parser::check(Token::Kind kind)
 {
     if (isAtEnd()) {
         return false;
     }
-    return peek().type == type;
+    return peek().kind == kind;
 }
 
-Token Parser::consume(Token::Type type, const std::string &message)
+Token Parser::consume(Token::Kind kind, const std::string &message)
 {
-    if (check(type)) {
+    if (check(kind)) {
         return advance();
     }
     throw RuntimeError{peek(), message};
@@ -420,26 +420,26 @@ void Parser::synchronize()
     advance();
 
     while (!isAtEnd()) {
-        if (previous().type == Token::Type::Semicolon) {
+        if (previous().kind == Token::Kind::Semicolon) {
             return;
         }
 
-        switch (peek().type) {
-        case Token::Type::Class:
+        switch (peek().kind) {
+        case Token::Kind::Class:
             [[fallthrough]];
-        case Token::Type::Fun:
+        case Token::Kind::Fun:
             [[fallthrough]];
-        case Token::Type::Var:
+        case Token::Kind::Var:
             [[fallthrough]];
-        case Token::Type::For:
+        case Token::Kind::For:
             [[fallthrough]];
-        case Token::Type::If:
+        case Token::Kind::If:
             [[fallthrough]];
-        case Token::Type::While:
+        case Token::Kind::While:
             [[fallthrough]];
-        case Token::Type::Print:
+        case Token::Kind::Print:
             [[fallthrough]];
-        case Token::Type::Return:
+        case Token::Kind::Return:
             return;
         default:
             break;

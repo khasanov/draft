@@ -52,21 +52,21 @@ private:
     Token previous();
     // Consumes the current token and returns it
     Token advance();
-    // Returns true if the current token is of the given type
-    bool check(Token::Type type);
-    // Checks to see if the next token is of the exprected type
-    Token consume(Token::Type type, const std::string &msg);
+    // Returns true if the current token is of the given kind
+    bool check(Token::Kind kind);
+    // Checks to see if the next token is of the exprected kind
+    Token consume(Token::Kind kind, const std::string &msg);
     // Discard tokens until it thinks it has found a statement boundary
     void synchronize();
 
-    // This checks to see if the curret token has any of the given types. If so, it consumes the
+    // This checks to see if the curret token has any of the given kinds. If so, it consumes the
     // token and returns true. Otherwise it returns false and leaves the current token alone
-    template <typename... TokenType>
-    bool match(TokenType &&... types)
+    template <typename... TokenKind>
+    bool match(TokenKind &&... kinds)
     {
-        std::vector<Token::Type> typevec = {types...};
-        for (Token::Type type : typevec) {
-            if (check(type)) {
+        std::vector<Token::Kind> kindvec = {kinds...};
+        for (Token::Kind kind : kindvec) {
+            if (check(kind)) {
                 advance();
                 return true;
             }

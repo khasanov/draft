@@ -1,19 +1,10 @@
 #include <iomanip>
 #include <iostream>
-#include <map>
 
 #include "raft.h"
 #include "scanner.h"
 
 namespace raft {
-
-std::map<std::string, Token::Type> Scanner::keywords = {
-    {"and", Token::Type::And},     {"class", Token::Type::Class},   {"else", Token::Type::Else},
-    {"false", Token::Type::False}, {"fun", Token::Type::Fun},       {"for", Token::Type::For},
-    {"if", Token::Type::If},       {"nil", Token::Type::Nil},       {"or", Token::Type::Or},
-    {"print", Token::Type::Print}, {"return", Token::Type::Return}, {"super", Token::Type::Super},
-    {"this", Token::Type::This},   {"true", Token::Type::True},     {"var", Token::Type::Var},
-    {"while", Token::Type::While}};
 
 Scanner::Scanner(std::string_view source)
     : source{source}
@@ -28,7 +19,7 @@ std::vector<Token> Scanner::scanTokens()
         scanToken();
     }
 
-    Token eof{Token::Type::EndOfFile, "", object::Null{}, line};
+    Token eof{Token::Kind::EndOfFile, "", object::Null{}, line};
     tokens.emplace_back(std::move(eof));
     return tokens;
 }
@@ -43,46 +34,46 @@ void Scanner::scanToken()
     char c = advance();
     switch (c) {
     case '(':
-        addToken(Token::Type::LeftParenthesis);
+        addToken(Token::Kind::LeftParenthesis);
         break;
     case ')':
-        addToken(Token::Type::RightParenthesis);
+        addToken(Token::Kind::RightParenthesis);
         break;
     case '{':
-        addToken(Token::Type::LeftCurlyBracket);
+        addToken(Token::Kind::LeftCurlyBracket);
         break;
     case '}':
-        addToken(Token::Type::RightCurlyBracket);
+        addToken(Token::Kind::RightCurlyBracket);
         break;
     case ',':
-        addToken(Token::Type::Comma);
+        addToken(Token::Kind::Comma);
         break;
     case '.':
-        addToken(Token::Type::Dot);
+        addToken(Token::Kind::Dot);
         break;
     case '-':
-        addToken(Token::Type::Minus);
+        addToken(Token::Kind::Minus);
         break;
     case '+':
-        addToken(Token::Type::Plus);
+        addToken(Token::Kind::Plus);
         break;
     case ';':
-        addToken(Token::Type::Semicolon);
+        addToken(Token::Kind::Semicolon);
         break;
     case '*':
-        addToken(Token::Type::Star);
+        addToken(Token::Kind::Star);
         break;
     case '!':
-        addToken(match('=') ? Token::Type::BangEqual : Token::Type::Bang);
+        addToken(match('=') ? Token::Kind::BangEqual : Token::Kind::Bang);
         break;
     case '=':
-        addToken(match('=') ? Token::Type::EqualEqual : Token::Type::Equal);
+        addToken(match('=') ? Token::Kind::EqualEqual : Token::Kind::Equal);
         break;
     case '<':
-        addToken(match('=') ? Token::Type::LessEqual : Token::Type::LessThanSign);
+        addToken(match('=') ? Token::Kind::LessEqual : Token::Kind::LessThanSign);
         break;
     case '>':
-        addToken(match('=') ? Token::Type::GreaterEqual : Token::Type::GreaterThanSign);
+        addToken(match('=') ? Token::Kind::GreaterEqual : Token::Kind::GreaterThanSign);
         break;
     case '/':
         if (match('/')) {
@@ -91,7 +82,7 @@ void Scanner::scanToken()
                 advance();
             }
         } else {
-            addToken(Token::Type::Slash);
+            addToken(Token::Kind::Slash);
         }
         break;
     case ' ':
@@ -177,7 +168,7 @@ void Scanner::string()
     // Trim the surrounding quotes
     value.remove_prefix(1);
     value.remove_suffix(1);
-    addToken(Token::Type::StringLiteral, object::String{value});
+    addToken(Token::Kind::StringLiteral, object::String{value});
 }
 
 void Scanner::number()
@@ -197,7 +188,7 @@ void Scanner::number()
     }
 
     double value = std::stod(std::string{substr()});
-    addToken(Token::Type::NumberLiteral, object::Number{value});
+    addToken(Token::Kind::NumberLiteral, object::Number{value});
 }
 
 void Scanner::identifier()
@@ -209,23 +200,23 @@ void Scanner::identifier()
     auto maybeKeyword = [](std::string_view sv) {
 #define KEYWORD(kind, name)       \
     if (name == sv) {             \
-        return Token::Type::kind; \
+        return Token::Kind::kind; \
     }
 #include "token.def"
-        return Token::Type::Identifier;
+        return Token::Kind::Identifier;
     };
 
     addToken(maybeKeyword(substr()));
 }
 
-void Scanner::addToken(Token::Type type)
+void Scanner::addToken(Token::Kind kind)
 {
-    addToken(type, object::Null{});
+    addToken(kind, object::Null{});
 }
 
-void Scanner::addToken(Token::Type type, object::Object literal)
+void Scanner::addToken(Token::Kind kind, object::Object literal)
 {
-    Token t{type, std::string{substr()}, literal, line};
+    Token t{kind, std::string{substr()}, literal, line};
     tokens.emplace_back(std::move(t));
 }
 

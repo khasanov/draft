@@ -26,8 +26,8 @@ private:
     void number();
     void identifier();
 
-    void addToken(Token::Type type);
-    void addToken(Token::Type type, object::Object literal);
+    void addToken(Token::Kind kind);
+    void addToken(Token::Kind kind, object::Object literal);
 
     bool isDigit(char c);
     bool isAlpha(char c);
@@ -41,7 +41,5 @@ private:
     std::size_t start = 0;
     std::size_t current = 0;
     std::size_t line = 1;
-
-    static std::map<std::string, Token::Type> keywords;
 };
 }  // namespace raft
