@@ -38,6 +38,15 @@ std::string AstPrinter::visit(Binary *expr)
     return "BinOp{'" + expr->op.lexeme + "', " + expr->left->accept(this) + ", " + expr->right->accept(this) + "}";
 }
 
+std::string AstPrinter::visit(Call *expr)
+{
+    std::string callee;
+    if (expr->callee) {
+        callee = expr->callee->accept(this);
+    }
+    return "Call{" + callee + "}";
+}
+
 std::string AstPrinter::visit(Grouping *expr)
 {
     return "{" + expr->expression->accept(this) + "}";

@@ -16,6 +16,7 @@ public:
     object::Object visit(Logical *expr) override;
     object::Object visit(Unary *expr) override;
     object::Object visit(Binary *expr) override;
+    object::Object visit(Call *expr) override;
     object::Object visit(Grouping *expr) override;
     object::Object visit(Variable *expr) override;
     object::Object visit(Assign *expr) override;
@@ -34,6 +35,8 @@ private:
 
     void checkNumberOperand(const Token &op, const object::Object &operand);
     void checkNumberOperands(const Token &op, const object::Object &left, const object::Object &right);
+
+    object::Object call(object::CallPtr call, std::vector<object::Object> args);
 
     EnvironmentPtr environment;
 };

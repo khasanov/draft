@@ -11,6 +11,7 @@ class Literal;
 class Logical;
 class Unary;
 class Binary;
+class Call;
 class Grouping;
 class Variable;
 class Assign;
@@ -31,6 +32,7 @@ public:
     virtual T visit(Logical *) = 0;
     virtual T visit(Unary *) = 0;
     virtual T visit(Binary *) = 0;
+    virtual T visit(Call *) = 0;
     virtual T visit(Grouping *) = 0;
     virtual T visit(Variable *) = 0;
     virtual T visit(Assign *) = 0;
@@ -86,6 +88,14 @@ public:
     Expr *left = nullptr;
     Token op;
     Expr *right = nullptr;
+};
+
+class Call : public ExprNode<Call> {
+public:
+    Call(Expr *callee, Token paren, std::vector<Expr *> arguments);
+    Expr *callee = nullptr;
+    Token paren;
+    std::vector<Expr *> arguments;
 };
 
 class Grouping : public ExprNode<Grouping> {

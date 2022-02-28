@@ -78,4 +78,11 @@ Block::Block(const std::vector<Stmt *> &statements)
 {
 }
 
+Call::Call(Expr *callee, Token paren, std::vector<Expr *> arguments)
+    : callee{callee}
+    , paren{paren}
+    , arguments{arguments}
+{
+}
+
 }  // namespace raft

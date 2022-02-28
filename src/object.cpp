@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <iostream>
+
 namespace raft::object {
 
 std::string obj2str(const Object &obj)
@@ -17,6 +18,8 @@ std::string obj2str(const Object &obj)
             ret = arg ? "true" : "false";
         } else if constexpr (std::is_same_v<T, Null>) {
             ret = "nil";
+        } else if constexpr (std::is_same_v<T, CallPtr>) {
+            ret = "callable";
         } else {
             throw std::runtime_error{"Unknown Object type"};
         }
@@ -28,22 +31,13 @@ std::string obj2str(const Object &obj)
 // false and nil are falsey, and everything else is truthy
 bool isTruthy(const Object &obj)
 {
-    auto visitor = [](auto &&arg) -> bool {
-        using T = std::decay_t<decltype(arg)>;
-        if constexpr (std::is_same_v<T, String>) {
-            return true;
-        } else if constexpr (std::is_same_v<T, Number>) {
-            return true;
-        } else if constexpr (std::is_same_v<T, Boolean>) {
-            return arg;
-        } else if constexpr (std::is_same_v<T, Null>) {
-            return false;
-        } else {
-            throw std::runtime_error{"Unknown Object type"};
-        }
-        return true;
-    };
-    return std::visit(visitor, obj);
+    if (std::holds_alternative<Null>(obj)) {
+        return false;
+    }
+    if (std::holds_alternative<Boolean>(obj)) {
+        return std::get<bool>(obj);
+    }
+    return true;
 }
 
 bool isEqual(const Object &a, const Object &b)
@@ -55,6 +49,12 @@ bool isEqual(const Object &a, const Object &b)
         return false;
     }
     return a == b;
+}
+
+Callable::Callable(std::string str, Fn fn)
+    : str{std::move(str)}
+    , fn{std::move(fn)}
+{
 }
 
 }  // namespace raft::object

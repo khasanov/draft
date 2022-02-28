@@ -30,6 +30,8 @@ private:
     Expr *logicOr();
     Expr *logicAnd();
     Expr *unary();
+    Expr *call();
+    Expr *finishCall(Expr *callee);
     Expr *primary();
 
     Stmt *declaration();

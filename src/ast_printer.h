@@ -13,6 +13,7 @@ public:
     std::string visit(Logical *expr) override;
     std::string visit(Unary *expr) override;
     std::string visit(Binary *expr) override;
+    std::string visit(Call *expr) override;
     std::string visit(Grouping *expr) override;
     std::string visit(Variable *expr) override;
     std::string visit(Assign *expr) override;

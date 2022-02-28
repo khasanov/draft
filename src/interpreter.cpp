@@ -108,6 +108,24 @@ object::Object Interpreter::visit(Binary *expr)
     return object::Null{};
 }
 
+object::Object Interpreter::visit(Call *expr)
+{
+    object::Object callee = evaluate(expr->callee);
+
+    std::vector<object::Object> arguments;
+    for (Expr *argument : expr->arguments) {
+        arguments.emplace_back(evaluate(argument));
+    }
+
+    auto callable = std::get<object::CallPtr>(callee);
+    if (arguments.size() != callable->arity) {
+        throw RuntimeError{
+            expr->paren,
+            "Exprected " + std::to_string(callable->arity) + " arguments but got " + std::to_string(arguments.size())};
+    }
+    return callable->fn(arguments);
+}
+
 object::Object Interpreter::visit(Grouping *expr)
 {
     return evaluate(expr->expression);
@@ -207,6 +225,11 @@ void Interpreter::checkNumberOperands(const Token &op, const object::Object &lef
         return;
     }
     throw RuntimeError{op, "Operands must be a numbers"};
+}
+
+object::Object Interpreter::call(object::CallPtr call, std::vector<object::Object> args)
+{
+    return call->fn(args);
 }
 
 }  // namespace raft

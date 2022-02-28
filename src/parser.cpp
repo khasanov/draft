@@ -143,7 +143,7 @@ Expr *Parser::logicAnd()
     return expr;
 }
 
-// unary :: ( "!" "-" ) unary | primary
+// unary :: ( "!" "-" ) unary | call
 Expr *Parser::unary()
 {
     if (match(Token::Type::Bang, Token::Type::Minus)) {
@@ -151,7 +151,42 @@ Expr *Parser::unary()
         Expr *right = unary();
         return makeAstNode<Unary>(op, right);
     }
-    return primary();
+    return call();
+}
+
+// call :: primary ( "(" arguments? ")" )*
+Expr *Parser::call()
+{
+    Expr * expr = primary();
+
+    while (true) {
+        if (match(Token::Type::LeftParenthesis)) {
+            expr = finishCall(expr);
+        } else {
+            break;
+        }
+    }
+    return expr;
+
+}
+
+// arguments :: expression ( "," expression )*
+// also handle zero-argument case
+Expr *Parser::finishCall(Expr *callee)
+{
+    std::vector<Expr *> arguments;
+    if (!check(Token::Type::RightParenthesis)) {
+        do {
+            if (arguments.size() >= 255) {
+                Raft::error(peek().line, "Can't have more than 255 arguments");
+            }
+            arguments.emplace_back(expression());
+        } while (match(Token::Type::Comma));
+    }
+
+    Token paren = consume(Token::Type::RightParenthesis, "Expect ')' after arguments");
+
+    return makeAstNode<Call>(callee, paren, arguments);
 }
 
 // primary :: NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" | IDENTIFIER
