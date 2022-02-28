@@ -30,5 +30,6 @@ add_executable(raft
     scanner.cpp
     scanner.h
     token.cpp
+    token.def
     token.h
 )

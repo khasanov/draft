@@ -1,0 +1,117 @@
+// X-macros for minimizing repetitious code and maintaining data/code correspondences.
+
+#ifndef TOKEN
+#define TOKEN(kind)
+#endif
+
+#ifndef KEYWORD
+#define KEYWORD(kind, name) TOKEN(kind)
+#endif
+
+// Single-character tokens. Names are taken from Unicode Standard
+TOKEN(Null)                    // \0 U+0000
+TOKEN(StartOfHeading)          // U+0001
+TOKEN(StartOfText)             // U+0002
+TOKEN(EndOfText)               // U+0003
+TOKEN(EndOfTransmission)       // U+0004
+TOKEN(Enquiry)                 // U+0005
+TOKEN(Achnowledge)             // U+0006
+TOKEN(Bell)                    // \a U+0007
+TOKEN(Backspace)               // \b U+0008
+TOKEN(HorizontalTabulation)    // \t U+0009
+TOKEN(NewLine)                 // \n U+000A
+TOKEN(VerticalTabulation)      // \v U+000B
+TOKEN(FormFeed)                // \f U+000C
+TOKEN(CarriageReturn)          // \r U+000D
+TOKEN(ShiftOut)                // U+000E
+TOKEN(ShiftIn)                 // U+000F
+TOKEN(DataLinkEscape)          // U+0010
+TOKEN(DeviceControlOne)        // U+0011
+TOKEN(DeviceControlTwo)        // U+0012
+TOKEN(DeviceControlThree)      // U+0013
+TOKEN(DeviceControlFour)       // U+0014
+TOKEN(NegativeAcknowledge)     // U+0015
+TOKEN(SynchronousIdle)         // U+0016
+TOKEN(EndOfTransmissionBlock)  // U+0017
+TOKEN(Cancel)                  // U+0018
+TOKEN(EndOfMedium)             // U+0019
+TOKEN(Substitute)              // U+001A
+TOKEN(Escape)                  // \e U+001B
+TOKEN(FileSeparator)           // U+001C
+TOKEN(GroupSeparator)          // U+001D
+TOKEN(RecordSeparator)         // U+001E
+TOKEN(UnitSeparator)           // U+001F
+TOKEN(Space)                   //   U+0020
+TOKEN(ExclamationMark)         // ! U+0021
+TOKEN(QuotationMark)           // " U+0022
+TOKEN(NumberSign)              // # U+0023
+TOKEN(DollarSign)              // $ U+0024
+TOKEN(PercentSign)             // % U+0025
+TOKEN(Ampersand)               // & U+0026
+TOKEN(Apostrophe)              // ' U+0027
+TOKEN(LeftParenthesis)         // ( U+0028
+TOKEN(RightParenthesis)        // ) U+0029
+TOKEN(Asterisk)                // * U+002A
+TOKEN(PlusSign)                // + U+002B
+TOKEN(Comma)                   // , U+002C
+TOKEN(HyphenMinus)             // - U+002D
+TOKEN(FullStop)                // . U+002E
+TOKEN(Solidus)                 // / U+002F
+// TOKEN(DigitZero) // 0 U+0030
+// ...
+// TOKEN(DigitNine) // 9 U+0039
+TOKEN(Colon)            // : U+003A
+TOKEN(Semicolon)        // ; U+003B
+TOKEN(LessThanSign)     // < U+003C
+TOKEN(EqualsSign)       // = U+003D
+TOKEN(GreaterThanSign)  // > U+003E
+TOKEN(QuestionMark)     // ? U+003F
+TOKEN(CommercialAt)     // @ U+0040
+// TOKEN(LatinCapitalLetterA) // A U+0041
+// ...
+// TOKEN(LatinCapitalLetterZ) // Z U+005A
+TOKEN(LeftSquareBracket)   // [ U+005B
+TOKEN(ReverseSolidus)      // \ U+005C
+TOKEN(RightSquareBracket)  // ] U+005D
+TOKEN(CircumflexAccent)    // ^ U+005E
+TOKEN(LowLine)             // _ U+005F
+TOKEN(GraveAccent)         // ` U+0060
+// TOKEN(LatinSmallLetterA) // a U+0061
+// ...
+// TOKEN(LatinSmallLetterZ) // z U+007A
+TOKEN(LeftCurlyBracket)   // { U+007B
+TOKEN(VerticalLine)       // | U+007C
+TOKEN(RightCurlyBracket)  // } U+007D
+TOKEN(Tilde)              // ~ U+007E
+
+// Two character tokens
+TOKEN(BangEqual)     // !=
+TOKEN(EqualEqual)    // ==
+TOKEN(GreaterEqual)  // >=
+TOKEN(LessEqual)     // <=
+
+// Atoms
+TOKEN(Identifier)     // abc123
+TOKEN(NumberLiteral)  // 123
+TOKEN(StringLiteral)  // "123"
+
+// Keywords
+KEYWORD(And, "and")
+KEYWORD(Class, "class")
+KEYWORD(Else, "else")
+KEYWORD(False, "false")
+KEYWORD(Fun, "fun")
+KEYWORD(For, "for")
+KEYWORD(If, "if")
+KEYWORD(Nil, "nil")
+KEYWORD(Or, "or")
+KEYWORD(Print, "print")
+KEYWORD(Return, "return")
+KEYWORD(Super, "super")
+KEYWORD(This, "this")
+KEYWORD(True, "true")
+KEYWORD(Var, "var")
+KEYWORD(While, "while")
+
+#undef KEYWORD
+#undef TOKEN

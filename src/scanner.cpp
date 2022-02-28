@@ -205,11 +205,17 @@ void Scanner::identifier()
     while (isAlphaNumeric(peek())) {
         advance();
     }
-    if (auto it = keywords.find(std::string{substr()}); it != keywords.end()) {
-        addToken(it->second);
-    } else {
-        addToken(Token::Type::Identifier);
+
+    auto maybeKeyword = [](std::string_view sv) {
+#define KEYWORD(kind, name)       \
+    if (name == sv) {             \
+        return Token::Type::kind; \
     }
+#include "token.def"
+        return Token::Type::Identifier;
+    };
+
+    addToken(maybeKeyword(substr()));
 }
 
 void Scanner::addToken(Token::Type type)
