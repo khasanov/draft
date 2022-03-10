@@ -9,7 +9,8 @@ add_compile_options(
     -Wextra
 )
 
-add_executable(raft
+add_library(libraft STATIC)
+target_sources(libraft PRIVATE
     arena.cpp
     arena.h
     ast.cpp
@@ -20,7 +21,6 @@ add_executable(raft
     environment.h
     interpreter.cpp
     interpreter.h
-    main.cpp
     object.cpp
     object.h
     parser.cpp
@@ -33,3 +33,15 @@ add_executable(raft
     token.def
     token.h
 )
+target_include_directories(libraft PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_executable(raft
+    main.cpp
+)
+
+target_link_libraries(raft PRIVATE
+    libraft
+)
+

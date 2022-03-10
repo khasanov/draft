@@ -26,8 +26,8 @@ public:
     static void report(std::size_t line, const std::string &where, const std::string &message);
     static void out(std::string_view what, std::ostream &where = std::cout);
 
-private:
     static void run(std::string_view source);
+private:
 
     static bool hadError;
 };

@@ -20,7 +20,7 @@ object::Object Environment::get(Token name)
         return values.at(name.lexeme);
     }
     if (enclosing) {
-        return enclosing.get();
+        return enclosing->get(name);
     }
     throw RuntimeError{name, "Undefined variable '" + name.lexeme + ";"};
 }
