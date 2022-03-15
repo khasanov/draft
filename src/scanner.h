@@ -22,7 +22,7 @@ private:
     char peek();
     char peekNext();
 
-    void string();
+    void string(char quote);
     void number();
     void identifier();
 
@@ -34,6 +34,8 @@ private:
     bool isAlphaNumeric(char c);
 
     std::string_view substr();
+
+    void scanError(const std::string &message);
 
     std::string_view source;
     std::vector<Token> tokens;

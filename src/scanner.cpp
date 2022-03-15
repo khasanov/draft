@@ -97,7 +97,10 @@ void Scanner::scanToken()
         break;
 
     case '"':
-        string();
+        string('"');
+        break;
+    case '\'':
+        string('\'');
         break;
     default:
         if (isDigit(c)) {
@@ -105,9 +108,9 @@ void Scanner::scanToken()
         } else if (isAlpha(c)) {
             identifier();
         } else {
-            std::string symbol = "'" + std::string{1, c} + "' (" + std::to_string(c) + ")";
-            std::string msg = "Unexpected character " + symbol + " at column " + std::to_string(current);
-            Raft::error(line, msg);
+            std::stringstream ss;
+            ss << "Unexpected character '" << c << "' at column " << current;
+            scanError(ss.str());
         }
         break;
     }
@@ -128,7 +131,6 @@ bool Scanner::match(char expected)
     }
     current++;
     return true;
-    ;
 }
 
 char Scanner::peek()
@@ -147,9 +149,9 @@ char Scanner::peekNext()
     return source.at(current + 1);
 }
 
-void Scanner::string()
+void Scanner::string(char quote)
 {
-    while (peek() != '"' and not isAtEnd()) {
+    while (peek() != quote and not isAtEnd()) {
         if (peek() == '\n') {
             line++;
         }
@@ -157,11 +159,11 @@ void Scanner::string()
     }
 
     if (isAtEnd()) {
-        Raft::error(line, "Unterminated string");
+        scanError("Unterminated string");
         return;
     }
 
-    // The closing "
+    // The closing quote
     advance();
 
     std::string_view value = substr();
@@ -240,6 +242,11 @@ std::string_view Scanner::substr()
     std::size_t pos = start;
     std::size_t count = current - pos;
     return source.substr(pos, count);
+}
+
+void Scanner::scanError(const std::string &message)
+{
+    Raft::error(line, message);
 }
 
 }  // namespace raft
