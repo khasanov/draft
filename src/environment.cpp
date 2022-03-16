@@ -16,7 +16,7 @@ void Environment::define(const std::string &name, const object::Object &value)
 
 object::Object Environment::get(Token name)
 {
-    if (values.count(name.lexeme) != 0) {
+    if (values.contains(name.lexeme)) {
         return values.at(name.lexeme);
     }
     if (enclosing) {
@@ -27,7 +27,7 @@ object::Object Environment::get(Token name)
 
 void Environment::assign(const Token &name, const object::Object &value)
 {
-    if (values.count(name.lexeme) != 0) {
+    if (values.contains(name.lexeme)) {
         values[name.lexeme] = value;
         return;
     }
