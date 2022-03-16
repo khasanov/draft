@@ -224,7 +224,7 @@ void Interpreter::checkNumberOperands(const Token &op, const object::Object &lef
     if (std::holds_alternative<object::Number>(left) and std::holds_alternative<object::Number>(right)) {
         return;
     }
-    throw RuntimeError{op, "Operands must be a numbers"};
+    throw RuntimeError{op, "Operands must be numbers"};
 }
 
 object::Object Interpreter::call(object::CallPtr call, std::vector<object::Object> args)
