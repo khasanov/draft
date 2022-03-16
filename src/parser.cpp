@@ -157,7 +157,7 @@ Expr *Parser::unary()
 // call :: primary ( "(" arguments? ")" )*
 Expr *Parser::call()
 {
-    Expr * expr = primary();
+    Expr *expr = primary();
 
     while (true) {
         if (match(Token::Kind::LeftParenthesis)) {
@@ -167,7 +167,6 @@ Expr *Parser::call()
         }
     }
     return expr;
-
 }
 
 // arguments :: expression ( "," expression )*
@@ -217,10 +216,13 @@ Expr *Parser::primary()
     throw RuntimeError{peek(), "Expect expression"};
 }
 
-// declaration :: varDecl | statement
+// declaration :: funDecl | varDecl | statement
 Stmt *Parser::declaration()
 {
     try {
+        if (match(Token::Kind::Fun)) {
+            return funDeclaration();
+        }
         if (match(Token::Kind::Var)) {
             return varDeclaration();
         }
@@ -230,6 +232,33 @@ Stmt *Parser::declaration()
         synchronize();
         return nullptr;
     }
+}
+
+// funDecl :: "fun" function
+Stmt *Parser::funDeclaration()
+{
+    return function("function");
+}
+
+// function :: IDENT "(" parameters? ")" block
+Stmt *Parser::function(std::string kind)
+{
+    Token name = consume(Token::Kind::Identifier, "Expect " + kind + " name");
+    consume(Token::Kind::LeftParenthesis, "Expect '(' after " + kind + " name");
+    std::vector<Token> parameters;
+    if (!check(Token::Kind::RightParenthesis)) {
+        do {
+            if (parameters.size() >= 255) {
+                Raft::error(peek().line, "Can't have more than 255 parameters");
+            }
+
+            parameters.push_back(consume(Token::Kind::Identifier, "Exprect parameter name"));
+        } while (match(Token::Kind::Comma));
+    }
+    consume(Token::Kind::RightParenthesis, "Expect ')' after parameters");
+    consume(Token::Kind::LeftCurlyBracket, "Expect '{' before " + kind + " body");
+    std::vector<Stmt *> body = block();
+    return makeAstNode<Function>(name, parameters, body);
 }
 
 // "var" IDENTIFIER ( "=" expression )? ";"

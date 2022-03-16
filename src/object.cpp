@@ -1,7 +1,9 @@
 #include "object.h"
 
-#include <stdexcept>
 #include <iostream>
+#include <stdexcept>
+
+#include "interpreter.h"
 
 namespace raft::object {
 
@@ -51,10 +53,13 @@ bool isEqual(const Object &a, const Object &b)
     return a == b;
 }
 
-Callable::Callable(std::string str, Fn fn)
-    : str{std::move(str)}
-    , fn{std::move(fn)}
+std::size_t Function::arity()
 {
+    return 0;
 }
 
+object::Object Function::call(Interpreter *, std::vector<object::Object>)
+{
+    return Null{};
+}
 }  // namespace raft::object

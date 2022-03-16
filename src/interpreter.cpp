@@ -1,13 +1,33 @@
 #include "interpreter.h"
 
+#include <chrono>
+
 #include "parser.h"
 #include "raft.h"
 
 namespace raft {
 
+class ClockFunction : public object::Function {
+public:
+    std::size_t arity() override
+    {
+        return 0;
+    }
+    object::Object call(Interpreter *, std::vector<object::Object>) override
+    {
+        namespace cr = std::chrono;
+        auto now = cr::system_clock::now();
+        auto epoch = now.time_since_epoch();
+        auto seconds = cr::duration_cast<cr::seconds>(epoch).count();
+        return static_cast<object::Number>(seconds);
+    }
+};
+
 Interpreter::Interpreter()
 {
-    environment = std::make_shared<Environment>();
+    auto globals = std::make_shared<Environment>();
+    globals->define("clock", std::make_shared<ClockFunction>());
+    environment = globals;
 }
 
 void Interpreter::interpret(const std::vector<Stmt *> &statements)
@@ -117,13 +137,16 @@ object::Object Interpreter::visit(Call *expr)
         arguments.emplace_back(evaluate(argument));
     }
 
-    auto callable = std::get<object::CallPtr>(callee);
-    if (arguments.size() != callable->arity) {
-        throw RuntimeError{
-            expr->paren,
-            "Exprected " + std::to_string(callable->arity) + " arguments but got " + std::to_string(arguments.size())};
+    if (!std::holds_alternative<object::CallPtr>(callee)) {
+        throw RuntimeError{expr->paren, "Can only call functions and classes"};
     }
-    return callable->fn(arguments);
+    auto function = std::get<object::CallPtr>(callee);
+    if (arguments.size() != function->arity()) {
+        throw RuntimeError{expr->paren,
+                           "Exprected " + std::to_string(function->arity()) + " arguments but got " +
+                               std::to_string(arguments.size())};
+    }
+    return function->call(this, arguments);
 }
 
 object::Object Interpreter::visit(Grouping *expr)
@@ -155,6 +178,11 @@ void Interpreter::visit(If *stmt)
     } else if (stmt->elseBranch) {
         execute(stmt->elseBranch);
     }
+}
+
+void Interpreter::visit(Function *stmt)
+{
+    std::cout << "INTERPRET FUNCTION " << stmt << std::endl;
 }
 
 void Interpreter::visit(Print *stmt)
@@ -225,11 +253,6 @@ void Interpreter::checkNumberOperands(const Token &op, const object::Object &lef
         return;
     }
     throw RuntimeError{op, "Operands must be numbers"};
-}
-
-object::Object Interpreter::call(object::CallPtr call, std::vector<object::Object> args)
-{
-    return call->fn(args);
 }
 
 }  // namespace raft

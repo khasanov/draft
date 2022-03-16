@@ -6,7 +6,10 @@
 #include <variant>
 #include <vector>
 
-namespace raft::object {
+namespace raft {
+class Interpreter;
+
+namespace object {
 
 class Callable;
 
@@ -23,13 +26,17 @@ bool isEqual(const Object &a, const Object &b);
 
 class Callable {
 public:
-    using Fn = std::function<Object(std::vector<Object>)>;
+    virtual ~Callable() = default;
 
-    Callable(std::string str, Fn fn);
-
-    std::size_t arity = 0;
-    std::string str;
-    Fn fn;
+    virtual std::size_t arity() = 0;
+    virtual Object call(Interpreter *interpreter, std::vector<Object> arguments) = 0;
 };
 
-}  // namespace raft::object
+class Function : public object::Callable {
+public:
+    std::size_t arity() override;
+    object::Object call(Interpreter *interpreter, std::vector<Object> arguments) override;
+};
+
+}  // namespace object
+}  // namespace raft

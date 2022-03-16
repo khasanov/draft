@@ -18,6 +18,7 @@ class Assign;
 
 class Stmt;
 class ExprStmt;
+class Function;
 class If;
 class Print;
 class While;
@@ -126,6 +127,7 @@ public:
     virtual ~IStmtVisitor() = default;
     virtual T visit(ExprStmt *) = 0;
     virtual T visit(If *) = 0;
+    virtual T visit(Function *) = 0;
     virtual T visit(Print *) = 0;
     virtual T visit(While *) = 0;
     virtual T visit(Block *) = 0;
@@ -165,6 +167,15 @@ public:
     Expr *condition = nullptr;
     Stmt *thenBranch = nullptr;
     Stmt *elseBranch = nullptr;
+};
+
+class Function : public StmtNode<Function> {
+public:
+    Function(Token name, std::vector<Token> params, std::vector<Stmt *> body);
+
+    Token name;
+    std::vector<Token> params;
+    std::vector<Stmt *> body;
 };
 
 class Print : public StmtNode<Print> {

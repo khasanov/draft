@@ -23,6 +23,7 @@ public:
 
     void visit(ExprStmt *stmt) override;
     void visit(If *stmt) override;
+    void visit(Function *stmt) override;
     void visit(Print *stmt) override;
     void visit(While *stmt) override;
     void visit(Block *stmt) override;
@@ -35,8 +36,6 @@ private:
 
     void checkNumberOperand(const Token &op, const object::Object &operand);
     void checkNumberOperands(const Token &op, const object::Object &left, const object::Object &right);
-
-    object::Object call(object::CallPtr call, std::vector<object::Object> args);
 
     EnvironmentPtr environment;
 };

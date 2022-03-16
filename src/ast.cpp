@@ -85,4 +85,11 @@ Call::Call(Expr *callee, Token paren, std::vector<Expr *> arguments)
 {
 }
 
+Function::Function(Token name, std::vector<Token> params, std::vector<Stmt *> body)
+    : name{name}
+    , params{params}
+    , body{body}
+{
+}
+
 }  // namespace raft

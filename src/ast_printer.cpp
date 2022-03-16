@@ -75,6 +75,27 @@ std::string AstPrinter::visit(If *stmt)
     return "If{" + cond + ", " + thenBranch + elseBranch + "}";
 }
 
+std::string AstPrinter::visit(Function *stmt)
+{
+    std::string name = stmt->name.lexeme;
+    std::string params;
+    for (auto param : stmt->params) {
+        params.append(param.lexeme);
+        params.append(", ");
+    }
+
+    std::string body;
+    const std::size_t size = stmt->body.size();
+    for (std::size_t i = 0; i < size; ++i) {
+        auto s = stmt->body.at(i);
+        body += s->accept(this);
+        if (i < size - 1) {
+            body += ", ";
+        }
+    }
+    return "Function{" + name + ", " + params + ", " + body + "}";
+}
+
 std::string AstPrinter::visit(Print *stmt)
 {
     return "PrintStmt{" + stmt->expression->accept(this) + "}";

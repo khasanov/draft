@@ -10,7 +10,7 @@ My experiments in cRAFTing a toy programming language.
 
 ```
 program     :: declaration* EOF
-declaration :: varDecl | statement
+declaration :: funDecl | varDecl | statement
 statement   :: exprStmt | forStmt | ifStmt | printStmt | whileStmt | block
 exprStmt    :: expresson ";"
 forStmt     :: "for" "(" (varDecl | exprStmt | ";" ) expression? ";" expression? ")" statement
@@ -18,6 +18,9 @@ ifStmt      :: "if" "(" expression ")" statement ( "else" statement )?
 printStmt   :: "print" expression ";"
 whileStmt   :: "while" "(" expression ")" statement
 block       :: "{" declaration* "}"
+funDecl     :: "fun" function
+function    :: IDENTIFIER "(" parameters? ")" block
+parameters  :: IDENTIFIER ( "," IDENTIFIER )*
 varDecl     :: "var" IDENTIFIER ( "=" expression )? ";"
 
 expression  :: assignment
