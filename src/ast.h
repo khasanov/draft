@@ -117,7 +117,7 @@ public:
     Assign(Token name, Expr *value);
 
     Token name;
-    Expr *value;
+    Expr *value = nullptr;
 };
 
 template <typename T>
@@ -194,7 +194,7 @@ public:
     VarDecl(Token name, Expr *initializer);
 
     Token name;
-    Expr *initializer;
+    Expr *initializer = nullptr;
 };
 
 }  // namespace raft
