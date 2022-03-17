@@ -21,6 +21,7 @@ class ExprStmt;
 class Function;
 class If;
 class Print;
+class Return;
 class While;
 class Block;
 class VarDecl;
@@ -129,6 +130,7 @@ public:
     virtual T visit(If *) = 0;
     virtual T visit(Function *) = 0;
     virtual T visit(Print *) = 0;
+    virtual T visit(Return *) = 0;
     virtual T visit(While *) = 0;
     virtual T visit(Block *) = 0;
     virtual T visit(VarDecl *) = 0;
@@ -183,6 +185,13 @@ public:
     explicit Print(Expr *expr);
 
     Expr *expression = nullptr;
+};
+
+class Return : public StmtNode<Return> {
+public:
+    Return(Token keyword, Expr *value);
+    Token keyword;
+    Expr *value = nullptr;
 };
 
 class While : public StmtNode<While> {

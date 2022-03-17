@@ -42,6 +42,7 @@ private:
     Stmt *forStatement();
     Stmt *ifStatement();
     Stmt *printStatement();
+    Stmt *returnStatement();
     Stmt *whileStatement();
     std::vector<Stmt *> block();
     Stmt *expressionStatement();

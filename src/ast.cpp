@@ -92,4 +92,10 @@ Function::Function(Token name, std::vector<Token> params, std::vector<Stmt *> bo
 {
 }
 
+Return::Return(Token keyword, Expr *value)
+    : keyword{keyword}
+    , value{value}
+{
+}
+
 }  // namespace raft

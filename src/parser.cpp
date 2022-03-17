@@ -273,7 +273,7 @@ Stmt *Parser::varDeclaration()
     return makeAstNode<VarDecl>(name, initializer);
 }
 
-// statement :: exprStmt | forStmt | ifStmt | printStmt | whileStmt | block
+// statement :: exprStmt | forStmt | ifStmt | printStmt | returnStmt | whileStmt | block
 Stmt *Parser::statement()
 {
     if (match(Token::Kind::For)) {
@@ -284,6 +284,9 @@ Stmt *Parser::statement()
     }
     if (match(Token::Kind::Print)) {
         return printStatement();
+    }
+    if (match(Token::Kind::Return)) {
+        return returnStatement();
     }
     if (match(Token::Kind::While)) {
         return whileStatement();
@@ -373,6 +376,18 @@ Stmt *Parser::printStatement()
     Expr *value = expression();
     consume(Token::Kind::Semicolon, "Expect ';' after value");
     return makeAstNode<Print>(value);
+}
+
+// returnStmt :: "return" expression? ";"
+Stmt *Parser::returnStatement()
+{
+    Token keyword = previous();
+    Expr *value = nullptr;
+    if (!check(Token::Kind::Semicolon)) {
+        value = expression();
+    }
+    consume(Token::Kind::Semicolon, "Expect ';' after return value");
+    return makeAstNode<Return>(keyword, value);
 }
 
 // whileStmt   :: "while" "(" expression ")" statement;

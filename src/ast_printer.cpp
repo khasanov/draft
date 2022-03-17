@@ -101,6 +101,15 @@ std::string AstPrinter::visit(Print *stmt)
     return "PrintStmt{" + stmt->expression->accept(this) + "}";
 }
 
+std::string AstPrinter::visit(Return *stmt)
+{
+    std::string body;
+    if (stmt) {
+        body = stmt->value->accept(this);
+    }
+    return "Return{" + body + "}";
+}
+
 std::string AstPrinter::visit(While *stmt)
 {
     return "While{" + stmt->condition->accept(this) + ", " + stmt->body->accept(this) + "}";

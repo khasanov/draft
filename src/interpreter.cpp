@@ -192,6 +192,15 @@ void Interpreter::visit(Print *stmt)
     Raft::out(object::obj2str(value));
 }
 
+void Interpreter::visit(Return *stmt)
+{
+    object::Object value = object::Null{};
+    if (stmt->value) {
+        value = evaluate(stmt->value);
+    }
+    throw ReturnEx{value};
+}
+
 void Interpreter::visit(While *stmt)
 {
     while (object::isTruthy(evaluate(stmt->condition))) {

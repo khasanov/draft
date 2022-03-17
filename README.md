@@ -11,11 +11,12 @@ My experiments in cRAFTing a toy programming language.
 ```
 program     :: declaration* EOF
 declaration :: funDecl | varDecl | statement
-statement   :: exprStmt | forStmt | ifStmt | printStmt | whileStmt | block
+statement   :: exprStmt | forStmt | ifStmt | printStmt | returnStmt | whileStmt | block
 exprStmt    :: expresson ";"
 forStmt     :: "for" "(" (varDecl | exprStmt | ";" ) expression? ";" expression? ")" statement
 ifStmt      :: "if" "(" expression ")" statement ( "else" statement )?
 printStmt   :: "print" expression ";"
+returnStmt  :: "return" expression? ";"
 whileStmt   :: "while" "(" expression ")" statement
 block       :: "{" declaration* "}"
 funDecl     :: "fun" function

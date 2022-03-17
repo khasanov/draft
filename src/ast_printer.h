@@ -22,6 +22,7 @@ public:
     std::string visit(If *stmt) override;
     std::string visit(Function *stmt) override;
     std::string visit(Print *stmt) override;
+    std::string visit(Return *stmt) override;
     std::string visit(While *stmt) override;
     std::string visit(Block *stmt) override;
     std::string visit(VarDecl *stmt) override;

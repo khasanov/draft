@@ -11,7 +11,6 @@ class Interpreter;
 class Function;
 
 namespace object {
-
 class Callable;
 
 using Null = std::monostate;
@@ -44,4 +43,11 @@ private:
 };
 
 }  // namespace object
+
+class ReturnEx : public std::runtime_error {
+public:
+    explicit ReturnEx(object::Object value);
+    object::Object value;
+};
+
 }  // namespace raft
