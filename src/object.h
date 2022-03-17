@@ -8,6 +8,7 @@
 
 namespace raft {
 class Interpreter;
+class Function;
 
 namespace object {
 
@@ -32,10 +33,14 @@ public:
     virtual Object call(Interpreter *interpreter, std::vector<Object> arguments) = 0;
 };
 
-class Function : public object::Callable {
+class Func : public Callable {
 public:
+    explicit Func(Function *declaration);
     std::size_t arity() override;
     object::Object call(Interpreter *interpreter, std::vector<Object> arguments) override;
+
+private:
+    Function *declaration = nullptr;
 };
 
 }  // namespace object

@@ -53,13 +53,31 @@ bool isEqual(const Object &a, const Object &b)
     return a == b;
 }
 
-std::size_t Function::arity()
+Func::Func(Function *declaration)
+    : declaration{declaration}
 {
+}
+
+std::size_t Func::arity()
+{
+    if (declaration) {
+        return declaration->params.size();
+    }
     return 0;
 }
 
-object::Object Function::call(Interpreter *, std::vector<object::Object>)
+object::Object Func::call(Interpreter *interpreter, std::vector<object::Object> arguments)
 {
+    if (!declaration) {
+        return Null{};
+    }
+    EnvironmentPtr env = std::make_shared<Environment>(interpreter->globals);
+    auto params = declaration->params;
+    for (std::size_t i = 0; i < params.size(); ++i) {
+        env->define(params.at(i).lexeme, arguments.at(i));
+    }
+    interpreter->executeBlock(declaration->body, env);
     return Null{};
 }
+
 }  // namespace raft::object

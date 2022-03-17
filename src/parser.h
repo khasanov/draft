@@ -56,7 +56,7 @@ private:
     Token advance();
     // Returns true if the current token is of the given kind
     bool check(Token::Kind kind);
-    // Checks to see if the next token is of the exprected kind
+    // Checks to see if the next token is of the expected kind
     Token consume(Token::Kind kind, const std::string &msg);
     // Discard tokens until it thinks it has found a statement boundary
     void synchronize();

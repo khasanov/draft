@@ -37,7 +37,10 @@ private:
     void checkNumberOperand(const Token &op, const object::Object &operand);
     void checkNumberOperands(const Token &op, const object::Object &left, const object::Object &right);
 
+    EnvironmentPtr globals;
     EnvironmentPtr environment;
+
+    friend class object::Func;
 };
 
 }  // namespace raft

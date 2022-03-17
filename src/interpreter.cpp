@@ -7,7 +7,7 @@
 
 namespace raft {
 
-class ClockFunction : public object::Function {
+class ClockFunction : public object::Callable {
 public:
     std::size_t arity() override
     {
@@ -25,7 +25,7 @@ public:
 
 Interpreter::Interpreter()
 {
-    auto globals = std::make_shared<Environment>();
+    globals = std::make_shared<Environment>();
     globals->define("clock", std::make_shared<ClockFunction>());
     environment = globals;
 }
@@ -142,9 +142,9 @@ object::Object Interpreter::visit(Call *expr)
     }
     auto function = std::get<object::CallPtr>(callee);
     if (arguments.size() != function->arity()) {
-        throw RuntimeError{expr->paren,
-                           "Exprected " + std::to_string(function->arity()) + " arguments but got " +
-                               std::to_string(arguments.size())};
+        throw RuntimeError{
+            expr->paren,
+            "Expected " + std::to_string(function->arity()) + " arguments but got " + std::to_string(arguments.size())};
     }
     return function->call(this, arguments);
 }
@@ -182,7 +182,8 @@ void Interpreter::visit(If *stmt)
 
 void Interpreter::visit(Function *stmt)
 {
-    std::cout << "INTERPRET FUNCTION " << stmt << std::endl;
+    auto function = std::make_shared<object::Func>(stmt);
+    environment->define(stmt->name.lexeme, function);
 }
 
 void Interpreter::visit(Print *stmt)

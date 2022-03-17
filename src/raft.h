@@ -27,8 +27,8 @@ public:
     static void out(std::string_view what, std::ostream &where = std::cout);
 
     static void run(std::string_view source);
-private:
 
+private:
     static bool hadError;
 };
 
