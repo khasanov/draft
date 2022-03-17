@@ -3,8 +3,6 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "interpreter.h"
-
 namespace raft::object {
 
 std::string obj2str(const Object &obj)
@@ -53,44 +51,5 @@ bool isEqual(const Object &a, const Object &b)
     return a == b;
 }
 
-Func::Func(Function *declaration)
-    : declaration{declaration}
-{
-}
-
-std::size_t Func::arity()
-{
-    if (declaration) {
-        return declaration->params.size();
-    }
-    return 0;
-}
-
-object::Object Func::call(Interpreter *interpreter, std::vector<object::Object> arguments)
-{
-    if (!declaration) {
-        return Null{};
-    }
-    EnvironmentPtr env = std::make_shared<Environment>(interpreter->globals);
-    auto params = declaration->params;
-    for (std::size_t i = 0; i < params.size(); ++i) {
-        env->define(params.at(i).lexeme, arguments.at(i));
-    }
-    try {
-        interpreter->executeBlock(declaration->body, env);
-    } catch (const ReturnEx &returnValue) {
-        return returnValue.value;
-    }
-
-    return Null{};
-}
-
 }  // namespace raft::object
 
-namespace raft {
-ReturnEx::ReturnEx(object::Object value)
-    : std::runtime_error{""}
-    , value{value}
-{
-}
-}  // namespace raft

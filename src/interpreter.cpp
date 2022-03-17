@@ -182,7 +182,7 @@ void Interpreter::visit(If *stmt)
 
 void Interpreter::visit(Function *stmt)
 {
-    auto function = std::make_shared<object::Func>(stmt);
+    auto function = std::make_shared<object::Func>(stmt, environment);
     environment->define(stmt->name.lexeme, function);
 }
 

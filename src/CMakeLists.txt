@@ -19,6 +19,8 @@ target_sources(libraft PRIVATE
     ast_printer.h
     environment.cpp
     environment.h
+    func.cpp
+    func.h
     interpreter.cpp
     interpreter.h
     object.cpp

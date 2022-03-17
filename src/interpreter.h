@@ -2,6 +2,7 @@
 
 #include "ast.h"
 #include "environment.h"
+#include "func.h"
 
 #include <vector>
 
