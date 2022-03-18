@@ -156,13 +156,18 @@ object::Object Interpreter::visit(Grouping *expr)
 
 object::Object Interpreter::visit(Variable *expr)
 {
-    return environment->get(expr->name);
+    return lookUpVariable(expr->name, expr);
 }
 
 object::Object Interpreter::visit(Assign *expr)
 {
     object::Object value = evaluate(expr->value);
-    environment->assign(expr->name, value);
+    if (auto it = locals.find(expr); it != locals.end()) {
+        int distance = locals.at(expr);
+        environment->assignAt(distance, expr->name, value);
+    } else {
+        globals->assign(expr->name, value);
+    }
     return value;
 }
 
@@ -247,6 +252,21 @@ void Interpreter::executeBlock(const std::vector<Stmt *> &stmts, EnvironmentPtr 
         execute(stmt);
     }
     this->environment = previous;
+}
+
+void Interpreter::resolve(Expr *expr, int depth)
+{
+    locals[expr] = depth;
+}
+
+object::Object Interpreter::lookUpVariable(Token name, Expr *expr)
+{
+    if (auto it = locals.find(expr); it != locals.end()) {
+        int distance = locals.at(expr);
+        return environment->getAt(distance, name.lexeme);
+    } else {
+        return globals->get(name);
+    }
 }
 
 void Interpreter::checkNumberOperand(const Token &op, const object::Object &operand)

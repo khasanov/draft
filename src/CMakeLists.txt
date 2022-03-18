@@ -29,6 +29,8 @@ target_sources(libraft PRIVATE
     parser.h
     raft.cpp
     raft.h
+    resolver.cpp
+    resolver.h
     scanner.cpp
     scanner.h
     token.cpp

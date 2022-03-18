@@ -5,6 +5,7 @@
 #include "ast.h"
 #include "ast_printer.h"
 #include "parser.h"
+#include "resolver.h"
 #include "scanner.h"
 #include "token.h"
 
@@ -80,6 +81,8 @@ void Raft::run(std::string_view source)
     }
 
     static Interpreter interpreter;
+    static Resolver resolver{&interpreter};
+    resolver.resolve(statements);
     interpreter.interpret(statements);
 }
 

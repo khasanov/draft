@@ -25,6 +25,20 @@ object::Object Environment::get(Token name)
     throw RuntimeError{name, "Undefined variable '" + name.lexeme + ";"};
 }
 
+object::Object Environment::getAt(int distance, std::string name)
+{
+    return ancestor(distance)->values.at(name);
+}
+
+EnvironmentPtr Environment::ancestor(int distance)
+{
+    EnvironmentPtr env = shared_from_this();
+    for (int i = 0; i < distance; i++) {
+        env = env->enclosing;
+    }
+    return env;
+}
+
 void Environment::assign(const Token &name, const object::Object &value)
 {
     if (values.contains(name.lexeme)) {
@@ -36,6 +50,11 @@ void Environment::assign(const Token &name, const object::Object &value)
         return;
     }
     throw RuntimeError{name, "Undefined variable '" + name.lexeme + "'"};
+}
+
+void Environment::assignAt(int distance, const Token &name, const object::Object &value)
+{
+    ancestor(distance)->values[name.lexeme] = value;
 }
 
 }  // namespace raft

@@ -31,14 +31,18 @@ public:
     void visit(Block *stmt) override;
     void visit(VarDecl *stmt) override;
 
+    void resolve(Expr *expr, int depth);
+
 private:
     object::Object evaluate(Expr *expr);
     void execute(Stmt *stmt);
     void executeBlock(const std::vector<Stmt *> &stmts, EnvironmentPtr env);
+    object::Object lookUpVariable(Token name, Expr *expr);
 
     void checkNumberOperand(const Token &op, const object::Object &operand);
     void checkNumberOperands(const Token &op, const object::Object &left, const object::Object &right);
 
+    std::map<Expr *, int> locals;
     EnvironmentPtr globals;
     EnvironmentPtr environment;
 
