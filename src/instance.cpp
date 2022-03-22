@@ -7,4 +7,12 @@ Instance::Instance(Class klass)
 {
 }
 
+Object Instance::getProperty(std::string name)
+{
+    if (fields.contains(name)) {
+        return fields.at(name);
+    }
+    return Null{};
+}
+
 }  // namespace raft::object

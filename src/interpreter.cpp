@@ -3,6 +3,8 @@
 #include <chrono>
 
 #include "class.h"
+#include "instance.h"
+#include "object.h"
 #include "parser.h"
 #include "raft.h"
 
@@ -170,6 +172,16 @@ object::Object Interpreter::visit(Assign *expr)
         globals->assign(expr->name, value);
     }
     return value;
+}
+
+object::Object Interpreter::visit(Get *expr)
+{
+    auto obj = evaluate(expr->object);
+    if (std::holds_alternative<object::InstancePtr>(obj)) {
+        auto instance = std::get<object::InstancePtr>(obj);
+        return instance->getProperty(expr->name.lexeme);
+    }
+    throw RuntimeError{expr->name, "Only instances have properties"};
 }
 
 void Interpreter::visit(ExprStmt *stmt)

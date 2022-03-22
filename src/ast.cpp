@@ -104,4 +104,10 @@ Return::Return(Token keyword, Expr *value)
 {
 }
 
+Get::Get(Expr *object, Token name)
+    : object{object}
+    , name{name}
+{
+}
+
 }  // namespace raft

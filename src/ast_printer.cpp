@@ -59,7 +59,12 @@ std::string AstPrinter::visit(Variable *expr)
 
 std::string AstPrinter::visit(Assign *expr)
 {
-    return "AssignStmt{" + expr->name.lexeme + ", " + expr->value->accept(this) + "}";
+    return "Assign{" + expr->name.lexeme + ", " + expr->value->accept(this) + "}";
+}
+
+std::string AstPrinter::visit(Get *expr)
+{
+    return "Get{" + expr->name.lexeme + "}";
 }
 
 std::string AstPrinter::visit(ExprStmt *stmt)

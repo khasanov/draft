@@ -70,6 +70,12 @@ object::Object Resolver::visit(Assign *expr)
     return object::Null{};
 }
 
+object::Object Resolver::visit(Get *expr)
+{
+    resolve(expr->object);
+    return object::Null{};
+}
+
 void Resolver::visit(ExprStmt *stmt)
 {
     resolve(stmt->expression);

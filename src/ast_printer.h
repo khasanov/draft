@@ -17,6 +17,7 @@ public:
     std::string visit(Grouping *expr) override;
     std::string visit(Variable *expr) override;
     std::string visit(Assign *expr) override;
+    std::string visit(Get *expr) override;
 
     std::string visit(ExprStmt *stmt) override;
     std::string visit(If *stmt) override;

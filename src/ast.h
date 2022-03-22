@@ -15,6 +15,7 @@ class Call;
 class Grouping;
 class Variable;
 class Assign;
+class Get;
 
 class Stmt;
 class ExprStmt;
@@ -39,6 +40,7 @@ public:
     virtual T visit(Grouping *) = 0;
     virtual T visit(Variable *) = 0;
     virtual T visit(Assign *) = 0;
+    virtual T visit(Get *) = 0;
 };
 
 class Expr : public memory::Object {
@@ -121,6 +123,14 @@ public:
 
     Token name;
     Expr *value = nullptr;
+};
+
+class Get : public ExprNode<Get> {
+public:
+    Get(Expr *object, Token name);
+
+    Expr *object = nullptr;
+    Token name;
 };
 
 template <typename T>

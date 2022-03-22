@@ -154,7 +154,7 @@ Expr *Parser::unary()
     return call();
 }
 
-// call :: primary ( "(" arguments? ")" )*
+// call :: primary ( "(" arguments? ")" | "." IDENTIFIER )*
 Expr *Parser::call()
 {
     Expr *expr = primary();
@@ -162,6 +162,9 @@ Expr *Parser::call()
     while (true) {
         if (match(Token::Kind::LeftParenthesis)) {
             expr = finishCall(expr);
+        } else if (match(Token::Kind::Dot)) {
+            Token name = consume(Token::Kind::Identifier, "Expect property name after '.'");
+            expr = makeAstNode<Get>(expr, name);
         } else {
             break;
         }
