@@ -11,6 +11,7 @@ public:
     explicit Instance(Class klass);
 
     Object getProperty(std::string name);
+    void setProperty(std::string name, const object::Object &value);
 
 private:
     Class klass;

@@ -76,6 +76,13 @@ object::Object Resolver::visit(Get *expr)
     return object::Null{};
 }
 
+object::Object Resolver::visit(Set *expr)
+{
+    resolve(expr->value);
+    resolve(expr->object);
+    return object::Null{};
+}
+
 void Resolver::visit(ExprStmt *stmt)
 {
     resolve(stmt->expression);

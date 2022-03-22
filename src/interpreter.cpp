@@ -184,6 +184,20 @@ object::Object Interpreter::visit(Get *expr)
     throw RuntimeError{expr->name, "Only instances have properties"};
 }
 
+object::Object Interpreter::visit(Set *expr)
+{
+    auto obj = evaluate(expr->object);
+
+    if (!std::holds_alternative<object::InstancePtr>(obj)) {
+        throw RuntimeError{expr->name, "Only instances have fields"};
+    }
+
+    auto value = evaluate(expr->value);
+    auto instance = std::get<object::InstancePtr>(obj);
+    instance->setProperty(expr->name.lexeme, value);
+    return value;
+}
+
 void Interpreter::visit(ExprStmt *stmt)
 {
     evaluate(stmt->expression);

@@ -16,6 +16,7 @@ class Grouping;
 class Variable;
 class Assign;
 class Get;
+class Set;
 
 class Stmt;
 class ExprStmt;
@@ -41,6 +42,7 @@ public:
     virtual T visit(Variable *) = 0;
     virtual T visit(Assign *) = 0;
     virtual T visit(Get *) = 0;
+    virtual T visit(Set *) = 0;
 };
 
 class Expr : public memory::Object {
@@ -131,6 +133,15 @@ public:
 
     Expr *object = nullptr;
     Token name;
+};
+
+class Set : public ExprNode<Set> {
+public:
+    Set(Expr *object, Token name, Expr *value);
+
+    Expr *object = nullptr;
+    Token name;
+    Expr *value = nullptr;
 };
 
 template <typename T>

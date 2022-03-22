@@ -53,7 +53,7 @@ Expr *Parser::expression()
     return assignment();
 }
 
-// assignment :: IDENTIFIER "=" assignment | logic_or
+// assignment :: ( call "." )? IDENTIFIER "=" assignment | logic_or
 Expr *Parser::assignment()
 {
     Expr *expr = logicOr();
@@ -64,6 +64,9 @@ Expr *Parser::assignment()
         if (instanceof <Variable>(expr)) {
             Token name = static_cast<Variable *>(expr)->name;
             return makeAstNode<Assign>(name, value);
+        } else if (instanceof <Get>(expr)) {
+            auto get = dynamic_cast<Get *>(expr);
+            return makeAstNode<Set>(get->object, get->name, value);
         }
         Raft::error(equals.line, "Invalid assignment target");
     }

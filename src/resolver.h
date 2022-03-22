@@ -24,6 +24,7 @@ private:
     object::Object visit(Variable *expr) override;
     object::Object visit(Assign *expr) override;
     object::Object visit(Get *expr) override;
+    object::Object visit(Set *expr) override;
 
     void visit(ExprStmt *stmt) override;
     void visit(If *stmt) override;

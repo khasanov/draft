@@ -110,4 +110,11 @@ Get::Get(Expr *object, Token name)
 {
 }
 
+Set::Set(Expr *object, Token name, Expr *value)
+    : object{object}
+    , name{name}
+    , value{value}
+{
+}
+
 }  // namespace raft

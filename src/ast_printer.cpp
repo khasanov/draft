@@ -67,6 +67,11 @@ std::string AstPrinter::visit(Get *expr)
     return "Get{" + expr->name.lexeme + "}";
 }
 
+std::string AstPrinter::visit(Set *expr)
+{
+    return "Set{" + expr->name.lexeme + "}";
+}
+
 std::string AstPrinter::visit(ExprStmt *stmt)
 {
     return "ExprStmt{" + stmt->expression->accept(this) + "}";

@@ -15,4 +15,9 @@ Object Instance::getProperty(std::string name)
     return Null{};
 }
 
+void Instance::setProperty(std::string name, const Object &value)
+{
+    fields[name] = value;
+}
+
 }  // namespace raft::object
