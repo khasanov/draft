@@ -21,13 +21,5 @@ private:
     EnvironmentPtr closure;
 };
 
-class Class : public Callable {
-public:
-    explicit Class(std::string name);
-
-    std::size_t arity() override;
-    object::Object call(Interpreter *, std::vector<Object>) override;
-    std::string name;
-};
 }  // namespace object
 }  // namespace raft

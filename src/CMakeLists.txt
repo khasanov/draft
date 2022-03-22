@@ -17,10 +17,14 @@ target_sources(libraft PRIVATE
     ast.h
     ast_printer.cpp
     ast_printer.h
+    class.cpp
+    class.h
     environment.cpp
     environment.h
     func.cpp
     func.h
+    instance.cpp
+    instance.h
     interpreter.cpp
     interpreter.h
     object.cpp

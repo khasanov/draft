@@ -2,6 +2,7 @@
 
 #include <chrono>
 
+#include "class.h"
 #include "parser.h"
 #include "raft.h"
 

@@ -20,6 +20,8 @@ std::string obj2str(const Object &obj)
             ret = "nil";
         } else if constexpr (std::is_same_v<T, CallPtr>) {
             ret = "callable";
+        } else if constexpr (std::is_same_v<T, InstancePtr>) {
+            ret = "instance";
         } else {
             throw std::runtime_error{"Unknown Object type"};
         }
@@ -52,4 +54,3 @@ bool isEqual(const Object &a, const Object &b)
 }
 
 }  // namespace raft::object
-

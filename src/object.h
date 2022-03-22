@@ -12,13 +12,15 @@ class Function;
 
 namespace object {
 class Callable;
+class Instance;
 
 using Null = std::monostate;
 using Boolean = bool;
 using String = std::string;
 using Number = double;
 using CallPtr = std::shared_ptr<Callable>;
-using Object = std::variant<Null, Boolean, String, Number, CallPtr>;
+using InstancePtr = std::shared_ptr<Instance>;
+using Object = std::variant<Null, Boolean, String, Number, CallPtr, InstancePtr>;
 
 std::string obj2str(const Object &obj);
 bool isTruthy(const Object &obj);
