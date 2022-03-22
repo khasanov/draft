@@ -216,10 +216,13 @@ Expr *Parser::primary()
     throw RuntimeError{peek(), "Expect expression"};
 }
 
-// declaration :: funDecl | varDecl | statement
+// declaration :: classDecl | funDecl | varDecl | statement
 Stmt *Parser::declaration()
 {
     try {
+        if (match(Token::Kind::Class)) {
+            return classDeclaration();
+        }
         if (match(Token::Kind::Fun)) {
             return funDeclaration();
         }
@@ -234,6 +237,19 @@ Stmt *Parser::declaration()
     }
 }
 
+// classDecl :: "class" IDENTIFIER "{" function* "}"
+Stmt *Parser::classDeclaration()
+{
+    Token name = consume(Token::Kind::Identifier, "Expect class name");
+    consume(Token::Kind::LeftCurlyBracket, "Expect '{' before class body");
+    std::vector<Function *> methods;
+    while (!check(Token::Kind::RightCurlyBracket) and !isAtEnd()) {
+        methods.emplace_back(function("method"));
+    }
+    consume(Token::Kind::RightCurlyBracket, "Expect '}' after class body");
+    return makeAstNode<Class>(name, methods);
+}
+
 // funDecl :: "fun" function
 Stmt *Parser::funDeclaration()
 {
@@ -241,7 +257,7 @@ Stmt *Parser::funDeclaration()
 }
 
 // function :: IDENT "(" parameters? ")" block
-Stmt *Parser::function(std::string kind)
+Function *Parser::function(std::string kind)
 {
     Token name = consume(Token::Kind::Identifier, "Expect " + kind + " name");
     consume(Token::Kind::LeftParenthesis, "Expect '(' after " + kind + " name");

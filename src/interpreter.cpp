@@ -219,6 +219,13 @@ void Interpreter::visit(Block *stmt)
     executeBlock(stmt->statements, env);
 }
 
+void Interpreter::visit(Class *stmt)
+{
+    environment->define(stmt->name.lexeme, object::Null{});
+    auto classObject = std::make_shared<object::Class>(stmt->name.lexeme);
+    environment->assign(stmt->name, classObject);
+}
+
 void Interpreter::visit(VarDecl *stmt)
 {
     object::Object value = object::Null{};

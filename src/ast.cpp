@@ -78,6 +78,12 @@ Block::Block(const std::vector<Stmt *> &statements)
 {
 }
 
+Class::Class(Token name, std::vector<Function *> methods)
+    : name{name}
+    , methods{methods}
+{
+}
+
 Call::Call(Expr *callee, Token paren, std::vector<Expr *> arguments)
     : callee{callee}
     , paren{paren}

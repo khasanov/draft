@@ -35,8 +35,9 @@ private:
     Expr *primary();
 
     Stmt *declaration();
+    Stmt *classDeclaration();
     Stmt *funDeclaration();
-    Stmt *function(std::string kind);
+    Function *function(std::string kind);
     Stmt *varDeclaration();
     Stmt *statement();
     Stmt *forStatement();

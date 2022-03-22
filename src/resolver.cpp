@@ -116,6 +116,12 @@ void Resolver::visit(Block *stmt)
     endScope();
 }
 
+void Resolver::visit(Class *stmt)
+{
+    declare(stmt->name);
+    define(stmt->name);
+}
+
 void Resolver::visit(VarDecl *stmt)
 {
     declare(stmt->name);

@@ -130,6 +130,15 @@ std::string AstPrinter::visit(Block *stmt)
     return str;
 }
 
+std::string AstPrinter::visit(Class *stmt)
+{
+    std::string name;
+    if (stmt) {
+        name = stmt->name.lexeme;
+    }
+    return "Class{" + name + "}";
+}
+
 std::string AstPrinter::visit(VarDecl *stmt)
 {
     std::string initializer;

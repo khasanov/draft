@@ -42,5 +42,21 @@ object::Object Func::call(Interpreter *interpreter, std::vector<object::Object> 
 
     return Null{};
 }
+
+Class::Class(std::string name)
+    : name{name}
+{
+}
+
+std::size_t Class::arity()
+{
+    return 0;
+}
+
+Object Class::call(Interpreter *, std::vector<Object>)
+{
+    return object::Null{};
+}
+
 }  // namespace object
 }  // namespace raft

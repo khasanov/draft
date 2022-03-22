@@ -24,6 +24,7 @@ class Print;
 class Return;
 class While;
 class Block;
+class Class;
 class VarDecl;
 
 template <typename T>
@@ -133,6 +134,7 @@ public:
     virtual T visit(Return *) = 0;
     virtual T visit(While *) = 0;
     virtual T visit(Block *) = 0;
+    virtual T visit(Class *) = 0;
     virtual T visit(VarDecl *) = 0;
 };
 
@@ -207,6 +209,14 @@ public:
     explicit Block(const std::vector<Stmt *> &statements);
 
     std::vector<Stmt *> statements;
+};
+
+class Class : public StmtNode<Class> {
+public:
+    Class(Token name, std::vector<Function *> methods);
+
+    Token name;
+    std::vector<Function *> methods;
 };
 
 class VarDecl : public StmtNode<VarDecl> {
