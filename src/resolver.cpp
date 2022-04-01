@@ -97,7 +97,7 @@ void Resolver::visit(If *stmt)
     }
 }
 
-void Resolver::visit(Function *stmt)
+void Resolver::visit(FuncStmt *stmt)
 {
     declare(stmt->name);
     define(stmt->name);
@@ -133,6 +133,10 @@ void Resolver::visit(Class *stmt)
 {
     declare(stmt->name);
     define(stmt->name);
+    for (FuncStmt *method : stmt->methods) {
+        FunctionType declaration = FunctionType::Method;
+        resolveFunction(method, declaration);
+    }
 }
 
 void Resolver::visit(VarDecl *stmt)
@@ -202,7 +206,7 @@ void Resolver::resolveLocal(Expr *expr, Token name)
     }
 }
 
-void Resolver::resolveFunction(Function *function)
+void Resolver::resolveFunction(FuncStmt *function, FunctionType)
 {
     beginScope();
     for (Token param : function->params) {

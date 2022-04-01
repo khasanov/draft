@@ -78,7 +78,7 @@ Block::Block(const std::vector<Stmt *> &statements)
 {
 }
 
-Class::Class(Token name, std::vector<Function *> methods)
+Class::Class(Token name, std::vector<FuncStmt *> methods)
     : name{name}
     , methods{methods}
 {
@@ -91,7 +91,7 @@ Call::Call(Expr *callee, Token paren, std::vector<Expr *> arguments)
 {
 }
 
-Function::Function(Token name, std::vector<Token> params, std::vector<Stmt *> body)
+FuncStmt::FuncStmt(Token name, std::vector<Token> params, std::vector<Stmt *> body)
     : name{name}
     , params{params}
     , body{body}

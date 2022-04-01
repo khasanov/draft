@@ -2,7 +2,7 @@
 
 #include <map>
 
-#include "class.h"
+#include "obj_class.h"
 
 namespace raft::object {
 

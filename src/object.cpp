@@ -18,7 +18,7 @@ std::string obj2str(const Object &obj)
             ret = arg ? "true" : "false";
         } else if constexpr (std::is_same_v<T, Null>) {
             ret = "nil";
-        } else if constexpr (std::is_same_v<T, CallPtr>) {
+        } else if constexpr (std::is_same_v<T, CallablePtr>) {
             ret = "callable";
         } else if constexpr (std::is_same_v<T, InstancePtr>) {
             ret = "instance";

@@ -10,6 +10,8 @@ class Interpreter;
 
 class Resolver : public IExprVisitor<object::Object>, IStmtVisitor<void> {
 public:
+    enum FunctionType { None, Function, Method };
+
     explicit Resolver(Interpreter *interpreter);
 
     void resolve(const std::vector<Stmt *> &statements);
@@ -28,7 +30,7 @@ private:
 
     void visit(ExprStmt *stmt) override;
     void visit(If *stmt) override;
-    void visit(Function *stmt) override;
+    void visit(FuncStmt *stmt) override;
     void visit(Print *stmt) override;
     void visit(Return *stmt) override;
     void visit(While *stmt) override;
@@ -44,7 +46,7 @@ private:
     void declare(Token name);
     void define(Token name);
     void resolveLocal(Expr *expr, Token name);
-    void resolveFunction(Function *function);
+    void resolveFunction(FuncStmt *function, FunctionType type = FunctionType::None);
 
     Interpreter *interpreter = nullptr;
 

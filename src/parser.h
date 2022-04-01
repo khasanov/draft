@@ -37,7 +37,7 @@ private:
     Stmt *declaration();
     Stmt *classDeclaration();
     Stmt *funDeclaration();
-    Function *function(std::string kind);
+    FuncStmt *function(std::string kind);
     Stmt *varDeclaration();
     Stmt *statement();
     Stmt *forStatement();

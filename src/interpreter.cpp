@@ -1,30 +1,13 @@
 #include "interpreter.h"
 
-#include <chrono>
-
-#include "class.h"
-#include "instance.h"
+#include "builtin.h"
+#include "obj_class.h"
+#include "obj_instance.h"
 #include "object.h"
 #include "parser.h"
 #include "raft.h"
 
 namespace raft {
-
-class ClockFunction : public object::Callable {
-public:
-    std::size_t arity() override
-    {
-        return 0;
-    }
-    object::Object call(Interpreter *, std::vector<object::Object>) override
-    {
-        namespace cr = std::chrono;
-        auto now = cr::system_clock::now();
-        auto epoch = now.time_since_epoch();
-        auto seconds = cr::duration_cast<cr::seconds>(epoch).count();
-        return static_cast<object::Number>(seconds);
-    }
-};
 
 Interpreter::Interpreter()
 {
@@ -140,10 +123,10 @@ object::Object Interpreter::visit(Call *expr)
         arguments.emplace_back(evaluate(argument));
     }
 
-    if (!std::holds_alternative<object::CallPtr>(callee)) {
+    if (!std::holds_alternative<object::CallablePtr>(callee)) {
         throw RuntimeError{expr->paren, "Can only call functions and classes"};
     }
-    auto function = std::get<object::CallPtr>(callee);
+    auto function = std::get<object::CallablePtr>(callee);
     if (arguments.size() != function->arity()) {
         throw RuntimeError{
             expr->paren,
@@ -212,9 +195,9 @@ void Interpreter::visit(If *stmt)
     }
 }
 
-void Interpreter::visit(Function *stmt)
+void Interpreter::visit(FuncStmt *stmt)
 {
-    auto function = std::make_shared<object::Func>(stmt, environment);
+    auto function = std::make_shared<object::Function>(stmt, environment);
     environment->define(stmt->name.lexeme, function);
 }
 
@@ -249,7 +232,15 @@ void Interpreter::visit(Block *stmt)
 void Interpreter::visit(Class *stmt)
 {
     environment->define(stmt->name.lexeme, object::Null{});
-    auto classObject = std::make_shared<object::Class>(stmt->name.lexeme);
+
+    std::map<std::string, object::FunctionPtr> methods;
+    for (FuncStmt *method : stmt->methods) {
+        auto func = std::make_shared<object::Function>(method, environment);
+        std::string methodName = method->name.lexeme;
+        auto p = std::make_pair<std::string, object::FunctionPtr>(std::move(methodName), std::move(func));
+        methods.emplace(std::move(p));
+    }
+    auto classObject = std::make_shared<object::Class>(stmt->name.lexeme, methods);
     environment->assign(stmt->name, classObject);
 }
 

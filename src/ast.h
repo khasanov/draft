@@ -20,7 +20,7 @@ class Set;
 
 class Stmt;
 class ExprStmt;
-class Function;
+class FuncStmt;
 class If;
 class Print;
 class Return;
@@ -150,7 +150,7 @@ public:
     virtual ~IStmtVisitor() = default;
     virtual T visit(ExprStmt *) = 0;
     virtual T visit(If *) = 0;
-    virtual T visit(Function *) = 0;
+    virtual T visit(FuncStmt *) = 0;
     virtual T visit(Print *) = 0;
     virtual T visit(Return *) = 0;
     virtual T visit(While *) = 0;
@@ -194,9 +194,9 @@ public:
     Stmt *elseBranch = nullptr;
 };
 
-class Function : public StmtNode<Function> {
+class FuncStmt : public StmtNode<FuncStmt> {
 public:
-    Function(Token name, std::vector<Token> params, std::vector<Stmt *> body);
+    FuncStmt(Token name, std::vector<Token> params, std::vector<Stmt *> body);
 
     Token name;
     std::vector<Token> params;
@@ -234,10 +234,10 @@ public:
 
 class Class : public StmtNode<Class> {
 public:
-    Class(Token name, std::vector<Function *> methods);
+    Class(Token name, std::vector<FuncStmt *> methods);
 
     Token name;
-    std::vector<Function *> methods;
+    std::vector<FuncStmt *> methods;
 };
 
 class VarDecl : public StmtNode<VarDecl> {

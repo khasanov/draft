@@ -248,7 +248,7 @@ Stmt *Parser::classDeclaration()
 {
     Token name = consume(Token::Kind::Identifier, "Expect class name");
     consume(Token::Kind::LeftCurlyBracket, "Expect '{' before class body");
-    std::vector<Function *> methods;
+    std::vector<FuncStmt *> methods;
     while (!check(Token::Kind::RightCurlyBracket) and !isAtEnd()) {
         methods.emplace_back(function("method"));
     }
@@ -263,7 +263,7 @@ Stmt *Parser::funDeclaration()
 }
 
 // function :: IDENT "(" parameters? ")" block
-Function *Parser::function(std::string kind)
+FuncStmt *Parser::function(std::string kind)
 {
     Token name = consume(Token::Kind::Identifier, "Expect " + kind + " name");
     consume(Token::Kind::LeftParenthesis, "Expect '(' after " + kind + " name");
@@ -280,7 +280,7 @@ Function *Parser::function(std::string kind)
     consume(Token::Kind::RightParenthesis, "Expect ')' after parameters");
     consume(Token::Kind::LeftCurlyBracket, "Expect '{' before " + kind + " body");
     std::vector<Stmt *> body = block();
-    return makeAstNode<Function>(name, parameters, body);
+    return makeAstNode<FuncStmt>(name, parameters, body);
 }
 
 // "var" IDENTIFIER ( "=" expression )? ";"

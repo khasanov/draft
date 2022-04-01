@@ -1,8 +1,11 @@
 #pragma once
 
 #include "environment.h"
+#include "obj_callable.h"
 
 namespace raft {
+class FuncStmt;
+
 class ReturnEx : public std::runtime_error {
 public:
     explicit ReturnEx(object::Object value);
@@ -10,16 +13,18 @@ public:
 };
 
 namespace object {
-class Func : public Callable {
+class Function : public Callable {
 public:
-    Func(Function *declaration, EnvironmentPtr closure);
+    Function(FuncStmt *declaration, EnvironmentPtr closure);
     std::size_t arity() override;
     object::Object call(Interpreter *interpreter, std::vector<Object> arguments) override;
 
 private:
-    Function *declaration = nullptr;
+    FuncStmt *declaration = nullptr;
     EnvironmentPtr closure;
 };
+
+using FunctionPtr = std::shared_ptr<Function>;
 
 }  // namespace object
 }  // namespace raft

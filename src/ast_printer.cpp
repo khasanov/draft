@@ -85,7 +85,7 @@ std::string AstPrinter::visit(If *stmt)
     return "If{" + cond + ", " + thenBranch + elseBranch + "}";
 }
 
-std::string AstPrinter::visit(Function *stmt)
+std::string AstPrinter::visit(FuncStmt *stmt)
 {
     std::string name = stmt->name.lexeme;
     std::string params;

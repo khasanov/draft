@@ -2,7 +2,7 @@
 
 #include "ast.h"
 #include "environment.h"
-#include "func.h"
+#include "obj_function.h"
 
 #include <vector>
 
@@ -26,7 +26,7 @@ public:
 
     void visit(ExprStmt *stmt) override;
     void visit(If *stmt) override;
-    void visit(Function *stmt) override;
+    void visit(FuncStmt *stmt) override;
     void visit(Print *stmt) override;
     void visit(Return *stmt) override;
     void visit(While *stmt) override;
@@ -49,7 +49,7 @@ private:
     EnvironmentPtr globals;
     EnvironmentPtr environment;
 
-    friend class object::Func;
+    friend class object::Function;
 };
 
 }  // namespace raft

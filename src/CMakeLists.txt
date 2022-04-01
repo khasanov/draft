@@ -17,16 +17,19 @@ target_sources(libraft PRIVATE
     ast.h
     ast_printer.cpp
     ast_printer.h
-    class.cpp
-    class.h
+    builtin.cpp
+    builtin.h
     environment.cpp
     environment.h
-    func.cpp
-    func.h
-    instance.cpp
-    instance.h
     interpreter.cpp
     interpreter.h
+    obj_callable.h
+    obj_class.cpp
+    obj_class.h
+    obj_function.cpp
+    obj_function.h
+    obj_instance.cpp
+    obj_instance.h
     object.cpp
     object.h
     parser.cpp

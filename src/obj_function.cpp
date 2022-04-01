@@ -1,22 +1,22 @@
-#include "func.h"
+#include "obj_function.h"
 
 #include "interpreter.h"
 
 namespace raft {
 ReturnEx::ReturnEx(object::Object value)
     : std::runtime_error{""}
-    , value{value}
+    , value{std::move(value)}
 {
 }
 
 namespace object {
-Func::Func(Function *declaration, EnvironmentPtr closure)
+Function::Function(FuncStmt *declaration, EnvironmentPtr closure)
     : declaration{declaration}
     , closure{closure}
 {
 }
 
-std::size_t Func::arity()
+std::size_t Function::arity()
 {
     if (declaration) {
         return declaration->params.size();
@@ -24,7 +24,7 @@ std::size_t Func::arity()
     return 0;
 }
 
-object::Object Func::call(Interpreter *interpreter, std::vector<object::Object> arguments)
+object::Object Function::call(Interpreter *interpreter, std::vector<object::Object> arguments)
 {
     if (!declaration) {
         return Null{};
