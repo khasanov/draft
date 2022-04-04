@@ -54,26 +54,26 @@ public:
 };
 
 template <typename T>
-class ExprNode : public Expr {
+class ExprBase : public Expr {
 public:
     std::string accept(IExprVisitor<std::string> *visitor) override
     {
         return visitor->visit(static_cast<T *>(this));
-    };
+    }
     object::Object accept(IExprVisitor<object::Object> *visitor) override
     {
         return visitor->visit(static_cast<T *>(this));
-    };
+    }
 };
 
-class Literal : public ExprNode<Literal> {
+class Literal : public ExprBase<Literal> {
 public:
     explicit Literal(object::Object value);
 
     object::Object value;
 };
 
-class Logical : public ExprNode<Logical> {
+class Logical : public ExprBase<Logical> {
 public:
     Logical(Expr *left, Token op, Expr *right);
 
@@ -82,7 +82,7 @@ public:
     Expr *right = nullptr;
 };
 
-class Unary : public ExprNode<Unary> {
+class Unary : public ExprBase<Unary> {
 public:
     Unary(Token op, Expr *right);
 
@@ -90,7 +90,7 @@ public:
     Expr *right = nullptr;
 };
 
-class Binary : public ExprNode<Binary> {
+class Binary : public ExprBase<Binary> {
 public:
     Binary(Expr *left, Token op, Expr *right);
 
@@ -99,7 +99,7 @@ public:
     Expr *right = nullptr;
 };
 
-class Call : public ExprNode<Call> {
+class Call : public ExprBase<Call> {
 public:
     Call(Expr *callee, Token paren, std::vector<Expr *> arguments);
     Expr *callee = nullptr;
@@ -107,21 +107,21 @@ public:
     std::vector<Expr *> arguments;
 };
 
-class Grouping : public ExprNode<Grouping> {
+class Grouping : public ExprBase<Grouping> {
 public:
     explicit Grouping(Expr *expr);
 
     Expr *expression = nullptr;
 };
 
-class Variable : public ExprNode<Variable> {
+class Variable : public ExprBase<Variable> {
 public:
     explicit Variable(Token name);
 
     Token name;
 };
 
-class Assign : public ExprNode<Assign> {
+class Assign : public ExprBase<Assign> {
 public:
     Assign(Token name, Expr *value);
 
@@ -129,7 +129,7 @@ public:
     Expr *value = nullptr;
 };
 
-class Get : public ExprNode<Get> {
+class Get : public ExprBase<Get> {
 public:
     Get(Expr *object, Token name);
 
@@ -137,7 +137,7 @@ public:
     Token name;
 };
 
-class Set : public ExprNode<Set> {
+class Set : public ExprBase<Set> {
 public:
     Set(Expr *object, Token name, Expr *value);
 
@@ -146,7 +146,7 @@ public:
     Expr *value = nullptr;
 };
 
-class This : public ExprNode<This> {
+class This : public ExprBase<This> {
 public:
     explicit This(Token keyword);
     Token keyword;
@@ -174,26 +174,26 @@ public:
 };
 
 template <typename T>
-class StmtNode : public Stmt {
+class StmtBase : public Stmt {
 public:
     std::string accept(IStmtVisitor<std::string> *visitor) override
     {
         return visitor->visit(static_cast<T *>(this));
-    };
+    }
     void accept(IStmtVisitor<void> *visitor) override
     {
         return visitor->visit(static_cast<T *>(this));
-    };
+    }
 };
 
-class ExprStmt : public StmtNode<ExprStmt> {
+class ExprStmt : public StmtBase<ExprStmt> {
 public:
     explicit ExprStmt(Expr *expr);
 
     Expr *expression = nullptr;
 };
 
-class If : public StmtNode<If> {
+class If : public StmtBase<If> {
 public:
     If(Expr *condition, Stmt *thenBranch, Stmt *elseBranch);
 
@@ -202,7 +202,7 @@ public:
     Stmt *elseBranch = nullptr;
 };
 
-class FuncStmt : public StmtNode<FuncStmt> {
+class FuncStmt : public StmtBase<FuncStmt> {
 public:
     FuncStmt(Token name, std::vector<Token> params, std::vector<Stmt *> body);
 
@@ -211,21 +211,21 @@ public:
     std::vector<Stmt *> body;
 };
 
-class Print : public StmtNode<Print> {
+class Print : public StmtBase<Print> {
 public:
     explicit Print(Expr *expr);
 
     Expr *expression = nullptr;
 };
 
-class Return : public StmtNode<Return> {
+class Return : public StmtBase<Return> {
 public:
     Return(Token keyword, Expr *value);
     Token keyword;
     Expr *value = nullptr;
 };
 
-class While : public StmtNode<While> {
+class While : public StmtBase<While> {
 public:
     While(Expr *condition, Stmt *body);
 
@@ -233,14 +233,14 @@ public:
     Stmt *body = nullptr;
 };
 
-class Block : public StmtNode<Block> {
+class Block : public StmtBase<Block> {
 public:
     explicit Block(const std::vector<Stmt *> &statements);
 
     std::vector<Stmt *> statements;
 };
 
-class Class : public StmtNode<Class> {
+class Class : public StmtBase<Class> {
 public:
     Class(Token name, std::vector<FuncStmt *> methods);
 
@@ -248,7 +248,7 @@ public:
     std::vector<FuncStmt *> methods;
 };
 
-class VarDecl : public StmtNode<VarDecl> {
+class VarDecl : public StmtBase<VarDecl> {
 public:
     VarDecl(Token name, Expr *initializer);
 
