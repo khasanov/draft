@@ -19,12 +19,12 @@ Object Class::call(Interpreter *, std::vector<Object>)
     return std::make_shared<Instance>(*this);
 }
 
-std::optional<FunctionPtr> Class::findMethod(std::string name)
+FunctionPtr Class::findMethod(std::string name)
 {
     if (methods.contains(name)) {
         return methods.at(name);
     }
-    return std::nullopt;
+    return nullptr;
 }
 
 }  // namespace raft::object

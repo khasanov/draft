@@ -43,5 +43,12 @@ object::Object Function::call(Interpreter *interpreter, std::vector<object::Obje
     return Null{};
 }
 
+std::shared_ptr<Function> Function::bind(std::shared_ptr<Instance> instance)
+{
+    EnvironmentPtr env = std::make_shared<Environment>(closure);
+    env->define("this", std::move(instance));
+    return std::make_shared<Function>(declaration, env);
+}
+
 }  // namespace object
 }  // namespace raft

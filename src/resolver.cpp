@@ -83,6 +83,12 @@ object::Object Resolver::visit(Set *expr)
     return object::Null{};
 }
 
+object::Object Resolver::visit(This *expr)
+{
+    resolveLocal(expr, expr->keyword);
+    return object::Null{};
+}
+
 void Resolver::visit(ExprStmt *stmt)
 {
     resolve(stmt->expression);
@@ -133,10 +139,17 @@ void Resolver::visit(Class *stmt)
 {
     declare(stmt->name);
     define(stmt->name);
+    beginScope();
+    auto back = scopes.back();
+    back["this"] = true;
+    scopes.pop_back();
+    scopes.emplace_back(back);
+
     for (FuncStmt *method : stmt->methods) {
         FunctionType declaration = FunctionType::Method;
         resolveFunction(method, declaration);
     }
+    endScope();
 }
 
 void Resolver::visit(VarDecl *stmt)

@@ -19,6 +19,7 @@ public:
     std::size_t arity() override;
     object::Object call(Interpreter *interpreter, std::vector<Object> arguments) override;
 
+    std::shared_ptr<Function> bind(std::shared_ptr<Instance> instance);
 private:
     FuncStmt *declaration = nullptr;
     EnvironmentPtr closure;

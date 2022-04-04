@@ -6,7 +6,7 @@
 
 namespace raft::object {
 
-class Instance {
+class Instance : public std::enable_shared_from_this<Instance> {
 public:
     explicit Instance(Class klass);
 

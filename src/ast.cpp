@@ -117,4 +117,9 @@ Set::Set(Expr *object, Token name, Expr *value)
 {
 }
 
+This::This(Token keyword)
+    : keyword{keyword}
+{
+}
+
 }  // namespace raft

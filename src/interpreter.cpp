@@ -181,6 +181,11 @@ object::Object Interpreter::visit(Set *expr)
     return value;
 }
 
+object::Object Interpreter::visit(This *expr)
+{
+    return lookUpVariable(expr->keyword, expr);
+}
+
 void Interpreter::visit(ExprStmt *stmt)
 {
     evaluate(stmt->expression);

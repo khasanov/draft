@@ -209,6 +209,9 @@ Expr *Parser::primary()
     if (match(Token::Kind::NumberLiteral, Token::Kind::StringLiteral)) {
         return makeAstNode<Literal>(previous().literal);
     }
+    if (match(Token::Kind::This)) {
+        return makeAstNode<This>(previous());
+    }
     if (match(Token::Kind::Identifier)) {
         return makeAstNode<Variable>(previous());
     }

@@ -17,6 +17,7 @@ class Variable;
 class Assign;
 class Get;
 class Set;
+class This;
 
 class Stmt;
 class ExprStmt;
@@ -43,6 +44,7 @@ public:
     virtual T visit(Assign *) = 0;
     virtual T visit(Get *) = 0;
     virtual T visit(Set *) = 0;
+    virtual T visit(This *) = 0;
 };
 
 class Expr : public memory::Object {
@@ -142,6 +144,12 @@ public:
     Expr *object = nullptr;
     Token name;
     Expr *value = nullptr;
+};
+
+class This : public ExprNode<This> {
+public:
+    explicit This(Token keyword);
+    Token keyword;
 };
 
 template <typename T>

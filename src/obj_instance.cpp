@@ -13,9 +13,9 @@ Object Instance::getProperty(std::string name)
         return fields.at(name);
     }
 
-    auto method = klass.findMethod(name);
+    FunctionPtr method = klass.findMethod(name);
     if (method) {
-        return method.value();
+        return method->bind(shared_from_this());
     }
     return Null{};
 }
