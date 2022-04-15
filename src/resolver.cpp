@@ -85,6 +85,10 @@ object::Object Resolver::visit(Set *expr)
 
 object::Object Resolver::visit(This *expr)
 {
+    if (currentClass == ClassType::None) {
+        Raft::error(expr->keyword.line, "Can't use 'this' outside of a class");
+        return object::Null{};
+    }
     resolveLocal(expr, expr->keyword);
     return object::Null{};
 }
@@ -117,7 +121,13 @@ void Resolver::visit(Print *stmt)
 
 void Resolver::visit(Return *stmt)
 {
+    if (currentFunction == FunctionType::None) {
+        Raft::error(stmt->keyword.line, "Can't return from top-level code");
+    }
     if (stmt->value) {
+        if (currentFunction == FunctionType::Initializer) {
+            Raft::error(stmt->keyword.line, "Can't return a value from an initializer");
+        }
         resolve(stmt->value);
     }
 }
@@ -137,6 +147,9 @@ void Resolver::visit(Block *stmt)
 
 void Resolver::visit(Class *stmt)
 {
+    ClassType enclosingClass = currentClass;
+    currentClass = ClassType::Class;
+
     declare(stmt->name);
     define(stmt->name);
     beginScope();
@@ -147,9 +160,13 @@ void Resolver::visit(Class *stmt)
 
     for (FuncStmt *method : stmt->methods) {
         FunctionType declaration = FunctionType::Method;
+        if (method->name.lexeme == "init") {
+            declaration = FunctionType::Initializer;
+        }
         resolveFunction(method, declaration);
     }
     endScope();
+    currentClass = enclosingClass;
 }
 
 void Resolver::visit(VarDecl *stmt)
@@ -219,8 +236,10 @@ void Resolver::resolveLocal(Expr *expr, Token name)
     }
 }
 
-void Resolver::resolveFunction(FuncStmt *function, FunctionType)
+void Resolver::resolveFunction(FuncStmt *function, FunctionType type)
 {
+    FunctionType enclosing = currentFunction;
+    currentFunction = type;
     beginScope();
     for (Token param : function->params) {
         declare(param);
@@ -228,6 +247,7 @@ void Resolver::resolveFunction(FuncStmt *function, FunctionType)
     }
     resolve(function->body);
     endScope();
+    currentFunction = enclosing;
 }
 
 }  // namespace raft

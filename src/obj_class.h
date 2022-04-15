@@ -12,7 +12,7 @@ public:
     Class(std::string name, std::map<std::string, object::FunctionPtr> methods);
 
     std::size_t arity() override;
-    object::Object call(Interpreter *, std::vector<Object>) override;
+    object::Object call(Interpreter *interpreter, std::vector<Object> arguments) override;
 
     object::FunctionPtr findMethod(std::string name);
 

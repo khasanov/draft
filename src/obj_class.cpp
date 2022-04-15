@@ -11,12 +11,21 @@ Class::Class(std::string name, std::map<std::string, object::FunctionPtr> method
 
 std::size_t Class::arity()
 {
+    auto initializer = findMethod("init");
+    if (initializer) {
+        return initializer->arity();
+    }
     return 0;
 }
 
-Object Class::call(Interpreter *, std::vector<Object>)
+Object Class::call(Interpreter *interpreter, std::vector<Object> arguments)
 {
-    return std::make_shared<Instance>(*this);
+    auto instance = std::make_shared<Instance>(*this);
+    auto initializer = findMethod("init");
+    if (initializer) {
+        initializer->bind(instance)->call(interpreter, arguments);
+    }
+    return instance;
 }
 
 FunctionPtr Class::findMethod(std::string name)

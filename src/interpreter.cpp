@@ -202,7 +202,7 @@ void Interpreter::visit(If *stmt)
 
 void Interpreter::visit(FuncStmt *stmt)
 {
-    auto function = std::make_shared<object::Function>(stmt, environment);
+    auto function = std::make_shared<object::Function>(stmt, environment, false);
     environment->define(stmt->name.lexeme, function);
 }
 
@@ -240,7 +240,8 @@ void Interpreter::visit(Class *stmt)
 
     std::map<std::string, object::FunctionPtr> methods;
     for (FuncStmt *method : stmt->methods) {
-        auto func = std::make_shared<object::Function>(method, environment);
+        bool isInitializer = method->name.lexeme == "init";
+        auto func = std::make_shared<object::Function>(method, environment, isInitializer);
         std::string methodName = method->name.lexeme;
         auto p = std::make_pair<std::string, object::FunctionPtr>(std::move(methodName), std::move(func));
         methods.emplace(std::move(p));

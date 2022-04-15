@@ -15,14 +15,16 @@ public:
 namespace object {
 class Function : public Callable {
 public:
-    Function(FuncStmt *declaration, EnvironmentPtr closure);
+    Function(FuncStmt *declaration, EnvironmentPtr closure, bool isInitializer = false);
     std::size_t arity() override;
     object::Object call(Interpreter *interpreter, std::vector<Object> arguments) override;
 
     std::shared_ptr<Function> bind(std::shared_ptr<Instance> instance);
+
 private:
     FuncStmt *declaration = nullptr;
     EnvironmentPtr closure;
+    bool isInitializer = false;
 };
 
 using FunctionPtr = std::shared_ptr<Function>;

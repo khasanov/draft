@@ -10,7 +10,8 @@ class Interpreter;
 
 class Resolver : public IExprVisitor<object::Object>, IStmtVisitor<void> {
 public:
-    enum FunctionType { None, Function, Method };
+    enum class FunctionType { None, Function, Initializer, Method };
+    enum class ClassType { None, Class };
 
     explicit Resolver(Interpreter *interpreter);
 
@@ -53,6 +54,8 @@ private:
 
     using Scope = std::map<std::string, bool>;
     std::vector<Scope> scopes;
+    FunctionType currentFunction = FunctionType::None;
+    ClassType currentClass = ClassType::None;
 };
 
 }  // namespace raft

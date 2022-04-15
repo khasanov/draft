@@ -10,9 +10,10 @@ ReturnEx::ReturnEx(object::Object value)
 }
 
 namespace object {
-Function::Function(FuncStmt *declaration, EnvironmentPtr closure)
+Function::Function(FuncStmt *declaration, EnvironmentPtr closure, bool isInitializer)
     : declaration{declaration}
     , closure{closure}
+    , isInitializer{isInitializer}
 {
 }
 
@@ -37,7 +38,13 @@ object::Object Function::call(Interpreter *interpreter, std::vector<object::Obje
     try {
         interpreter->executeBlock(declaration->body, env);
     } catch (const ReturnEx &returnValue) {
+        if (isInitializer) {
+            return closure->getAt(0, "this");
+        }
         return returnValue.value;
+    }
+    if (isInitializer) {
+        return closure->getAt(0, "this");
     }
 
     return Null{};
@@ -47,7 +54,7 @@ std::shared_ptr<Function> Function::bind(std::shared_ptr<Instance> instance)
 {
     EnvironmentPtr env = std::make_shared<Environment>(closure);
     env->define("this", std::move(instance));
-    return std::make_shared<Function>(declaration, env);
+    return std::make_shared<Function>(declaration, env, isInitializer);
 }
 
 }  // namespace object
