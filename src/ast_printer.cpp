@@ -159,13 +159,13 @@ std::string AstPrinter::visit(Class *stmt)
     return "Class{" + name + "}";
 }
 
-std::string AstPrinter::visit(VarDecl *stmt)
+std::string AstPrinter::visit(Var *stmt)
 {
     std::string initializer;
     if (stmt->initializer) {
         initializer = stmt->initializer->accept(this);
     }
-    return "VarDecl{" + stmt->name.lexeme + ", " + initializer + "}";
+    return "Var{" + stmt->name.lexeme + ", " + initializer + "}";
 }
 
 }  // namespace raft

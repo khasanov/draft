@@ -194,7 +194,7 @@ void Resolver::visit(Class *stmt)
     currentClass = enclosingClass;
 }
 
-void Resolver::visit(VarDecl *stmt)
+void Resolver::visit(Var *stmt)
 {
     declare(stmt->name);
     if (stmt->initializer) {

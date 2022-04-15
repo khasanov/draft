@@ -307,7 +307,7 @@ Stmt *Parser::varDeclaration()
         initializer = expression();
     }
     consume(Token::Kind::Semicolon, "Expect ';' after variable declaration");
-    return makeAstNode<VarDecl>(name, initializer);
+    return makeAstNode<Var>(name, initializer);
 }
 
 // statement :: exprStmt | forStmt | ifStmt | printStmt | returnStmt | whileStmt | block ;

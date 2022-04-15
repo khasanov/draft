@@ -30,7 +30,7 @@ public:
     std::string visit(While *stmt) override;
     std::string visit(Block *stmt) override;
     std::string visit(Class *stmt) override;
-    std::string visit(VarDecl *stmt) override;
+    std::string visit(Var *stmt) override;
 };
 
 }  // namespace raft

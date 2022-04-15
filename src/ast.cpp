@@ -67,7 +67,7 @@ While::While(Expr *condition, Stmt *body)
 {
 }
 
-VarDecl::VarDecl(Token name, Expr *initializer)
+Var::Var(Token name, Expr *initializer)
     : name{name}
     , initializer{initializer}
 {

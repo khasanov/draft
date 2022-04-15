@@ -29,7 +29,7 @@ class Return;
 class While;
 class Block;
 class Class;
-class VarDecl;
+class Var;
 
 template <typename T>
 class IExprVisitor {
@@ -173,7 +173,7 @@ public:
     virtual T visit(While *) = 0;
     virtual T visit(Block *) = 0;
     virtual T visit(Class *) = 0;
-    virtual T visit(VarDecl *) = 0;
+    virtual T visit(Var *) = 0;
 };
 
 class Stmt : public memory::Object {
@@ -258,9 +258,9 @@ public:
     std::vector<FuncStmt *> methods;
 };
 
-class VarDecl : public StmtBase<VarDecl> {
+class Var : public StmtBase<Var> {
 public:
-    VarDecl(Token name, Expr *initializer);
+    Var(Token name, Expr *initializer);
 
     Token name;
     Expr *initializer = nullptr;

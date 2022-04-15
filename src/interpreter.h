@@ -34,7 +34,7 @@ public:
     void visit(While *stmt) override;
     void visit(Block *stmt) override;
     void visit(Class *stmt) override;
-    void visit(VarDecl *stmt) override;
+    void visit(Var *stmt) override;
 
     void resolve(Expr *expr, int depth);
 

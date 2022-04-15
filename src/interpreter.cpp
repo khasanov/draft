@@ -284,7 +284,7 @@ void Interpreter::visit(Class *stmt)
     environment->assign(stmt->name, classObject);
 }
 
-void Interpreter::visit(VarDecl *stmt)
+void Interpreter::visit(Var *stmt)
 {
     object::Object value = object::Null{};
     if (stmt->initializer) {
