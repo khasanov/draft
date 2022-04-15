@@ -32,7 +32,7 @@ Parser::Parser(const std::vector<Token> &tokens)
 {
 }
 
-// program :: declaration* EOF
+// program :: declaration* EOF ;
 std::vector<Stmt *> Parser::parse()
 {
     std::vector<Stmt *> statements;
@@ -47,13 +47,13 @@ std::vector<Stmt *> Parser::parse()
     return statements;
 }
 
-// expression :: assignment
+// expression :: assignment ;
 Expr *Parser::expression()
 {
     return assignment();
 }
 
-// assignment :: ( call "." )? IDENTIFIER "=" assignment | logic_or
+// assignment :: ( call "." )? IDENTIFIER "=" assignment | logic_or ;
 Expr *Parser::assignment()
 {
     Expr *expr = logicOr();
@@ -73,7 +73,7 @@ Expr *Parser::assignment()
     return expr;
 }
 
-// equality :: comparison ( ( "!=" | "==" ) comparision )*
+// equality :: comparison ( ( "!=" | "==" ) comparision )* ;
 Expr *Parser::equality()
 {
     Expr *expr = comparison();
@@ -85,7 +85,7 @@ Expr *Parser::equality()
     return expr;
 }
 
-// comparison :: term ( ( ">" | ">=" | "<" | "<=" ) term )*
+// comparison :: term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 Expr *Parser::comparison()
 {
     Expr *expr = term();
@@ -98,7 +98,7 @@ Expr *Parser::comparison()
     return expr;
 }
 
-// term :: factor ( ("-" | "+" ) factor )*
+// term :: factor ( ("-" | "+" ) factor )* ;
 Expr *Parser::term()
 {
     Expr *expr = factor();
@@ -110,7 +110,7 @@ Expr *Parser::term()
     return expr;
 }
 
-// factor :: unary ( ( "/" | "*" ) unary )*
+// factor :: unary ( ( "/" | "*" ) unary )* ;
 Expr *Parser::factor()
 {
     Expr *expr = unary();
@@ -122,7 +122,7 @@ Expr *Parser::factor()
     return expr;
 }
 
-// logic_or :: logic_and ( "or" logic_and )*
+// logic_or :: logic_and ( "or" logic_and )* ;
 Expr *Parser::logicOr()
 {
     Expr *expr = logicAnd();
@@ -134,7 +134,7 @@ Expr *Parser::logicOr()
     return expr;
 }
 
-// logic_and :: equality ( "and" equality )*
+// logic_and :: equality ( "and" equality )* ;
 Expr *Parser::logicAnd()
 {
     Expr *expr = equality();
@@ -146,7 +146,7 @@ Expr *Parser::logicAnd()
     return expr;
 }
 
-// unary :: ( "!" "-" ) unary | call
+// unary :: ( "!" | "-" ) unary | call ;
 Expr *Parser::unary()
 {
     if (match(Token::Kind::Bang, Token::Kind::Minus)) {
@@ -157,7 +157,7 @@ Expr *Parser::unary()
     return call();
 }
 
-// call :: primary ( "(" arguments? ")" | "." IDENTIFIER )*
+// call :: primary ( "(" arguments? ")" | "." IDENTIFIER )* ;
 Expr *Parser::call()
 {
     Expr *expr = primary();
@@ -175,7 +175,7 @@ Expr *Parser::call()
     return expr;
 }
 
-// arguments :: expression ( "," expression )*
+// arguments :: expression ( "," expression )* ;
 // also handle zero-argument case
 Expr *Parser::finishCall(Expr *callee)
 {
@@ -194,7 +194,8 @@ Expr *Parser::finishCall(Expr *callee)
     return makeAstNode<Call>(callee, paren, arguments);
 }
 
-// primary :: NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" | IDENTIFIER
+// primary :: "true" | "false" | "nil" | "this" | NUMBER | STRING | IDENTIFIER
+//     | "(" expression ")" | "super" . IDENTIFIER ;
 Expr *Parser::primary()
 {
     if (match(Token::Kind::False)) {
@@ -208,6 +209,12 @@ Expr *Parser::primary()
     }
     if (match(Token::Kind::NumberLiteral, Token::Kind::StringLiteral)) {
         return makeAstNode<Literal>(previous().literal);
+    }
+    if (match(Token::Kind::Super)) {
+        Token keyword = previous();
+        consume(Token::Kind::Dot, "Expect '.' after 'super'");
+        Token method = consume(Token::Kind::Identifier, "Expect superclass method name");
+        return makeAstNode<Super>(keyword, method);
     }
     if (match(Token::Kind::This)) {
         return makeAstNode<This>(previous());
@@ -225,7 +232,7 @@ Expr *Parser::primary()
     throw RuntimeError{peek(), "Expect expression"};
 }
 
-// declaration :: classDecl | funDecl | varDecl | statement
+// declaration :: classDecl | funDecl | varDecl | statement ;
 Stmt *Parser::declaration()
 {
     try {
@@ -246,26 +253,31 @@ Stmt *Parser::declaration()
     }
 }
 
-// classDecl :: "class" IDENTIFIER "{" function* "}"
+// classDecl :: "class" IDENTIFIER ( "<" IDENTIFIER )? "{" function* "}" ;
 Stmt *Parser::classDeclaration()
 {
     Token name = consume(Token::Kind::Identifier, "Expect class name");
+    Variable *superclass = nullptr;
+    if (match(Token::Kind::LessThanSign)) {
+        consume(Token::Kind::Identifier, "Expect superclass name");
+        superclass = makeAstNode<Variable>(previous());
+    }
     consume(Token::Kind::LeftCurlyBracket, "Expect '{' before class body");
     std::vector<FuncStmt *> methods;
     while (!check(Token::Kind::RightCurlyBracket) and !isAtEnd()) {
         methods.emplace_back(function("method"));
     }
     consume(Token::Kind::RightCurlyBracket, "Expect '}' after class body");
-    return makeAstNode<Class>(name, methods);
+    return makeAstNode<Class>(name, superclass, methods);
 }
 
-// funDecl :: "fun" function
+// funDecl :: "fun" function ;
 Stmt *Parser::funDeclaration()
 {
     return function("function");
 }
 
-// function :: IDENT "(" parameters? ")" block
+// function :: IDENTIFIER "(" parameters? ")" block ;
 FuncStmt *Parser::function(std::string kind)
 {
     Token name = consume(Token::Kind::Identifier, "Expect " + kind + " name");
@@ -286,7 +298,7 @@ FuncStmt *Parser::function(std::string kind)
     return makeAstNode<FuncStmt>(name, parameters, body);
 }
 
-// "var" IDENTIFIER ( "=" expression )? ";"
+// varDecl :: "var" IDENTIFIER ( "=" expression )? ";" ;
 Stmt *Parser::varDeclaration()
 {
     Token name = consume(Token::Kind::Identifier, "Expect variable name");
@@ -298,7 +310,7 @@ Stmt *Parser::varDeclaration()
     return makeAstNode<VarDecl>(name, initializer);
 }
 
-// statement :: exprStmt | forStmt | ifStmt | printStmt | returnStmt | whileStmt | block
+// statement :: exprStmt | forStmt | ifStmt | printStmt | returnStmt | whileStmt | block ;
 Stmt *Parser::statement()
 {
     if (match(Token::Kind::For)) {
@@ -322,7 +334,7 @@ Stmt *Parser::statement()
     return expressionStatement();
 }
 
-// forStmt :: "for" "(" (varDecl | exprStmt | ";" ) expression? ";" expression? ")" statement
+// forStmt :: "for" "(" ( varDecl | exprStmt | ";" ) expression? ";" expression? ")" statement ;
 Stmt *Parser::forStatement()
 {
     consume(Token::Kind::LeftParenthesis, "Expect '(' after 'for'");
@@ -380,7 +392,7 @@ Stmt *Parser::forStatement()
     return body;
 }
 
-// ifStmt :: "if" "(" expression ")" statement ( "else" statement )?
+// ifStmt :: "if" "(" expression ")" statement ( "else" statement )? ;
 Stmt *Parser::ifStatement()
 {
     consume(Token::Kind::LeftParenthesis, "Exprect '(' after 'if'");
@@ -395,7 +407,7 @@ Stmt *Parser::ifStatement()
     return makeAstNode<If>(condition, thenBranch, elseBranch);
 }
 
-// printStmt :: "print" expression ";"
+// printStmt :: "print" expression ";" ;
 Stmt *Parser::printStatement()
 {
     Expr *value = expression();
@@ -403,7 +415,7 @@ Stmt *Parser::printStatement()
     return makeAstNode<Print>(value);
 }
 
-// returnStmt :: "return" expression? ";"
+// returnStmt :: "return" expression? ";" ;
 Stmt *Parser::returnStatement()
 {
     Token keyword = previous();
@@ -415,7 +427,7 @@ Stmt *Parser::returnStatement()
     return makeAstNode<Return>(keyword, value);
 }
 
-// whileStmt   :: "while" "(" expression ")" statement;
+// whileStmt :: "while" "(" expression ")" statement ;
 Stmt *Parser::whileStatement()
 {
     consume(Token::Kind::LeftParenthesis, "Expect '(' after 'while'");
@@ -426,7 +438,7 @@ Stmt *Parser::whileStatement()
     return makeAstNode<While>(condition, body);
 }
 
-// block :: "{" declaration* "}"
+// block :: "{" declaration* "}" ;
 std::vector<Stmt *> Parser::block()
 {
     std::vector<Stmt *> statements;
@@ -437,7 +449,7 @@ std::vector<Stmt *> Parser::block()
     return statements;
 }
 
-// exprStmt :: expresson ";"
+// exprStmt :: expresson ";" ;
 Stmt *Parser::expressionStatement()
 {
     Expr *expr = expression();

@@ -24,9 +24,9 @@ public:
     void assign(const Token &name, const object::Object &value);
     void assignAt(int distance, const Token &name, const object::Object &value);
 
+    EnvironmentPtr enclosing = nullptr;
 private:
     std::map<std::string, object::Object> values;
-    EnvironmentPtr enclosing = nullptr;
 };
 
 }  // namespace raft

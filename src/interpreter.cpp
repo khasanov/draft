@@ -181,6 +181,21 @@ object::Object Interpreter::visit(Set *expr)
     return value;
 }
 
+object::Object Interpreter::visit(Super *expr)
+{
+    int distance = locals.at(expr);
+    auto superclassObj = environment->getAt(distance, "super");
+    object::Callable *superclassCallable = std::get<object::CallablePtr>(superclassObj).get();
+    object::Class *superclass = dynamic_cast<object::Class *>(superclassCallable);
+    auto instanceObj = environment->getAt(distance - 1, "this");
+    object::InstancePtr instance = std::get<object::InstancePtr>(instanceObj);
+    auto method = superclass->findMethod(expr->method.lexeme);
+    if (!method) {
+        Raft::error(expr->method.line, "Undefined property '" + expr->method.lexeme + "'");
+    }
+    return method->bind(instance);
+}
+
 object::Object Interpreter::visit(This *expr)
 {
     return lookUpVariable(expr->keyword, expr);
@@ -236,7 +251,22 @@ void Interpreter::visit(Block *stmt)
 
 void Interpreter::visit(Class *stmt)
 {
+    object::ClassPtr superclass;
+    if (stmt->superclass) {
+        auto super = evaluate(stmt->superclass);
+        if (!std::holds_alternative<object::CallablePtr>(super) and
+            std::dynamic_pointer_cast<object::Class>(std::get<object::CallablePtr>(super))) {  // Ugh!
+            Raft::error(stmt->superclass->name.line, "Superclass must be a class");
+        } else {
+            superclass = std::static_pointer_cast<object::Class>(std::get<object::CallablePtr>(super));
+        }
+    }
     environment->define(stmt->name.lexeme, object::Null{});
+
+    if (stmt->superclass) {
+        environment = std::make_shared<Environment>(environment);
+        environment->define("super", superclass);
+    }
 
     std::map<std::string, object::FunctionPtr> methods;
     for (FuncStmt *method : stmt->methods) {
@@ -246,7 +276,11 @@ void Interpreter::visit(Class *stmt)
         auto p = std::make_pair<std::string, object::FunctionPtr>(std::move(methodName), std::move(func));
         methods.emplace(std::move(p));
     }
-    auto classObject = std::make_shared<object::Class>(stmt->name.lexeme, methods);
+    auto classObject = std::make_shared<object::Class>(stmt->name.lexeme, superclass, methods);
+
+    if (superclass) {
+        environment = environment->enclosing;
+    }
     environment->assign(stmt->name, classObject);
 }
 

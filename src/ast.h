@@ -17,6 +17,7 @@ class Variable;
 class Assign;
 class Get;
 class Set;
+class Super;
 class This;
 
 class Stmt;
@@ -44,6 +45,7 @@ public:
     virtual T visit(Assign *) = 0;
     virtual T visit(Get *) = 0;
     virtual T visit(Set *) = 0;
+    virtual T visit(Super *) = 0;
     virtual T visit(This *) = 0;
 };
 
@@ -146,6 +148,13 @@ public:
     Expr *value = nullptr;
 };
 
+class Super : public ExprBase<Super> {
+public:
+    Super(Token keyword, Token method);
+
+    Token keyword;
+    Token method;
+};
 class This : public ExprBase<This> {
 public:
     explicit This(Token keyword);
@@ -242,9 +251,10 @@ public:
 
 class Class : public StmtBase<Class> {
 public:
-    Class(Token name, std::vector<FuncStmt *> methods);
+    Class(Token name, Variable *superclass, std::vector<FuncStmt *> methods);
 
     Token name;
+    Variable *superclass = nullptr;
     std::vector<FuncStmt *> methods;
 };
 

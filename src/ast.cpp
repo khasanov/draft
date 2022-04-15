@@ -78,8 +78,9 @@ Block::Block(const std::vector<Stmt *> &statements)
 {
 }
 
-Class::Class(Token name, std::vector<FuncStmt *> methods)
+Class::Class(Token name, Variable *superclass, std::vector<FuncStmt *> methods)
     : name{name}
+    , superclass{superclass}
     , methods{methods}
 {
 }
@@ -114,6 +115,12 @@ Set::Set(Expr *object, Token name, Expr *value)
     : object{object}
     , name{name}
     , value{value}
+{
+}
+
+Super::Super(Token keyword, Token method)
+    : keyword{keyword}
+    , method{method}
 {
 }
 

@@ -72,6 +72,11 @@ std::string AstPrinter::visit(Set *expr)
     return "Set{" + expr->name.lexeme + "}";
 }
 
+std::string AstPrinter::visit(Super *expr)
+{
+    return "Super{" + expr->keyword.lexeme + " " + expr->method.lexeme + "}";
+}
+
 std::string AstPrinter::visit(This *expr)
 {
     return "This{" + expr->keyword.lexeme + "}";

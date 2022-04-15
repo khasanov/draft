@@ -19,6 +19,7 @@ public:
     std::string visit(Assign *expr) override;
     std::string visit(Get *expr) override;
     std::string visit(Set *expr) override;
+    std::string visit(Super *expr) override;
     std::string visit(This *expr) override;
 
     std::string visit(ExprStmt *stmt) override;

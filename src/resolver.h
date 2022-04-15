@@ -11,7 +11,7 @@ class Interpreter;
 class Resolver : public IExprVisitor<object::Object>, IStmtVisitor<void> {
 public:
     enum class FunctionType { None, Function, Initializer, Method };
-    enum class ClassType { None, Class };
+    enum class ClassType { None, Class, Subclass };
 
     explicit Resolver(Interpreter *interpreter);
 
@@ -28,6 +28,7 @@ private:
     object::Object visit(Assign *expr) override;
     object::Object visit(Get *expr) override;
     object::Object visit(Set *expr) override;
+    object::Object visit(Super *expr) override;
     object::Object visit(This *expr) override;
 
     void visit(ExprStmt *stmt) override;

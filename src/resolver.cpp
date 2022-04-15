@@ -83,6 +83,17 @@ object::Object Resolver::visit(Set *expr)
     return object::Null{};
 }
 
+object::Object Resolver::visit(Super *expr)
+{
+    if (currentClass == ClassType::None) {
+        Raft::error(expr->keyword.line, "Can't use 'super' outside a class");
+    } else if (currentClass != ClassType::Subclass) {
+        Raft::error(expr->keyword.line, "Can't use 'super' in a class with no superclass");
+    }
+    resolveLocal(expr, expr->keyword);
+    return object::Null{};
+}
+
 object::Object Resolver::visit(This *expr)
 {
     if (currentClass == ClassType::None) {
@@ -152,6 +163,17 @@ void Resolver::visit(Class *stmt)
 
     declare(stmt->name);
     define(stmt->name);
+    if (stmt->superclass) {
+        if (stmt->name.lexeme == stmt->superclass->name.lexeme) {
+            Raft::error(stmt->superclass->name.line, "A class can't inherit from itself");
+        } else {
+            currentClass = ClassType::Subclass;
+            resolve(stmt->superclass);
+        }
+
+        beginScope();
+        scopes.back()["super"] = true;
+    }
     beginScope();
     auto back = scopes.back();
     back["this"] = true;
@@ -166,6 +188,9 @@ void Resolver::visit(Class *stmt)
         resolveFunction(method, declaration);
     }
     endScope();
+    if (stmt->superclass) {
+        endScope();
+    }
     currentClass = enclosingClass;
 }
 

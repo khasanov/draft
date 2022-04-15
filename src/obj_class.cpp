@@ -3,9 +3,10 @@
 #include "obj_instance.h"
 
 namespace raft::object {
-Class::Class(std::string name, std::map<std::string, object::FunctionPtr> methods)
+Class::Class(std::string name, ClassPtr superclass, std::map<std::string, object::FunctionPtr> methods)
     : name{name}
     , methods{methods}
+    , superclass{superclass}
 {
 }
 
@@ -32,6 +33,9 @@ FunctionPtr Class::findMethod(std::string name)
 {
     if (methods.contains(name)) {
         return methods.at(name);
+    }
+    if (superclass) {
+        return superclass->findMethod(name);
     }
     return nullptr;
 }
