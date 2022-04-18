@@ -54,10 +54,10 @@ object::Object Interpreter::visit(Unary *expr)
     object::Object right = evaluate(expr->right);
 
     switch (expr->op.kind) {
-    case Token::Kind::Minus:
+    case Token::Kind::HyphenMinus:
         checkNumberOperand(expr->op, right);
         return -std::get<object::Number>(right);
-    case Token::Kind::Bang:
+    case Token::Kind::ExclamationMark:
         return !object::isTruthy(right);
     default:
         break;
@@ -85,14 +85,14 @@ object::Object Interpreter::visit(Binary *expr)
     case Token::Kind::LessEqual:
         checkNumberOperands(expr->op, left, right);
         return std::get<object::Number>(left) <= std::get<object::Number>(right);
-    case Token::Kind::BangEqual:
+    case Token::Kind::ExclaimEqual:
         return !object::isEqual(left, right);
     case Token::Kind::EqualEqual:
         return object::isEqual(left, right);
-    case Token::Kind::Minus:
+    case Token::Kind::HyphenMinus:
         checkNumberOperands(expr->op, left, right);
         return std::get<object::Number>(left) - std::get<object::Number>(right);
-    case Token::Kind::Plus:
+    case Token::Kind::PlusSign:
         if (std::holds_alternative<object::Number>(left) and std::holds_alternative<object::Number>(right)) {
             return std::get<object::Number>(left) + std::get<object::Number>(right);
         }
@@ -100,10 +100,10 @@ object::Object Interpreter::visit(Binary *expr)
             return std::get<object::String>(left) + std::get<object::String>(right);
         }
         throw RuntimeError{expr->op, "Operands must be two numbers or two strings"};
-    case Token::Kind::Slash:
+    case Token::Kind::Solidus:
         checkNumberOperands(expr->op, left, right);
         return std::get<object::Number>(left) / std::get<object::Number>(right);
-    case Token::Kind::Star:
+    case Token::Kind::Asterisk:
         checkNumberOperands(expr->op, left, right);
         return std::get<object::Number>(left) * std::get<object::Number>(right);
     default:

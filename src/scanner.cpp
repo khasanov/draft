@@ -49,25 +49,25 @@ void Scanner::scanToken()
         addToken(Token::Kind::Comma);
         break;
     case '.':
-        addToken(Token::Kind::Dot);
+        addToken(Token::Kind::FullStop);
         break;
     case '-':
-        addToken(Token::Kind::Minus);
+        addToken(Token::Kind::HyphenMinus);
         break;
     case '+':
-        addToken(Token::Kind::Plus);
+        addToken(Token::Kind::PlusSign);
         break;
     case ';':
         addToken(Token::Kind::Semicolon);
         break;
     case '*':
-        addToken(Token::Kind::Star);
+        addToken(Token::Kind::Asterisk);
         break;
     case '!':
-        addToken(match('=') ? Token::Kind::BangEqual : Token::Kind::Bang);
+        addToken(match('=') ? Token::Kind::ExclaimEqual : Token::Kind::ExclamationMark);
         break;
     case '=':
-        addToken(match('=') ? Token::Kind::EqualEqual : Token::Kind::Equal);
+        addToken(match('=') ? Token::Kind::EqualEqual : Token::Kind::EqualsSign);
         break;
     case '<':
         addToken(match('=') ? Token::Kind::LessEqual : Token::Kind::LessThanSign);
@@ -82,7 +82,7 @@ void Scanner::scanToken()
                 advance();
             }
         } else {
-            addToken(Token::Kind::Slash);
+            addToken(Token::Kind::Solidus);
         }
         break;
     case ' ':

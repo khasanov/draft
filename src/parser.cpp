@@ -57,7 +57,7 @@ Expr *Parser::expression()
 Expr *Parser::assignment()
 {
     Expr *expr = logicOr();
-    if (match(Token::Kind::Equal)) {
+    if (match(Token::Kind::EqualsSign)) {
         Token equals = previous();
         Expr *value = assignment();
 
@@ -77,7 +77,7 @@ Expr *Parser::assignment()
 Expr *Parser::equality()
 {
     Expr *expr = comparison();
-    while (match(Token::Kind::BangEqual, Token::Kind::EqualEqual)) {
+    while (match(Token::Kind::ExclaimEqual, Token::Kind::EqualEqual)) {
         Token op = previous();
         Expr *right = comparison();
         expr = makeAstNode<Binary>(expr, op, right);
@@ -102,7 +102,7 @@ Expr *Parser::comparison()
 Expr *Parser::term()
 {
     Expr *expr = factor();
-    while (match(Token::Kind::Minus, Token::Kind::Plus)) {
+    while (match(Token::Kind::HyphenMinus, Token::Kind::PlusSign)) {
         Token op = previous();
         Expr *right = factor();
         expr = makeAstNode<Binary>(expr, op, right);
@@ -114,7 +114,7 @@ Expr *Parser::term()
 Expr *Parser::factor()
 {
     Expr *expr = unary();
-    while (match(Token::Kind::Slash, Token::Kind::Star)) {
+    while (match(Token::Kind::Solidus, Token::Kind::Asterisk)) {
         Token op = previous();
         Expr *right = unary();
         expr = makeAstNode<Binary>(expr, op, right);
@@ -149,7 +149,7 @@ Expr *Parser::logicAnd()
 // unary :: ( "!" | "-" ) unary | call ;
 Expr *Parser::unary()
 {
-    if (match(Token::Kind::Bang, Token::Kind::Minus)) {
+    if (match(Token::Kind::ExclamationMark, Token::Kind::HyphenMinus)) {
         Token op = previous();
         Expr *right = unary();
         return makeAstNode<Unary>(op, right);
@@ -165,7 +165,7 @@ Expr *Parser::call()
     while (true) {
         if (match(Token::Kind::LeftParenthesis)) {
             expr = finishCall(expr);
-        } else if (match(Token::Kind::Dot)) {
+        } else if (match(Token::Kind::FullStop)) {
             Token name = consume(Token::Kind::Identifier, "Expect property name after '.'");
             expr = makeAstNode<Get>(expr, name);
         } else {
@@ -212,7 +212,7 @@ Expr *Parser::primary()
     }
     if (match(Token::Kind::Super)) {
         Token keyword = previous();
-        consume(Token::Kind::Dot, "Expect '.' after 'super'");
+        consume(Token::Kind::FullStop, "Expect '.' after 'super'");
         Token method = consume(Token::Kind::Identifier, "Expect superclass method name");
         return makeAstNode<Super>(keyword, method);
     }
@@ -303,7 +303,7 @@ Stmt *Parser::varDeclaration()
 {
     Token name = consume(Token::Kind::Identifier, "Expect variable name");
     Expr *initializer = nullptr;
-    if (match(Token::Kind::Equal)) {
+    if (match(Token::Kind::EqualsSign)) {
         initializer = expression();
     }
     consume(Token::Kind::Semicolon, "Expect ';' after variable declaration");

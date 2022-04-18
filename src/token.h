@@ -13,14 +13,6 @@ public:
 #define TOKEN(kind) kind,
 #include "token.def"
         EndOfFile,
-        // Aliases
-        Bang = ExclamationMark,
-        Dot = FullStop,
-        Equal = EqualsSign,
-        Minus = HyphenMinus,
-        Plus = PlusSign,
-        Slash = Solidus,
-        Star = Asterisk,
     };
 
     Token(Kind kind, std::string lexeme, object::Object literal, std::size_t line);

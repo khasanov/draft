@@ -1,0 +1,147 @@
+// Basic Latin, range: 0000-007F
+
+// C0 controls
+TOKEN(Null)                    // \0 U+0000
+TOKEN(StartOfHeading)          // U+0001
+TOKEN(StartOfText)             // U+0002
+TOKEN(EndOfText)               // U+0003
+TOKEN(EndOfTransmission)       // U+0004
+TOKEN(Enquiry)                 // U+0005
+TOKEN(Achnowledge)             // U+0006
+TOKEN(Bell)                    // \a U+0007
+TOKEN(Backspace)               // \b U+0008
+TOKEN(HorizontalTabulation)    // \t U+0009
+TOKEN(NewLine)                 // \n U+000A
+TOKEN(VerticalTabulation)      // \v U+000B
+TOKEN(FormFeed)                // \f U+000C
+TOKEN(CarriageReturn)          // \r U+000D
+TOKEN(ShiftOut)                // U+000E
+TOKEN(ShiftIn)                 // U+000F
+TOKEN(DataLinkEscape)          // U+0010
+TOKEN(DeviceControlOne)        // U+0011
+TOKEN(DeviceControlTwo)        // U+0012
+TOKEN(DeviceControlThree)      // U+0013
+TOKEN(DeviceControlFour)       // U+0014
+TOKEN(NegativeAcknowledge)     // U+0015
+TOKEN(SynchronousIdle)         // U+0016
+TOKEN(EndOfTransmissionBlock)  // U+0017
+TOKEN(Cancel)                  // U+0018
+TOKEN(EndOfMedium)             // U+0019
+TOKEN(Substitute)              // U+001A
+TOKEN(Escape)                  // \e U+001B
+TOKEN(FileSeparator)           // U+001C
+TOKEN(GroupSeparator)          // U+001D
+TOKEN(RecordSeparator)         // U+001E
+TOKEN(UnitSeparator)           // U+001F
+
+// ASCII punctuation and symbols
+TOKEN(Space)             //   U+0020
+TOKEN(ExclamationMark)   // ! U+0021
+TOKEN(QuotationMark)     // " U+0022
+TOKEN(NumberSign)        // # U+0023
+TOKEN(DollarSign)        // $ U+0024
+TOKEN(PercentSign)       // % U+0025
+TOKEN(Ampersand)         // & U+0026
+TOKEN(Apostrophe)        // ' U+0027
+TOKEN(LeftParenthesis)   // ( U+0028
+TOKEN(RightParenthesis)  // ) U+0029
+TOKEN(Asterisk)          // * U+002A
+TOKEN(PlusSign)          // + U+002B
+TOKEN(Comma)             // , U+002C
+TOKEN(HyphenMinus)       // - U+002D
+TOKEN(FullStop)          // . U+002E
+TOKEN(Solidus)           // / U+002F
+
+// ASCII digits
+TOKEN(DigitZero)   // 0 U+0030
+TOKEN(DigitOne)    // 1 U+0031
+TOKEN(DigitTwo)    // 2 U+0032
+TOKEN(DigitThree)  // 3 U+0033
+TOKEN(DigitFour)   // 4 U+0034
+TOKEN(DigitFive)   // 5 U+0035
+TOKEN(DigitSix)    // 6 U+0036
+TOKEN(DigitSeven)  // 7 U+0037
+TOKEN(DigitEight)  // 8 U+0038
+TOKEN(DigitNine)   // 9 U+0039
+
+// ASCII punctuation and symbols
+TOKEN(Colon)            // : U+003A
+TOKEN(Semicolon)        // ; U+003B
+TOKEN(LessThanSign)     // < U+003C
+TOKEN(EqualsSign)       // = U+003D
+TOKEN(GreaterThanSign)  // > U+003E
+TOKEN(QuestionMark)     // ? U+003F
+TOKEN(CommercialAt)     // @ U+0040
+
+// Uppercase Latin alphabet
+TOKEN(LatinCapitalLetterA)  // A U+0041
+TOKEN(LatinCapitalLetterB)  // B U+0042
+TOKEN(LatinCapitalLetterC)  // C U+0043
+TOKEN(LatinCapitalLetterD)  // D U+0044
+TOKEN(LatinCapitalLetterE)  // E U+0045
+TOKEN(LatinCapitalLetterF)  // F U+0046
+TOKEN(LatinCapitalLetterG)  // G U+0047
+TOKEN(LatinCapitalLetterH)  // H U+0048
+TOKEN(LatinCapitalLetterI)  // I U+0049
+TOKEN(LatinCapitalLetterJ)  // J U+004A
+TOKEN(LatinCapitalLetterK)  // K U+004B
+TOKEN(LatinCapitalLetterL)  // L U+004C
+TOKEN(LatinCapitalLetterM)  // M U+004D
+TOKEN(LatinCapitalLetterN)  // N U+004E
+TOKEN(LatinCapitalLetterO)  // O U+004F
+TOKEN(LatinCapitalLetterP)  // P U+0050
+TOKEN(LatinCapitalLetterQ)  // Q U+0051
+TOKEN(LatinCapitalLetterR)  // R U+0052
+TOKEN(LatinCapitalLetterS)  // S U+0053
+TOKEN(LatinCapitalLetterT)  // T U+0054
+TOKEN(LatinCapitalLetterU)  // U U+0055
+TOKEN(LatinCapitalLetterV)  // V U+0056
+TOKEN(LatinCapitalLetterW)  // W U+0057
+TOKEN(LatinCapitalLetterX)  // X U+0058
+TOKEN(LatinCapitalLetterY)  // Y U+0059
+TOKEN(LatinCapitalLetterZ)  // Z U+005A
+
+// ASCII punctuation and symbols
+TOKEN(LeftSquareBracket)   // [ U+005B
+TOKEN(ReverseSolidus)      // \ U+005C
+TOKEN(RightSquareBracket)  // ] U+005D
+TOKEN(CircumflexAccent)    // ^ U+005E
+TOKEN(LowLine)             // _ U+005F
+TOKEN(GraveAccent)         // ` U+0060
+
+// Lowercase Latin alphabet
+TOKEN(LatinSmallLetterA)  // a U+0061
+TOKEN(LatinSmallLetterB)  // b U+0062
+TOKEN(LatinSmallLetterC)  // c U+0063
+TOKEN(LatinSmallLetterD)  // d U+0064
+TOKEN(LatinSmallLetterE)  // e U+0065
+TOKEN(LatinSmallLetterF)  // f U+0066
+TOKEN(LatinSmallLetterG)  // g U+0067
+TOKEN(LatinSmallLetterH)  // h U+0068
+TOKEN(LatinSmallLetterI)  // i U+0069
+TOKEN(LatinSmallLetterJ)  // j U+006A
+TOKEN(LatinSmallLetterK)  // k U+006B
+TOKEN(LatinSmallLetterL)  // l U+006C
+TOKEN(LatinSmallLetterM)  // m U+006D
+TOKEN(LatinSmallLetterN)  // n U+006E
+TOKEN(LatinSmallLetterO)  // o U+006F
+TOKEN(LatinSmallLetterP)  // p U+0070
+TOKEN(LatinSmallLetterQ)  // q U+0071
+TOKEN(LatinSmallLetterR)  // r U+0072
+TOKEN(LatinSmallLetterS)  // s U+0073
+TOKEN(LatinSmallLetterT)  // t U+0074
+TOKEN(LatinSmallLetterU)  // u U+0075
+TOKEN(LatinSmallLetterV)  // v U+0076
+TOKEN(LatinSmallLetterW)  // w U+0077
+TOKEN(LatinSmallLetterX)  // x U+0078
+TOKEN(LatinSmallLetterY)  // y U+0079
+TOKEN(LatinSmallLetterZ)  // z U+007A
+
+// ASCII punctuation and symbols
+TOKEN(LeftCurlyBracket)   // { U+007B
+TOKEN(VerticalLine)       // | U+007C
+TOKEN(RightCurlyBracket)  // } U+007D
+TOKEN(Tilde)              // ~ U+007E
+
+// Control character
+TOKEN(Delete)  // U+007F

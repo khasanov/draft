@@ -43,6 +43,7 @@ target_sources(libraft PRIVATE
     token.cpp
     token.def
     token.h
+    unicode/basic_latin.def
 )
 target_include_directories(libraft PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
