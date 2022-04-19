@@ -40,6 +40,8 @@ target_sources(libraft PRIVATE
     resolver.h
     scanner.cpp
     scanner.h
+    source.cpp
+    source.h
     token.cpp
     token.def
     token.h

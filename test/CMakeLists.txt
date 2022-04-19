@@ -3,6 +3,7 @@ include(GoogleTest)
 
 add_executable(raft_test
     raft_test.cpp
+    source_test.cpp
 )
 
 target_link_libraries(raft_test PRIVATE
