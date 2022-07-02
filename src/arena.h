@@ -2,7 +2,7 @@
 
 #include <vector>
 
-namespace raft::memory {
+namespace draft::memory {
 
 class Block {
 public:
@@ -49,4 +49,4 @@ private:
     void operator=(const Object &other) = delete;
 };
 
-}  // namespace raft::memory
+}  // namespace draft::memory

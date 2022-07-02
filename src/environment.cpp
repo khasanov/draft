@@ -2,7 +2,7 @@
 
 #include "parser.h"
 
-namespace raft {
+namespace draft {
 
 Environment::Environment(EnvironmentPtr enclosing)
     : enclosing{enclosing}
@@ -57,4 +57,4 @@ void Environment::assignAt(int distance, const Token &name, const object::Object
     ancestor(distance)->values[name.lexeme] = value;
 }
 
-}  // namespace raft
+}  // namespace draft

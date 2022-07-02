@@ -6,7 +6,7 @@
 #include <variant>
 #include <vector>
 
-namespace raft {
+namespace draft {
 class Interpreter;
 class Function;
 
@@ -27,4 +27,4 @@ bool isTruthy(const Object &obj);
 bool isEqual(const Object &a, const Object &b);
 
 }  // namespace object
-}  // namespace raft
+}  // namespace draft

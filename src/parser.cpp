@@ -1,8 +1,8 @@
 #include "parser.h"
 
-#include "raft.h"
+#include "draft.h"
 
-namespace raft {
+namespace draft {
 
 template <typename Base, typename T>
 inline bool instanceof (const T *ptr)
@@ -41,7 +41,7 @@ std::vector<Stmt *> Parser::parse()
             statements.emplace_back(declaration());
         }
     } catch (const RuntimeError &ex) {
-        Raft::error(ex.token.line, ex.what());
+        Draft::error(ex.token.line, ex.what());
         synchronize();
     }
     return statements;
@@ -68,7 +68,7 @@ Expr *Parser::assignment()
             auto get = dynamic_cast<Get *>(expr);
             return makeAstNode<Set>(get->object, get->name, value);
         }
-        Raft::error(equals.line, "Invalid assignment target");
+        Draft::error(equals.line, "Invalid assignment target");
     }
     return expr;
 }
@@ -183,7 +183,7 @@ Expr *Parser::finishCall(Expr *callee)
     if (!check(Token::Kind::RightParenthesis)) {
         do {
             if (arguments.size() >= 255) {
-                Raft::error(peek().line, "Can't have more than 255 arguments");
+                Draft::error(peek().line, "Can't have more than 255 arguments");
             }
             arguments.emplace_back(expression());
         } while (match(Token::Kind::Comma));
@@ -247,7 +247,7 @@ Stmt *Parser::declaration()
         }
         return statement();
     } catch (const RuntimeError &ex) {
-        Raft::error(ex.token.line, ex.what());
+        Draft::error(ex.token.line, ex.what());
         synchronize();
         return nullptr;
     }
@@ -286,7 +286,7 @@ FuncStmt *Parser::function(std::string kind)
     if (!check(Token::Kind::RightParenthesis)) {
         do {
             if (parameters.size() >= 255) {
-                Raft::error(peek().line, "Can't have more than 255 parameters");
+                Draft::error(peek().line, "Can't have more than 255 parameters");
             }
 
             parameters.push_back(consume(Token::Kind::Identifier, "Exprect parameter name"));
@@ -530,4 +530,4 @@ void Parser::synchronize()
     }
 }
 
-}  // namespace raft
+}  // namespace draft

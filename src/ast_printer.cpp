@@ -1,6 +1,6 @@
 #include "ast_printer.h"
 
-namespace raft {
+namespace draft {
 
 std::string AstPrinter::print(Expr *expr)
 {
@@ -168,4 +168,4 @@ std::string AstPrinter::visit(Var *stmt)
     return "Var{" + stmt->name.lexeme + ", " + initializer + "}";
 }
 
-}  // namespace raft
+}  // namespace draft

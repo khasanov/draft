@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 
-namespace raft::object {
+namespace draft::object {
 
 std::string obj2str(const Object &obj)
 {
@@ -53,4 +53,4 @@ bool isEqual(const Object &a, const Object &b)
     return a == b;
 }
 
-}  // namespace raft::object
+}  // namespace draft::object

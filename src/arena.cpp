@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <cstdlib>
 
-namespace raft::memory {
+namespace draft::memory {
 
 Block::Block()
 {
@@ -57,4 +57,4 @@ void Object::operator delete(void *, Arena *)
 {
 }
 
-}  // namespace raft::memory
+}  // namespace draft::memory

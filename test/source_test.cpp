@@ -2,7 +2,7 @@
 
 #include <source.h>
 
-using namespace raft;
+using namespace draft;
 
 TEST(SourceTest, toStdString)
 {

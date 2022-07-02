@@ -9,8 +9,8 @@ add_compile_options(
     -Wextra
 )
 
-add_library(libraft STATIC)
-target_sources(libraft PRIVATE
+add_library(draft STATIC)
+target_sources(draft PRIVATE
     arena.cpp
     arena.h
     ast.cpp
@@ -19,6 +19,8 @@ target_sources(libraft PRIVATE
     ast_printer.h
     builtin.cpp
     builtin.h
+    draft.cpp
+    draft.h
     environment.cpp
     environment.h
     interpreter.cpp
@@ -34,8 +36,6 @@ target_sources(libraft PRIVATE
     object.h
     parser.cpp
     parser.h
-    raft.cpp
-    raft.h
     resolver.cpp
     resolver.h
     scanner.cpp
@@ -47,15 +47,17 @@ target_sources(libraft PRIVATE
     token.h
     unicode/basic_latin.def
 )
-target_include_directories(libraft PUBLIC
+target_include_directories(draft PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_executable(raft
+add_executable(draft-bin
     main.cpp
 )
 
-target_link_libraries(raft PRIVATE
-    libraft
+target_link_libraries(draft-bin PRIVATE
+    draft
 )
 
+# rename drfat-bin executable to draft
+set_target_properties(draft-bin PROPERTIES OUTPUT_NAME draft)

@@ -1,6 +1,6 @@
 #include "ast.h"
 
-namespace raft {
+namespace draft {
 
 Literal::Literal(object::Object value)
     : value{value}
@@ -129,4 +129,4 @@ This::This(Token keyword)
 {
 }
 
-}  // namespace raft
+}  // namespace draft

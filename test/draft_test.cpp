@@ -2,15 +2,15 @@
 
 #include <sstream>
 
-#include <raft.h>
+#include <draft.h>
 
-using namespace raft;
+using namespace draft;
 
-TEST(RaftTest, Smoke)
+TEST(DraftTest, Smoke)
 {
     constexpr auto greeting = "Hello, world!";
     std::stringstream ss;
-    Raft::out(greeting, ss);
+    Draft::out(greeting, ss);
 
     ASSERT_EQ("Hello, world!\n", ss.str());
 }

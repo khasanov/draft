@@ -5,9 +5,9 @@
 #include "obj_instance.h"
 #include "object.h"
 #include "parser.h"
-#include "raft.h"
+#include "draft.h"
 
-namespace raft {
+namespace draft {
 
 Interpreter::Interpreter()
 {
@@ -23,8 +23,8 @@ void Interpreter::interpret(const std::vector<Stmt *> &statements)
             execute(statement);
         }
     } catch (const RuntimeError &err) {
-        Raft::error(err.token.line, err.what());
-        std::exit(raft::exit::software);
+        Draft::error(err.token.line, err.what());
+        std::exit(draft::exit::software);
     }
 }
 
@@ -191,7 +191,7 @@ object::Object Interpreter::visit(Super *expr)
     object::InstancePtr instance = std::get<object::InstancePtr>(instanceObj);
     auto method = superclass->findMethod(expr->method.lexeme);
     if (!method) {
-        Raft::error(expr->method.line, "Undefined property '" + expr->method.lexeme + "'");
+        Draft::error(expr->method.line, "Undefined property '" + expr->method.lexeme + "'");
     }
     return method->bind(instance);
 }
@@ -224,7 +224,7 @@ void Interpreter::visit(FuncStmt *stmt)
 void Interpreter::visit(Print *stmt)
 {
     object::Object value = evaluate(stmt->expression);
-    Raft::out(object::obj2str(value));
+    Draft::out(object::obj2str(value));
 }
 
 void Interpreter::visit(Return *stmt)
@@ -256,7 +256,7 @@ void Interpreter::visit(Class *stmt)
         auto super = evaluate(stmt->superclass);
         if (!std::holds_alternative<object::CallablePtr>(super) and
             std::dynamic_pointer_cast<object::Class>(std::get<object::CallablePtr>(super))) {  // Ugh!
-            Raft::error(stmt->superclass->name.line, "Superclass must be a class");
+            Draft::error(stmt->superclass->name.line, "Superclass must be a class");
         } else {
             superclass = std::static_pointer_cast<object::Class>(std::get<object::CallablePtr>(super));
         }
@@ -350,4 +350,4 @@ void Interpreter::checkNumberOperands(const Token &op, const object::Object &lef
     throw RuntimeError{op, "Operands must be numbers"};
 }
 
-}  // namespace raft
+}  // namespace draft

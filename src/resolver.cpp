@@ -1,8 +1,8 @@
 #include "resolver.h"
 
-#include "raft.h"
+#include "draft.h"
 
-namespace raft {
+namespace draft {
 Resolver::Resolver(Interpreter *interpreter)
     : interpreter{interpreter}
 {
@@ -55,7 +55,7 @@ object::Object Resolver::visit(Variable *expr)
         auto &scope = scopes.back();
         if (auto it = scope.find(expr->name.lexeme); it != scope.end()) {
             if (!it->second) {
-                Raft::error(expr->name.line, "Can't read local variable in its own initializer");
+                Draft::error(expr->name.line, "Can't read local variable in its own initializer");
             }
         }
     }
@@ -86,9 +86,9 @@ object::Object Resolver::visit(Set *expr)
 object::Object Resolver::visit(Super *expr)
 {
     if (currentClass == ClassType::None) {
-        Raft::error(expr->keyword.line, "Can't use 'super' outside a class");
+        Draft::error(expr->keyword.line, "Can't use 'super' outside a class");
     } else if (currentClass != ClassType::Subclass) {
-        Raft::error(expr->keyword.line, "Can't use 'super' in a class with no superclass");
+        Draft::error(expr->keyword.line, "Can't use 'super' in a class with no superclass");
     }
     resolveLocal(expr, expr->keyword);
     return object::Null{};
@@ -97,7 +97,7 @@ object::Object Resolver::visit(Super *expr)
 object::Object Resolver::visit(This *expr)
 {
     if (currentClass == ClassType::None) {
-        Raft::error(expr->keyword.line, "Can't use 'this' outside of a class");
+        Draft::error(expr->keyword.line, "Can't use 'this' outside of a class");
         return object::Null{};
     }
     resolveLocal(expr, expr->keyword);
@@ -133,11 +133,11 @@ void Resolver::visit(Print *stmt)
 void Resolver::visit(Return *stmt)
 {
     if (currentFunction == FunctionType::None) {
-        Raft::error(stmt->keyword.line, "Can't return from top-level code");
+        Draft::error(stmt->keyword.line, "Can't return from top-level code");
     }
     if (stmt->value) {
         if (currentFunction == FunctionType::Initializer) {
-            Raft::error(stmt->keyword.line, "Can't return a value from an initializer");
+            Draft::error(stmt->keyword.line, "Can't return a value from an initializer");
         }
         resolve(stmt->value);
     }
@@ -165,7 +165,7 @@ void Resolver::visit(Class *stmt)
     define(stmt->name);
     if (stmt->superclass) {
         if (stmt->name.lexeme == stmt->superclass->name.lexeme) {
-            Raft::error(stmt->superclass->name.line, "A class can't inherit from itself");
+            Draft::error(stmt->superclass->name.line, "A class can't inherit from itself");
         } else {
             currentClass = ClassType::Subclass;
             resolve(stmt->superclass);
@@ -238,7 +238,7 @@ void Resolver::declare(Token name)
     }
     auto &scope = scopes.back();
     if (scope.contains(name.lexeme)) {
-        Raft::error(name.line, "Already a variable with this name in this scope");
+        Draft::error(name.line, "Already a variable with this name in this scope");
     }
     scope.emplace(name.lexeme, false);
 }
@@ -275,4 +275,4 @@ void Resolver::resolveFunction(FuncStmt *function, FunctionType type)
     currentFunction = enclosing;
 }
 
-}  // namespace raft
+}  // namespace draft

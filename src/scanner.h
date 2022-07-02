@@ -5,7 +5,7 @@
 
 #include "token.h"
 
-namespace raft {
+namespace draft {
 
 class Scanner {
 public:
@@ -44,4 +44,4 @@ private:
     std::size_t current = 0;
     std::size_t line = 1;
 };
-}  // namespace raft
+}  // namespace draft

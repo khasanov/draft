@@ -2,7 +2,7 @@
 
 #include "interpreter.h"
 
-namespace raft {
+namespace draft {
 ReturnEx::ReturnEx(object::Object value)
     : std::runtime_error{""}
     , value{std::move(value)}
@@ -58,4 +58,4 @@ std::shared_ptr<Function> Function::bind(std::shared_ptr<Instance> instance)
 }
 
 }  // namespace object
-}  // namespace raft
+}  // namespace draft

@@ -4,7 +4,7 @@
 
 #include "interpreter.h"
 
-namespace raft {
+namespace draft {
 
 namespace exit {
 constexpr int success = 0;    // Successful exit status
@@ -14,7 +14,7 @@ constexpr int dataerr = 65;   // Incorrect input data
 constexpr int software = 70;  // Internal software error
 }  // namespace exit
 
-class Raft {
+class Draft {
 public:
     static int usage();
 
@@ -32,4 +32,4 @@ private:
     static bool hadError;
 };
 
-}  // namespace raft
+}  // namespace draft

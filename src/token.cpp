@@ -1,6 +1,6 @@
 #include "token.h"
 
-namespace raft {
+namespace draft {
 
 static std::string kind2str(Token::Kind kind)
 {
@@ -17,7 +17,7 @@ static std::string kind2str(Token::Kind kind)
     return "Unrecognized";
 }
 
-Token::Token(Kind kind, std::string lexeme, object::Object literal, std::size_t line)
+Token::Token(Kind kind, Lexeme lexeme, object::Object literal, std::size_t line)
     : kind{kind}
     , lexeme{std::move(lexeme)}
     , literal{std::move(literal)}
@@ -30,4 +30,4 @@ std::string Token::toString()
     return kind2str(kind) + " " + lexeme + " " + object::obj2str(literal);
 }
 
-}  // namespace raft
+}  // namespace draft

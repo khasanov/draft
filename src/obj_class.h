@@ -5,7 +5,7 @@
 #include "obj_callable.h"
 #include "obj_function.h"
 
-namespace raft::object {
+namespace draft::object {
 class Class;
 using ClassPtr = std::shared_ptr<Class>;
 
@@ -24,4 +24,4 @@ public:
     ClassPtr superclass;
 };
 
-}  // namespace raft::object
+}  // namespace draft::object

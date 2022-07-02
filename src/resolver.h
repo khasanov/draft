@@ -5,7 +5,7 @@
 
 #include "ast.h"
 
-namespace raft {
+namespace draft {
 class Interpreter;
 
 class Resolver : public IExprVisitor<object::Object>, IStmtVisitor<void> {
@@ -59,4 +59,4 @@ private:
     ClassType currentClass = ClassType::None;
 };
 
-}  // namespace raft
+}  // namespace draft

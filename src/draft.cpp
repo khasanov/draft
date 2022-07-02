@@ -1,4 +1,4 @@
-#include "raft.h"
+#include "draft.h"
 
 #include <fstream>
 
@@ -9,17 +9,17 @@
 #include "scanner.h"
 #include "token.h"
 
-namespace raft {
+namespace draft {
 
-bool Raft::hadError = false;
+bool Draft::hadError = false;
 
-int Raft::usage()
+int Draft::usage()
 {
-    out("Usage: raft [filename]", std::cerr);
+    out("Usage: draft [filename]", std::cerr);
     return exit::usage;
 }
 
-int Raft::runFile(const std::string &path)
+int Draft::runFile(const std::string &path)
 {
     std::string source;
     try {
@@ -45,9 +45,9 @@ int Raft::runFile(const std::string &path)
     return exit::success;
 }
 
-int Raft::runPrompt()
+int Draft::runPrompt()
 {
-    out("Raft version 0.0.1\nPress Ctrl+d to exit");
+    out("Draft version 0.0.1\nPress Ctrl+d to exit");
 
     std::string line;
     while (true) {
@@ -64,7 +64,7 @@ int Raft::runPrompt()
     return exit::success;
 }
 
-void Raft::run(std::string_view source)
+void Draft::run(std::string_view source)
 {
     Scanner scanner{source};
     std::vector<Token> tokens = scanner.scanTokens();
@@ -86,19 +86,19 @@ void Raft::run(std::string_view source)
     interpreter.interpret(statements);
 }
 
-void Raft::error(std::size_t line, const std::string &message)
+void Draft::error(std::size_t line, const std::string &message)
 {
     report(line, "", message);
     hadError = true;
 }
 
-void Raft::report(std::size_t line, const std::string &where, const std::string &message)
+void Draft::report(std::size_t line, const std::string &where, const std::string &message)
 {
     out("[line " + std::to_string(line) + "] Error " + where + ": " + message, std::cerr);
 }
 
-void Raft::out(std::string_view what, std::ostream &where)
+void Draft::out(std::string_view what, std::ostream &where)
 {
     where << what << std::endl;
 }
-}  // namespace raft
+}  // namespace draft

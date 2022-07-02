@@ -3,7 +3,7 @@
 #include <codecvt>
 #include <locale>
 
-namespace raft {
+namespace draft {
 
 std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> conv;
 
@@ -16,4 +16,4 @@ std::u32string Source::fromStdString(const std::string &utf8)
 {
     return conv.from_bytes(utf8);
 }
-}  // namespace raft
+}  // namespace draft

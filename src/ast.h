@@ -4,7 +4,7 @@
 #include "object.h"
 #include "token.h"
 
-namespace raft {
+namespace draft {
 
 class Expr;
 class Literal;
@@ -266,4 +266,4 @@ public:
     Expr *initializer = nullptr;
 };
 
-}  // namespace raft
+}  // namespace draft

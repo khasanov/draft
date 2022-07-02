@@ -2,7 +2,7 @@
 
 #include "obj_callable.h"
 
-namespace raft {
+namespace draft {
 
 class ClockFunction : public object::Callable {
 public:
@@ -11,4 +11,4 @@ public:
     object::Object call(Interpreter *, std::vector<object::Object>) override;
 };
 
-}  // namespace raft
+}  // namespace draft

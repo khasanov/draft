@@ -7,7 +7,7 @@
 
 #include "token.h"
 
-namespace raft {
+namespace draft {
 
 class Environment;
 using EnvironmentPtr = std::shared_ptr<Environment>;
@@ -29,4 +29,4 @@ private:
     std::map<std::string, object::Object> values;
 };
 
-}  // namespace raft
+}  // namespace draft

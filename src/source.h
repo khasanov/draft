@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace raft {
+namespace draft {
 
 class Source {
 public:
@@ -10,4 +10,4 @@ public:
     static std::u32string fromStdString(const std::string &utf8);
 };
 
-}  // namespace raft
+}  // namespace draft

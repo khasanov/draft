@@ -4,7 +4,7 @@
 
 #include "obj_class.h"
 
-namespace raft::object {
+namespace draft::object {
 
 class Instance : public std::enable_shared_from_this<Instance> {
 public:
@@ -18,4 +18,4 @@ private:
     std::map<std::string, Object> fields;
 };
 
-}  // namespace raft::object
+}  // namespace draft::object

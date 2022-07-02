@@ -2,7 +2,7 @@
 
 #include "ast.h"
 
-namespace raft {
+namespace draft {
 
 class AstPrinter : public IExprVisitor<std::string>, IStmtVisitor<std::string> {
 public:
@@ -33,4 +33,4 @@ public:
     std::string visit(Var *stmt) override;
 };
 
-}  // namespace raft
+}  // namespace draft

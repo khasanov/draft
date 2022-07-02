@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-namespace raft {
+namespace draft {
 
 std::size_t ClockFunction::arity()
 {
@@ -18,4 +18,4 @@ object::Object ClockFunction::call(Interpreter *, std::vector<object::Object>)
     return static_cast<object::Number>(seconds);
 }
 
-}  // namespace raft
+}  // namespace draft

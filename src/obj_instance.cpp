@@ -1,6 +1,6 @@
 #include "obj_instance.h"
 
-namespace raft::object {
+namespace draft::object {
 
 Instance::Instance(Class klass)
     : klass{std::move(klass)}
@@ -25,4 +25,4 @@ void Instance::setProperty(std::string name, const Object &value)
     fields[name] = value;
 }
 
-}  // namespace raft::object
+}  // namespace draft::object

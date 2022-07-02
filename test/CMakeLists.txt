@@ -1,13 +1,13 @@
 enable_testing()
 include(GoogleTest)
 
-add_executable(raft_test
-    raft_test.cpp
+add_executable(draft_test
+    draft_test.cpp
     source_test.cpp
 )
 
-target_link_libraries(raft_test PRIVATE
-    libraft
+target_link_libraries(draft_test PRIVATE
+    draft
     gtest_main
 )
-gtest_discover_tests(raft_test)
+gtest_discover_tests(draft_test)

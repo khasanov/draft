@@ -6,7 +6,7 @@
 
 #include <vector>
 
-namespace raft {
+namespace draft {
 
 class Interpreter : public IExprVisitor<object::Object>, IStmtVisitor<void> {
 public:
@@ -54,4 +54,4 @@ private:
     friend class object::Function;
 };
 
-}  // namespace raft
+}  // namespace draft

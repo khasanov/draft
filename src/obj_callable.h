@@ -2,7 +2,7 @@
 
 #include "object.h"
 
-namespace raft::object {
+namespace draft::object {
 
 class Callable {
 public:
@@ -12,4 +12,4 @@ public:
     virtual Object call(Interpreter *interpreter, std::vector<Object> arguments) = 0;
 };
 
-}  // namespace raft::object
+}  // namespace draft::object

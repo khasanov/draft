@@ -1,10 +1,10 @@
 #include <iomanip>
 #include <iostream>
 
-#include "raft.h"
+#include "draft.h"
 #include "scanner.h"
 
-namespace raft {
+namespace draft {
 
 Scanner::Scanner(std::string_view source)
     : source{source}
@@ -246,7 +246,7 @@ std::string_view Scanner::substr()
 
 void Scanner::scanError(const std::string &message)
 {
-    Raft::error(line, message);
+    Draft::error(line, message);
 }
 
-}  // namespace raft
+}  // namespace draft

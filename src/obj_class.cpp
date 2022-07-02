@@ -2,7 +2,7 @@
 
 #include "obj_instance.h"
 
-namespace raft::object {
+namespace draft::object {
 Class::Class(std::string name, ClassPtr superclass, std::map<std::string, object::FunctionPtr> methods)
     : name{name}
     , methods{methods}
@@ -40,4 +40,4 @@ FunctionPtr Class::findMethod(std::string name)
     return nullptr;
 }
 
-}  // namespace raft::object
+}  // namespace draft::object

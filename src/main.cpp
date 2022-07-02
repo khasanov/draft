@@ -1,16 +1,16 @@
 #include <vector>
 
-#include "raft.h"
+#include "draft.h"
 
 int processCommandLine(const std::vector<std::string> &args)
 {
-    using namespace raft;
+    using namespace draft;
     if (args.size() > 1) {
-        return Raft::usage();
+        return Draft::usage();
     } else if (args.size() == 1) {
-        return Raft::runFile(args.at(0));
+        return Draft::runFile(args.at(0));
     }
-    return Raft::runPrompt();
+    return Draft::runPrompt();
 }
 
 int main(int argc, char *argv[])

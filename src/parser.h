@@ -5,7 +5,7 @@
 #include "ast.h"
 #include "token.h"
 
-namespace raft {
+namespace draft {
 
 class RuntimeError : public std::runtime_error {
 public:
@@ -98,4 +98,4 @@ private:
     std::size_t current = 0;
 };
 
-}  // namespace raft
+}  // namespace draft

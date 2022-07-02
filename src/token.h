@@ -4,7 +4,9 @@
 
 #include "object.h"
 
-namespace raft {
+namespace draft {
+
+using Lexeme = std::string;
 
 class Token {
 public:
@@ -15,14 +17,14 @@ public:
         EndOfFile,
     };
 
-    Token(Kind kind, std::string lexeme, object::Object literal, std::size_t line);
+    Token(Kind kind, Lexeme lexeme, object::Object literal, std::size_t line);
 
     std::string toString();
 
     const Kind kind = Kind::Unrecognized;
-    std::string lexeme;
+    Lexeme lexeme;
     object::Object literal;
     std::size_t line = 0;
 };
 
-}  // namespace raft
+}  // namespace draft

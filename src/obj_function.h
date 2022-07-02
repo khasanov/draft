@@ -3,7 +3,7 @@
 #include "environment.h"
 #include "obj_callable.h"
 
-namespace raft {
+namespace draft {
 class FuncStmt;
 
 class ReturnEx : public std::runtime_error {
@@ -30,4 +30,4 @@ private:
 using FunctionPtr = std::shared_ptr<Function>;
 
 }  // namespace object
-}  // namespace raft
+}  // namespace draft
