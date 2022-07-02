@@ -10,7 +10,7 @@ TEST(DraftTest, Smoke)
 {
     constexpr auto greeting = "Hello, world!";
     std::stringstream ss;
-    Draft::out(greeting, ss);
+    io::writeLine(greeting, ss);
 
     ASSERT_EQ("Hello, world!\n", ss.str());
 }

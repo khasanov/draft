@@ -10,33 +10,64 @@
 #include "token.h"
 
 namespace draft {
+namespace io {
+
+constexpr auto escapeCyan = "\x1b[36m";
+constexpr auto escapeReset = "\x1b[0m";
+
+void read(std::string &text, std::istream &stream)
+{
+    text.assign(std::istreambuf_iterator<char>(stream), {});
+}
+
+void write(std::string_view text, std::ostream &stream)
+{
+    stream << text;
+}
+
+void readLine(std::string &line, std::istream &stream)
+{
+    std::getline(stream, line);
+}
+
+void writeLine(std::string_view line, std::ostream &stream)
+{
+    stream << line << std::endl;
+}
+}  // namespace io
 
 bool Draft::hadError = false;
 
 int Draft::usage()
 {
-    out("Usage: draft [filename]", std::cerr);
+    io::writeLine("Usage: draft [filename]", std::cerr);
     return exit::usage;
+}
+
+void prompt()
+{
+    io::writeLine("Draft version 0.0.1");
+    io::writeLine("Press Ctrl+d to exit");
+}
+
+void ps1()
+{
+    io::write(io::escapeCyan);
+    io::write("> ");
+    io::write(io::escapeReset);
 }
 
 int Draft::runFile(const std::string &path)
 {
-    std::string source;
-    try {
-        std::ifstream file;
-        file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-        file.open(path, std::ios_base::binary);
-        file.seekg(0, std::ios::end);
-        const auto size = file.tellg();
-        source.resize(size, '\0');
-        file.seekg(0, std::ios::beg);
-        file.read(&source[0], size);
-    } catch (...) {
-        out("Can't read file: " + path, std::cerr);
+    std::ifstream file{path, std::ios::binary};
+    if (file.fail()) {
+        io::writeLine("Can't read file: " + path, std::cerr);
         return exit::failure;
     }
+    std::string buffer;
+    io::read(buffer, file);
 
-    run(source);
+    run(buffer);
 
     if (hadError) {
         return exit::dataerr;
@@ -47,16 +78,15 @@ int Draft::runFile(const std::string &path)
 
 int Draft::runPrompt()
 {
-    out("Draft version 0.0.1\nPress Ctrl+d to exit");
+    prompt();
 
     std::string line;
     while (true) {
         hadError = false;  // reset error status
-        std::cout << "> ";
-        std::getline(std::cin, line);
-
+        ps1();
+        io::readLine(line, std::cin);
         if (std::cin.eof()) {
-            std::cout << std::endl;
+            io::writeLine("");
             break;
         }
         run(line);
@@ -77,7 +107,7 @@ void Draft::run(std::string_view source)
 
     AstPrinter p;
     for (auto stmt : statements) {
-        out(p.print(stmt));
+        io::writeLine(p.print(stmt));
     }
 
     static Interpreter interpreter;
@@ -94,11 +124,7 @@ void Draft::error(std::size_t line, const std::string &message)
 
 void Draft::report(std::size_t line, const std::string &where, const std::string &message)
 {
-    out("[line " + std::to_string(line) + "] Error " + where + ": " + message, std::cerr);
+    io::writeLine("[line " + std::to_string(line) + "] Error " + where + ": " + message, std::cerr);
 }
 
-void Draft::out(std::string_view what, std::ostream &where)
-{
-    where << what << std::endl;
-}
 }  // namespace draft

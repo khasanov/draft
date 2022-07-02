@@ -224,7 +224,7 @@ void Interpreter::visit(FuncStmt *stmt)
 void Interpreter::visit(Print *stmt)
 {
     object::Object value = evaluate(stmt->expression);
-    Draft::out(object::obj2str(value));
+    io::writeLine(object::obj2str(value));
 }
 
 void Interpreter::visit(Return *stmt)
