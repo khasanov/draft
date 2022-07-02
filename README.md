@@ -4,7 +4,8 @@ My experiments in *draft*ing a toy programming language.
 
 ## Readings
 
-[Crafting Interpreters](craftinginterpreters.com)
+- [Build Your Own Lisp](https://buildyourownlisp.com/)
+- [Crafting Interpreters](https://craftinginterpreters.com/)
 
 ## Grammar
 
