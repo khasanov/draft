@@ -21,7 +21,7 @@ void readLine(std::string &line, std::istream &stream = std::cin);
 void writeLine(std::string_view line, std::ostream &stream = std::cout);
 }  // namespace io
 
-class Draft {
+class Driver {
 public:
     static int usage();
 

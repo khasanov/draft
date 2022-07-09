@@ -1,4 +1,4 @@
-#include "draft.h"
+#include "driver.h"
 
 #include <fstream>
 
@@ -36,9 +36,9 @@ void writeLine(std::string_view line, std::ostream &stream)
 }
 }  // namespace io
 
-bool Draft::hadError = false;
+bool Driver::hadError = false;
 
-int Draft::usage()
+int Driver::usage()
 {
     io::writeLine("Usage: draft [filename]", std::cerr);
     return exit::usage;
@@ -57,7 +57,7 @@ void ps1()
     io::write(io::escapeReset);
 }
 
-int Draft::runFile(const std::string &path)
+int Driver::runFile(const std::string &path)
 {
     std::ifstream file{path, std::ios::binary};
     if (file.fail()) {
@@ -76,7 +76,7 @@ int Draft::runFile(const std::string &path)
     return exit::success;
 }
 
-int Draft::runPrompt()
+int Driver::runPrompt()
 {
     prompt();
 
@@ -94,7 +94,7 @@ int Draft::runPrompt()
     return exit::success;
 }
 
-void Draft::run(std::string_view source)
+void Driver::run(std::string_view source)
 {
     Scanner scanner{source};
     std::vector<Token> tokens = scanner.scanTokens();
@@ -116,13 +116,13 @@ void Draft::run(std::string_view source)
     interpreter.interpret(statements);
 }
 
-void Draft::error(std::size_t line, const std::string &message)
+void Driver::error(std::size_t line, const std::string &message)
 {
     report(line, "", message);
     hadError = true;
 }
 
-void Draft::report(std::size_t line, const std::string &where, const std::string &message)
+void Driver::report(std::size_t line, const std::string &where, const std::string &message)
 {
     io::writeLine("[line " + std::to_string(line) + "] Error " + where + ": " + message, std::cerr);
 }

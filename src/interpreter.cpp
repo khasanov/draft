@@ -5,7 +5,7 @@
 #include "obj_instance.h"
 #include "object.h"
 #include "parser.h"
-#include "draft.h"
+#include "driver.h"
 
 namespace draft {
 
@@ -23,7 +23,7 @@ void Interpreter::interpret(const std::vector<Stmt *> &statements)
             execute(statement);
         }
     } catch (const RuntimeError &err) {
-        Draft::error(err.token.line, err.what());
+        Driver::error(err.token.line, err.what());
         std::exit(draft::exit::software);
     }
 }
@@ -191,7 +191,7 @@ object::Object Interpreter::visit(Super *expr)
     object::InstancePtr instance = std::get<object::InstancePtr>(instanceObj);
     auto method = superclass->findMethod(expr->method.lexeme);
     if (!method) {
-        Draft::error(expr->method.line, "Undefined property '" + expr->method.lexeme + "'");
+        Driver::error(expr->method.line, "Undefined property '" + expr->method.lexeme + "'");
     }
     return method->bind(instance);
 }
@@ -256,7 +256,7 @@ void Interpreter::visit(Class *stmt)
         auto super = evaluate(stmt->superclass);
         if (!std::holds_alternative<object::CallablePtr>(super) and
             std::dynamic_pointer_cast<object::Class>(std::get<object::CallablePtr>(super))) {  // Ugh!
-            Draft::error(stmt->superclass->name.line, "Superclass must be a class");
+            Driver::error(stmt->superclass->name.line, "Superclass must be a class");
         } else {
             superclass = std::static_pointer_cast<object::Class>(std::get<object::CallablePtr>(super));
         }

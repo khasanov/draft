@@ -2,7 +2,7 @@ enable_testing()
 include(GoogleTest)
 
 add_executable(draft-test
-    draft_test.cpp
+    driver_test.cpp
     source_test.cpp
 )
 

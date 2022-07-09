@@ -19,8 +19,8 @@ target_sources(draft PRIVATE
     ast_printer.h
     builtin.cpp
     builtin.h
-    draft.cpp
-    draft.h
+    driver.cpp
+    driver.h
     environment.cpp
     environment.h
     interpreter.cpp

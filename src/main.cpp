@@ -1,16 +1,16 @@
 #include <vector>
 
-#include "draft.h"
+#include "driver.h"
 
 int processCommandLine(const std::vector<std::string> &args)
 {
     using namespace draft;
     if (args.size() > 1) {
-        return Draft::usage();
+        return Driver::usage();
     } else if (args.size() == 1) {
-        return Draft::runFile(args.at(0));
+        return Driver::runFile(args.at(0));
     }
-    return Draft::runPrompt();
+    return Driver::runPrompt();
 }
 
 int main(int argc, char *argv[])

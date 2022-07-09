@@ -1,7 +1,7 @@
 #include <iomanip>
 #include <iostream>
 
-#include "draft.h"
+#include "driver.h"
 #include "scanner.h"
 
 namespace draft {
@@ -246,7 +246,7 @@ std::string_view Scanner::substr()
 
 void Scanner::scanError(const std::string &message)
 {
-    Draft::error(line, message);
+    Driver::error(line, message);
 }
 
 }  // namespace draft
