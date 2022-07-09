@@ -6,7 +6,7 @@
 
 using namespace draft;
 
-TEST(DraftTest, Smoke)
+TEST(DriverTest, Smoke)
 {
     constexpr auto greeting = "Hello, world!";
     std::stringstream ss;

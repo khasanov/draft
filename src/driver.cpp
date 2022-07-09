@@ -7,6 +7,7 @@
 #include "lexer.h"
 #include "parser.h"
 #include "resolver.h"
+#include "source_manager.h"
 #include "token.h"
 
 namespace draft {
@@ -34,6 +35,14 @@ void writeLine(std::string_view line, std::ostream &stream)
 {
     stream << line << std::endl;
 }
+
+void writeColoredLine(const std::string &line)
+{
+    io::write(io::escapeCyan);
+    io::writeLine(line);
+    io::write(io::escapeReset);
+}
+
 }  // namespace io
 
 bool Driver::hadError = false;
@@ -67,7 +76,7 @@ int Driver::runFile(const std::string &path)
     std::string buffer;
     io::read(buffer, file);
 
-    run(buffer);
+    run(buffer, path);
 
     if (hadError) {
         return exit::dataerr;
@@ -94,10 +103,17 @@ int Driver::runPrompt()
     return exit::success;
 }
 
-void Driver::run(std::string_view source)
+void Driver::run(const std::string& buffer, const std::string &path)
 {
-    Lexer scanner{source};
-    std::vector<Token> tokens = scanner.scanTokens();
+    SourceManager manager;
+    auto id = manager.makeSource(buffer, path);
+
+    if (!path.empty()) {
+        io::writeColoredLine("-- " + manager.getPath(id));
+    }
+
+    Lexer lexer{buffer};
+    std::vector<Token> tokens = lexer.scanTokens();
 
     Parser parser{tokens};
     std::vector<Stmt *> statements = parser.parse();

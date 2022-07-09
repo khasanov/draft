@@ -42,6 +42,8 @@ target_sources(draft PRIVATE
     resolver.h
     source.cpp
     source.h
+    source_manager.cpp
+    source_manager.h
     token.cpp
     token.def
     token.h

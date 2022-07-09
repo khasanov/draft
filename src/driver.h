@@ -19,6 +19,7 @@ void read(std::string &text, std::istream &stream = std::cin);
 void write(std::string_view text, std::ostream &stream = std::cout);
 void readLine(std::string &line, std::istream &stream = std::cin);
 void writeLine(std::string_view line, std::ostream &stream = std::cout);
+void writeColoredLine(const std::string &line);
 }  // namespace io
 
 class Driver {
@@ -32,7 +33,7 @@ public:
     static void error(std::size_t line, const std::string &message);
     static void report(std::size_t line, const std::string &where, const std::string &message);
 
-    static void run(std::string_view source);
+    static void run(const std::string& buffer, const std::string &path = "");
 
 private:
     static bool hadError;
