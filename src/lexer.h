@@ -7,9 +7,9 @@
 
 namespace draft {
 
-class Scanner {
+class Lexer {
 public:
-    explicit Scanner(std::string_view source);
+    explicit Lexer(std::string_view source);
 
     std::vector<Token> scanTokens();
 

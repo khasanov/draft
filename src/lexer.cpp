@@ -2,16 +2,16 @@
 #include <iostream>
 
 #include "driver.h"
-#include "scanner.h"
+#include "lexer.h"
 
 namespace draft {
 
-Scanner::Scanner(std::string_view source)
+Lexer::Lexer(std::string_view source)
     : source{source}
 {
 }
 
-std::vector<Token> Scanner::scanTokens()
+std::vector<Token> Lexer::scanTokens()
 {
     while (!isAtEnd()) {
         // We are at the beginning of the next lexeme
@@ -24,12 +24,12 @@ std::vector<Token> Scanner::scanTokens()
     return tokens;
 }
 
-bool Scanner::isAtEnd()
+bool Lexer::isAtEnd()
 {
     return current >= source.length();
 }
 
-void Scanner::scanToken()
+void Lexer::scanToken()
 {
     char c = advance();
     switch (c) {
@@ -116,12 +116,12 @@ void Scanner::scanToken()
     }
 }
 
-char Scanner::advance()
+char Lexer::advance()
 {
     return source.at(current++);
 }
 
-bool Scanner::match(char expected)
+bool Lexer::match(char expected)
 {
     if (isAtEnd()) {
         return false;
@@ -133,7 +133,7 @@ bool Scanner::match(char expected)
     return true;
 }
 
-char Scanner::peek()
+char Lexer::peek()
 {
     if (isAtEnd()) {
         return '\0';
@@ -141,7 +141,7 @@ char Scanner::peek()
     return source.at(current);
 }
 
-char Scanner::peekNext()
+char Lexer::peekNext()
 {
     if (current + 1 >= source.length()) {
         return '\0';
@@ -149,7 +149,7 @@ char Scanner::peekNext()
     return source.at(current + 1);
 }
 
-void Scanner::string(char quote)
+void Lexer::string(char quote)
 {
     while (peek() != quote and not isAtEnd()) {
         if (peek() == '\n') {
@@ -173,7 +173,7 @@ void Scanner::string(char quote)
     addToken(Token::Kind::StringLiteral, object::String{value});
 }
 
-void Scanner::number()
+void Lexer::number()
 {
     while (isDigit(peek())) {
         advance();
@@ -193,7 +193,7 @@ void Scanner::number()
     addToken(Token::Kind::NumberLiteral, object::Number{value});
 }
 
-void Scanner::identifier()
+void Lexer::identifier()
 {
     while (isAlphaNumeric(peek())) {
         advance();
@@ -211,40 +211,40 @@ void Scanner::identifier()
     addToken(maybeKeyword(substr()));
 }
 
-void Scanner::addToken(Token::Kind kind)
+void Lexer::addToken(Token::Kind kind)
 {
     addToken(kind, object::Null{});
 }
 
-void Scanner::addToken(Token::Kind kind, object::Object literal)
+void Lexer::addToken(Token::Kind kind, object::Object literal)
 {
     Token t{kind, std::string{substr()}, literal, line};
     tokens.emplace_back(std::move(t));
 }
 
-bool Scanner::isDigit(char c)
+bool Lexer::isDigit(char c)
 {
     return c >= '0' and c <= '9';
 }
 
-bool Scanner::isAlpha(char c)
+bool Lexer::isAlpha(char c)
 {
     return (c >= 'a' and c <= 'z') or (c >= 'A' and c <= 'Z') or c == '_';
 }
 
-bool Scanner::isAlphaNumeric(char c)
+bool Lexer::isAlphaNumeric(char c)
 {
     return isAlpha(c) or isDigit(c);
 }
 
-std::string_view Scanner::substr()
+std::string_view Lexer::substr()
 {
     std::size_t pos = start;
     std::size_t count = current - pos;
     return source.substr(pos, count);
 }
 
-void Scanner::scanError(const std::string &message)
+void Lexer::scanError(const std::string &message)
 {
     Driver::error(line, message);
 }

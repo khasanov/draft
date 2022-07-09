@@ -25,6 +25,8 @@ target_sources(draft PRIVATE
     environment.h
     interpreter.cpp
     interpreter.h
+    lexer.cpp
+    lexer.h
     obj_callable.h
     obj_class.cpp
     obj_class.h
@@ -38,8 +40,6 @@ target_sources(draft PRIVATE
     parser.h
     resolver.cpp
     resolver.h
-    scanner.cpp
-    scanner.h
     source.cpp
     source.h
     token.cpp

@@ -4,9 +4,9 @@
 
 #include "ast.h"
 #include "ast_printer.h"
+#include "lexer.h"
 #include "parser.h"
 #include "resolver.h"
-#include "scanner.h"
 #include "token.h"
 
 namespace draft {
@@ -96,7 +96,7 @@ int Driver::runPrompt()
 
 void Driver::run(std::string_view source)
 {
-    Scanner scanner{source};
+    Lexer scanner{source};
     std::vector<Token> tokens = scanner.scanTokens();
 
     Parser parser{tokens};
