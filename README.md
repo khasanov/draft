@@ -1,6 +1,9 @@
 # Draft programming language
 
+![Build status](https://github.com/khasanov/draft/actions/workflows/build_cmake.yml/badge.svg)
+
 My experiments in *draft*ing a toy programming language.
+
 
 ## Readings
 
